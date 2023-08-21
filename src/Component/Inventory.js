@@ -21,7 +21,7 @@ import { Tab, Tabs } from '@mui/material';
 import ChemicalListChart from '../Miscellaneous/ChemicalLineChart';
 import ChemicalList from '../Miscellaneous/ChemicalList';
 import TopChemicals from '../Miscellaneous/TopChemicals';
-
+import Logo from '../Images/logoPharma.png'
 const drawerWidth = 240;
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -69,7 +69,8 @@ function ResponsiveDrawer(props) {
 
   const drawer = (
     <div>
-      <Toolbar />
+      <img src={Logo} alt="Logo" width={"200rem"} height={"50rem"}
+        style={{ marginTop: "1rem", marginBottom: "1rem" }} />
       <Divider />
       <List>
         <Tabs
@@ -113,12 +114,7 @@ function ResponsiveDrawer(props) {
           >
             <MenuIcon />
           </IconButton>
-          <div><img
-            src=''
-            srcSet="../logoPharma.png"
-            alt="Photo"
-            loading="lazy"
-          /></div>
+
         </Toolbar>
       </AppBar>
       <Box
