@@ -21,7 +21,6 @@ import { Tab, Tabs } from '@mui/material';
 import ChemicalListChart from '../Miscellaneous/ChemicalLineChart';
 import ChemicalList from '../Miscellaneous/ChemicalList';
 import TopChemicals from '../Miscellaneous/TopChemicals';
-
 const drawerWidth = 240;
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

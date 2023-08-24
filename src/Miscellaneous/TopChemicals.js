@@ -1,6 +1,5 @@
 import React from 'react';
 import jsonData from '../data.json';
-
 const TopChemicals = () => {
   if (!jsonData || jsonData.length === 0) {
     return <div>No data available.</div>;
