@@ -1,10 +1,35 @@
 import React, { useState } from 'react'
 import CompletebatchData from '../completedBatch.json'
 import '../Miscellaneous/OngoingBatches.css'
+import {
+  AppBar,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
+  Dialog,
+  DialogContent,
+  Divider,
+  IconButton,
+  Slide,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const CompletedBatches = () => {
   const [batches, setBatches] = useState(CompletebatchData)
-
+  const [openDialog, setOpenDialog] = useState(false);
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
   return (
     <div>
       <div class="searchBox">
@@ -41,7 +66,7 @@ const CompletedBatches = () => {
         </button>
       </div>
 
-      <div className="allcards">
+      <div className="allcards" onClick={handleOpenDialog} style={{ cursor: "pointer" }}>
         {
           batches.map((batch, index) => (
             <div className="card" key={index}>
@@ -66,6 +91,59 @@ const CompletedBatches = () => {
           ))
         }
       </div>
+      <Dialog
+        TransitionComponent={Transition}
+        fullScreen
+        open={openDialog}
+        onClose={handleCloseDialog}
+      >
+        <AppBar sx={{ position: "relative" }}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={handleCloseDialog}
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+              Package Details
+            </Typography>
+          </Toolbar>
+        </AppBar>
+
+        <DialogContent>
+          <div>
+            <Typography variant="body2" color="text.secondary">
+              <div className="card-container" style={{ marginTop: "8px" }}>
+                {/* {data.chemicals.map((chemical, index) => (
+                  <Card sx={{ maxWidth: 700, marginBottom: "16px" }}>
+                    <CardActionArea>
+                      <CardMedia
+                        component="img"
+                        height="140"
+                        image={chemical.image}
+                        alt={chemical.name}
+                      />
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                          {chemical.name} ({chemical.quantity} Kg)
+                        </Typography>
+
+                        <Typography variant="body2" color="text.secondary">
+                          {chemical.description}
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                ))} */}
+              </div>
+            </Typography>
+            <Divider />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -27,6 +27,7 @@ import MedicineList from '../Miscellaneous/MedicineList';
 import CreateNewBatch from '../Miscellaneous/CreateNewBatch';
 import OngoingBatches from '../Miscellaneous/OngoingBatches';
 import CompletedBatches from '../Miscellaneous/CompletedBatches';
+import CreateMed from '../Miscellaneous/CreateMed';
 const drawerWidth = 240;
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -176,7 +177,7 @@ function ResponsiveDrawer(props) {
             <CompletedBatches />
           </TabPanel>
           <TabPanel value={value} index={4}>
-            4th
+            <CreateMed />
           </TabPanel>
           <TabPanel value={value} index={5}>
             5th

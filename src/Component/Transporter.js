@@ -27,7 +27,7 @@ import SupplierListCardRequests from "../Miscellaneous/SupplierListCardRequests"
 import SupplierListCardSent from "../Miscellaneous/SupplierListCardSent";
 import TransporterListCardRequests from "../Miscellaneous/TransporterListCardRequests";
 import TransporterListCardSent from "../Miscellaneous/TransporterListCardSent";
-
+import Logo from '../Images/logoPharma.png'
 const drawerWidth = 240;
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -76,12 +76,8 @@ function ResponsiveDrawer(props) {
   const drawer = (
     <div>
       <div>
-        <img
-          src="../logoPharma.png"
-          srcSet="../logoPharma.png"
-          alt="Photo"
-          loading="lazy"
-        />
+        <img src={Logo} alt="Logo" width={"200rem"} height={"50rem"}
+          style={{ marginTop: "1rem", marginBottom: "1rem" }} />
       </div>
       {/* <Toolbar /> */}
       <Divider />

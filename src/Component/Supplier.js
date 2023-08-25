@@ -1,6 +1,6 @@
 import React from "react";
 import manufacturerData from "../manufacturerData.json";
-import "./Supplier.css"; 
+import "./Supplier.css";
 import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -25,7 +25,7 @@ import ChemicalList from "../Miscellaneous/ChemicalList";
 import TopChemicals from "../Miscellaneous/TopChemicals";
 import SupplierListCardRequests from "../Miscellaneous/SupplierListCardRequests";
 import SupplierListCardSent from "../Miscellaneous/SupplierListCardSent";
-
+import Logo from '../Images/logoPharma.png'
 
 const drawerWidth = 240;
 function TabPanel(props) {
@@ -75,12 +75,8 @@ function ResponsiveDrawer(props) {
   const drawer = (
     <div>
       <div>
-        <img
-          src="../logoPharma.png"
-          srcSet="../logoPharma.png"
-          alt="Photo"
-          loading="lazy"
-        />
+        <img src={Logo} alt="Logo" width={"200rem"} height={"50rem"}
+          style={{ marginTop: "1rem", marginBottom: "1rem" }} />
       </div>
       {/* <Toolbar /> */}
       <Divider />
@@ -205,16 +201,16 @@ function ResponsiveDrawer(props) {
                 ))}
             </div>
           </TabPanel>
-         
-              <TabPanel value={value} index={1}>
-                <div className="card-container">
-                  {manufacturerData
-                    .filter((data) => data["send-package"])
-                    .map((data, index) => (
-                      <SupplierListCardSent key={index} data={data} />
-                    ))}
-                </div>
-              </TabPanel>
+
+          <TabPanel value={value} index={1}>
+            <div className="card-container">
+              {manufacturerData
+                .filter((data) => data["send-package"])
+                .map((data, index) => (
+                  <SupplierListCardSent key={index} data={data} />
+                ))}
+            </div>
+          </TabPanel>
         </Typography>
       </Box>
     </Box>

@@ -118,7 +118,6 @@ button:hover {
   color: #fff;
   background-color: #1a1a1a;
   box-shadow: rgba(0, 0, 0, 0.5) 0 10px 20px;
-  transform: translateY(-3px);
 }
 /*button pressing effect*/
 button:active {
