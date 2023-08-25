@@ -1,0 +1,32 @@
+[
+  {
+    "batchpic": "asasas",
+    "materialname": ["a", "b", "d"],
+    "materialquantity": [1, 2, 3],
+    "currentstage": 2
+  },
+  {
+    "batchpic": "bsasas",
+    "materialname": ["a", "c", "d"],
+    "materialquantity": [1, 2, 3],
+    "currentstage": 3
+  },
+  {
+    "batchpic": "csasas",
+    "materialname": ["a", "b", "c"],
+    "materialquantity": [1, 2, 3],
+    "currentstage": 1
+  },
+  {
+    "batchpic": "dsasas",
+    "materialname": ["c", "b", "d"],
+    "materialquantity": [1, 2, 3],
+    "currentstage": 2
+  },
+  {
+    "batchpic": "esasas",
+    "materialname": ["a", "b", "d"],
+    "materialquantity": [1, 2, 3],
+    "currentstage": 3
+  }
+]

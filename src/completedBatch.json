@@ -1,0 +1,32 @@
+[
+  {
+    "batchpic": "fsasas",
+    "materialname": ["a", "b", "d"],
+    "materialquantity": [1, 2, 3],
+    "grade": 2
+  },
+  {
+    "batchpic": "gsasas",
+    "materialname": ["a", "c", "d"],
+    "materialquantity": [1, 2, 3],
+    "grade": 3
+  },
+  {
+    "batchpic": "hsasas",
+    "materialname": ["a", "b", "c"],
+    "materialquantity": [1, 2, 3],
+    "grade": 1
+  },
+  {
+    "batchpic": "isasas",
+    "materialname": ["c", "b", "d"],
+    "materialquantity": [1, 2, 3],
+    "grade": 2
+  },
+  {
+    "batchpic": "jsasas",
+    "materialname": ["a", "b", "d"],
+    "materialquantity": [1, 2, 3],
+    "grade": 3
+  }
+]

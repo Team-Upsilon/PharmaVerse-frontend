@@ -23,6 +23,10 @@ import ChemicalList from '../Miscellaneous/ChemicalList';
 import TopChemicals from '../Miscellaneous/TopChemicals';
 import AddMaterial from '../Miscellaneous/AddMaterial'
 import Logo from '../Images/logoPharma.png'
+import MedicineList from '../Miscellaneous/MedicineList';
+import CreateNewBatch from '../Miscellaneous/CreateNewBatch';
+import OngoingBatches from '../Miscellaneous/OngoingBatches';
+import CompletedBatches from '../Miscellaneous/CompletedBatches';
 const drawerWidth = 240;
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -82,11 +86,12 @@ function ResponsiveDrawer(props) {
           aria-label="Vertical tabs example"
           sx={{ borderRight: 1, borderColor: 'divider' }}
         >
-          <Tab label="Chemical Graph" {...a11yProps(0)} />
-          <Tab label="Chemical List" {...a11yProps(1)} />
-          <Tab label="Top 3 Chemicals" {...a11yProps(2)} />
-          <Tab label="Add New Items" {...a11yProps(3)} />
-
+          <Tab label="List of Medicines" {...a11yProps(0)} />
+          <Tab label="Create New Batch" {...a11yProps(1)} />
+          <Tab label="Ongoing Batches" {...a11yProps(2)} />
+          <Tab label="Completed Batches" {...a11yProps(3)} />
+          <Tab label="Create Medicine" {...a11yProps(4)} />
+          <Tab label="Send Request to Supplier" {...a11yProps(5)} />
         </Tabs>
       </List>
       <Divider />
@@ -158,17 +163,26 @@ function ResponsiveDrawer(props) {
         <Toolbar />
         <Typography paragraph>
           <TabPanel value={value} index={0}>
-            <ChemicalListChart />
+            <MedicineList />
 
           </TabPanel>
           <TabPanel value={value} index={1}>
-            <ChemicalList />
+            <CreateNewBatch />
           </TabPanel>
           <TabPanel value={value} index={2}>
-            <TopChemicals />
+            <OngoingBatches />
           </TabPanel>
           <TabPanel value={value} index={3}>
-            <AddMaterial />
+            <CompletedBatches />
+          </TabPanel>
+          <TabPanel value={value} index={4}>
+            4th
+          </TabPanel>
+          <TabPanel value={value} index={5}>
+            5th
+          </TabPanel>
+          <TabPanel value={value} index={6}>
+            6th
           </TabPanel>
         </Typography>
 

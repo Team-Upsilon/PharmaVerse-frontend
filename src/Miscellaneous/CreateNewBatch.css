@@ -1,0 +1,79 @@
+.datagrid-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 3rem;
+}
+
+.datagrid {
+  height: 400px;
+  min-width: 600px;
+}
+.cta {
+  position: relative;
+  margin: auto;
+  margin-top: 2rem;
+  padding: 12px 18px;
+  transition: all 0.2s ease;
+  border: none;
+  background: none;
+}
+
+.cta:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  border-radius: 50px;
+  background: #00fc22;
+  width: 45px;
+  height: 45px;
+  transition: all 0.3s ease;
+}
+
+.cta span {
+  position: relative;
+  font-family: "Ubuntu", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: green;
+}
+
+.cta svg {
+  position: relative;
+  top: 0;
+  margin-left: 10px;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke: rgb(255, 255, 255);
+  stroke-width: 2;
+  transform: translateX(-5px);
+  transition: all 0.3s ease;
+}
+
+.cta:hover:before {
+  width: 100%;
+  background: #09ff00;
+}
+
+.cta:hover svg {
+  transform: translateX(0);
+}
+
+.cta:active {
+  transform: scale(0.95);
+}
+
+/* Apply media query for responsiveness */
+@media (max-width: 600px) {
+  .datagrid-container {
+    /* width: 100%; */
+    height: 100vh;
+    overflow-x: auto;
+  }
+  .datagrid {
+    overflow-x: scroll;
+  }
+}

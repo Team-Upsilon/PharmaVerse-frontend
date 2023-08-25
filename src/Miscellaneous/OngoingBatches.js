@@ -1,22 +1,12 @@
-import React, { useState } from 'react';
-import jsonData from '../data.json';
-import './ChemicalList.css';
-import chemimg from '../Images/raul.jpg'
-import { Button, Icon } from '@mui/material';
-const ChemicalList = () => {
-  const data = jsonData[0];
+import React, { useState } from 'react'
+import batchData from '../batch.json'
+import '../Miscellaneous/OngoingBatches.css'
 
-  // Creating an array of objects with x-axis and quantity
-  const xAxisData = data.xaxis.map((x, index) => ({ x, quantity: data.quantity[index] }));
-  const [d, setD] = useState(jsonData);
-  const [enableUpdate, setEnableUpdate] = useState(false);
-  const increaseQuantity = (index) => {
-    const newData = [...d];
-    newData[0].quantity[index] += 1;
-    setD(newData);
-  };
+const OngoingBatches = () => {
+  const [batches, setBatches] = useState(batchData)
+
   return (
-    <div className="chemical-list">
+    <div>
       <div class="searchBox">
 
         <input class="searchInput" type="text" name="" placeholder="Search something" />
@@ -50,40 +40,34 @@ const ChemicalList = () => {
 
         </button>
       </div>
+
       <div className="allcards">
-        {xAxisData.map(qd => (
-          <div className='card' key={qd.x}>
-            <p className="card__title">{qd.x}</p>
-            <img src={chemimg} alt="" height="200px" width="160px" />
-            <div className="card__content">
-              <p className="card__title">{qd.x}:{qd.quantity}</p>
-              <p className="card__description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+        {
+          batches.map((batch, index) => (
+            <div className="card" key={index}>
+              <div className="remove-when-use">
+                <img src={batch.batchpic} alt="pic" />
+              </div>
+              <div className="details">
+                <p>Stage:{batch.currentstage}</p>
+                <div style={{ display: "flex" }}>
+                  {batch.materialname.map((e, materialIndex) => (
+                    <div>
+                      <div key={materialIndex} >{materialIndex + 1}:{e}</div></div>
+                  ))}
+                </div>
+                {/* <div>
+                  {batch.materialquantity.map((f, quantityIndex) => (
+                    <div key={quantityIndex}>Material Quantity:{f}</div>
+                  ))}
+                </div> */}
+              </div>
             </div>
-
-
-          </div>
-        ))}
-        <h1>increment</h1>
-        {xAxisData.map((item, index) => (
-          <div key={item.x}>
-            <p>{item.x}</p>
-            <p>{item.quantity}</p>
-            <p>
-              <button onClick={() => {
-                increaseQuantity(index)
-                setEnableUpdate(true)
-              }}>Increase</button>
-            </p>
-          </div>
-        ))}
-        <Button
-          variant='contained'
-          disabled={!enableUpdate}>
-          Update
-        </Button>
+          ))
+        }
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ChemicalList;
+export default OngoingBatches

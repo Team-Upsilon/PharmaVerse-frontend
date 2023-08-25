@@ -8,7 +8,9 @@
   flex-wrap: wrap;
   gap: 20px;
 }
-
+.increment_func {
+  color: #1a1a1a;
+}
 .card {
   position: relative;
   flex-basis: calc(33.33% - 20px); /* Distribute cards in 3 columns */

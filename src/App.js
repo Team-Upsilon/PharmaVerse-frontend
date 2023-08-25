@@ -6,6 +6,7 @@ import { Route, Routes } from 'react-router-dom'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import NavBar from './Miscellaneous/NavBar';
+import Manufacturer from './Component/Manufacturer';
 
 const darkTheme = createTheme({
   palette: {
@@ -29,7 +30,9 @@ function App() {
             <>
               <NavBar />
               <Supplier /></>} />
+          <Route path='/manufacturer' element={<Manufacturer />} />
         </Routes>
+
       </div>
     </ThemeProvider>
   );
