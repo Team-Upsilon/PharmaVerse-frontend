@@ -1,6 +1,6 @@
 import React from "react";
-import manufacturerData from "../manufacturerData.json";
-import "./Supplier.css"; 
+import transporterPage from "../transporterPage.json";
+import "./Supplier.css"; // Import your custom CSS file for styling
 import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -25,7 +25,8 @@ import ChemicalList from "../Miscellaneous/ChemicalList";
 import TopChemicals from "../Miscellaneous/TopChemicals";
 import SupplierListCardRequests from "../Miscellaneous/SupplierListCardRequests";
 import SupplierListCardSent from "../Miscellaneous/SupplierListCardSent";
-
+import TransporterListCardRequests from "../Miscellaneous/TransporterListCardRequests";
+import TransporterListCardSent from "../Miscellaneous/TransporterListCardSent";
 
 const drawerWidth = 240;
 function TabPanel(props) {
@@ -114,9 +115,10 @@ function ResponsiveDrawer(props) {
                 color: "green",
               },
             }}
-            label="Send Requests"
+            label="Transported Requests"
             {...a11yProps(1)}
           />
+          {/* <Tab label="Top 3 Chemicals" {...a11yProps(2)} /> */}
         </Tabs>
       </List>
       <Divider />
@@ -198,23 +200,22 @@ function ResponsiveDrawer(props) {
         <Typography paragraph>
           <TabPanel value={value} index={0}>
             <div className="card-container">
-              {manufacturerData
+              {transporterPage
                 .filter((data) => !data["send-package"])
                 .map((data, index) => (
-                  <SupplierListCardRequests key={index} data={data} />
+                  <TransporterListCardRequests key={index} data={data} />
                 ))}
             </div>
           </TabPanel>
-         
-              <TabPanel value={value} index={1}>
-                <div className="card-container">
-                  {manufacturerData
-                    .filter((data) => data["send-package"])
-                    .map((data, index) => (
-                      <SupplierListCardSent key={index} data={data} />
-                    ))}
-                </div>
-              </TabPanel>
+          <TabPanel value={value} index={1}>
+            <div className="card-container">
+              {transporterPage
+                .filter((data) => data["send-package"])
+                .map((data, index) => (
+                  <TransporterListCardSent key={index} data={data} />
+                ))}
+            </div>
+          </TabPanel>
         </Typography>
       </Box>
     </Box>

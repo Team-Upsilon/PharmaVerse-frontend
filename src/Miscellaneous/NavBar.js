@@ -110,6 +110,14 @@ function ResponsiveDrawer(props) {
           >
             <MenuIcon />
           </IconButton>
+          <Typography variant="h6" noWrap component="div">
+            <img
+              src="../Images/logoPharma.png"
+              srcSet="../Images/logoPharma.png"
+              alt="Photo"
+            // loading="lazy"
+            />
+          </Typography>
         </Toolbar>
       </AppBar>
       <Box

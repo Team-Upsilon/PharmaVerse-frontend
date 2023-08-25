@@ -1,6 +1,6 @@
 import React from "react";
-import manufacturerData from "../manufacturerData.json";
-import "./Supplier.css"; 
+import transporterPage from "../transporterPage.json";
+import "./Supplier.css"; // Import your custom CSS file for styling
 import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -8,24 +8,13 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Inventory from "../Component/Inventory";
-import { Grid, Tab, Tabs } from "@mui/material";
-import ChemicalListChart from "../Miscellaneous/ChemicalLineChart";
-import ChemicalList from "../Miscellaneous/ChemicalList";
-import TopChemicals from "../Miscellaneous/TopChemicals";
-import SupplierListCardRequests from "../Miscellaneous/SupplierListCardRequests";
-import SupplierListCardSent from "../Miscellaneous/SupplierListCardSent";
-
+import { Tab, Tabs } from "@mui/material";
+import InspectorListCardRequests from "../Miscellaneous/InspectorListCardRequests";
+import InspectorListCardSent from "../Miscellaneous/InspectorListCardSent";
 
 const drawerWidth = 240;
 function TabPanel(props) {
@@ -114,9 +103,10 @@ function ResponsiveDrawer(props) {
                 color: "green",
               },
             }}
-            label="Send Requests"
+            label="Inspected Requests"
             {...a11yProps(1)}
           />
+          {/* <Tab label="Top 3 Chemicals" {...a11yProps(2)} /> */}
         </Tabs>
       </List>
       <Divider />
@@ -198,23 +188,22 @@ function ResponsiveDrawer(props) {
         <Typography paragraph>
           <TabPanel value={value} index={0}>
             <div className="card-container">
-              {manufacturerData
+              {transporterPage
                 .filter((data) => !data["send-package"])
                 .map((data, index) => (
-                  <SupplierListCardRequests key={index} data={data} />
+                  <InspectorListCardRequests key={index} data={data} />
                 ))}
             </div>
           </TabPanel>
-         
-              <TabPanel value={value} index={1}>
-                <div className="card-container">
-                  {manufacturerData
-                    .filter((data) => data["send-package"])
-                    .map((data, index) => (
-                      <SupplierListCardSent key={index} data={data} />
-                    ))}
-                </div>
-              </TabPanel>
+          <TabPanel value={value} index={1}>
+            <div className="card-container">
+              {transporterPage
+                .filter((data) => data["send-package"])
+                .map((data, index) => (
+                  <InspectorListCardSent key={index} data={data} />
+                ))}
+            </div>
+          </TabPanel>
         </Typography>
       </Box>
     </Box>

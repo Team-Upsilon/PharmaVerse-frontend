@@ -32,4 +32,3 @@ const ChemicalListChart = () => {
 };
 
 export default ChemicalListChart;
-
