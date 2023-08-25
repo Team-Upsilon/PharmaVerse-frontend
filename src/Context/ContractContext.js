@@ -212,16 +212,249 @@ function ContractContextProvider(props) {
             } catch (error) {
                 console.error("Error fetching batches: ", error);
             }
-        }
-
-
-
+        },
+        create_raw_material: async(name, description, ipfs_hash, quantity)=>{
+            try {
+                
+                if (!InventoryContract) {
+                    console.error("InventoryContract not initialized");
+                    return { success: false, message: "InventoryContract not initialized" };
+                }
         
+                
+                const response = await InventoryContract.addRawMaterial(name, description, ipfs_hash, quantity, {
+                    from: account, // suppliers address
+                });
+        
+            
+                if (response.status) {
+                    console.log("Raw material created successfully");
+                    return { success: true, message: "Raw material created successfully" };
+                } else {
+                   
+                    console.error("Transaction failed");
+                    return { success: false, message: "Transaction failed" };
+                }
+            } catch (error) {
+                console.error("Error creating raw material: ", error);
+                return { success: false, message: error.message };
+            }
+        },
+        create_medicine: async (name, description, ipfs_hash)=>{
+            try {
+               
+                if (!ManufacturerContract) {
+                    console.error("ManufacturerContract not initialized");
+                    return { success: false, message: "ManufacturerContract not initialized" };
+                }
+        
+                
+                const response = await ManufacturerContract.createMedicine(name, description, ipfs_hash, {
+                    from: account, 
+                });
+        
+                
+                if (response.status) {
+                    
+                    console.log("Medicine created successfully");
+                    return { success: true, message: "Medicine created successfully" };
+                } else {
+                    
+                    console.error("Transaction failed");
+                    return { success: false, message: "Transaction failed" };
+                }
+            } catch (error) {
+                console.error("Error creating medicine: ", error);
+                return { success: false, message: error.message };
+            }
+
+        },
+
+        check_availibity: async (materialId, desiredQuantity)=>{
+            try {
+                
+                if (!InventoryContract) {
+                    console.error("InventoryContract not initialized");
+                    return { success: false, message: "InventoryContract not initialized" };
+                }
+        
+                
+                const availability = await InventoryContract.checkAvailability(materialId, desiredQuantity, {
+                    from: account,
+                });
+        
+                
+                if (availability > 0) {
+                    console.log(`Raw material with ID ${materialId} is available in the desired quantity: ${availability}`);
+                    return { success: true, message: `Raw material available in quantity: ${availability}` };
+                } else {
+                    console.log(`Raw material with ID ${materialId} is not available in the desired quantity.`);
+                    return { success: false, message: `Raw material not available in the desired quantity.` };
+                }
+            } catch (error) {
+                console.error("Error checking availability: ", error);
+                return { success: false, message: error.message };
+            }
+        },
+        increase_quantity: async (materialId, additionalQuantity)=>{
+            try {
+                
+                if (!InventoryContract) {
+                    console.error("InventoryContract not initialized");
+                    return { success: false, message: "InventoryContract not initialized" };
+                }
+        
+                
+                const response = await InventoryContract.increaseQuantity(materialId, additionalQuantity, {
+                    from: account,
+                });
+        
+                
+                if (response.status) {
+                    console.log(`Quantity increased successfully for material with ID ${materialId}`);
+                    return { success: true, message: `Quantity increased successfully for material with ID ${materialId}` };
+                } else {
+                    console.error("Transaction failed");
+                    return { success: false, message: "Transaction failed" };
+                }
+            } catch (error) {
+                console.error("Error increasing quantity: ", error);
+                return { success: false, message: error.message };
+            }
+        },
+        update_raw_materials : async (materialId, name, description, ipfs_hash, quantity)=>{
+            try{
+                if (!InventoryContract) {
+                    console.error("InventoryContract not initialized");
+                    return { success: false, message: "InventoryContract not initialized" };
+                }
+        
+                
+                const response = await InventoryContract.updateRawMaterial(materialId, name, description, ipfs_hash, quantity, {
+                    from: account,
+                });
+        
+                
+                if (response.status) {
+                    console.log(`Raw material with ID ${materialId} updated successfully`);
+                    return { success: true, message: `Raw material with ID ${materialId} updated successfully` };
+                } else {
+                    console.error("Transaction failed");
+                    return { success: false, message: "Transaction failed" };
+                }
+            }catch(error){
+                console.error("Error updating raw material: ", error);
+                return { success: false, message: error.message };
+            }
+        },
+        update_package_state: async (packageId, newStage)=>{
+            try {
+                
+                if (!SupplierContract) {
+                    console.error("SupplierContract not initialized");
+                    return { success: false, message: "SupplierContract not initialized" };
+                }
+        
+               
+                const response = await SupplierContract.updatePackageStage(packageId, newStage, {
+                    from: account, 
+                });
+        
+                
+                if (response.status) {
+                    console.log(`Package with ID ${packageId} stage updated successfully to ${newStage}`);
+                    return { success: true, message: `Package stage updated successfully to ${newStage}` };
+                } else {
+                    console.error("Transaction failed");
+                    return { success: false, message: "Transaction failed" };
+                }
+            } catch (error) {
+                console.error("Error updating package stage: ", error);
+                return { success: false, message: error.message };
+            }
+        },
+        update_batch_state: async (batchId, newStage)=>{
+            try{
+                if (!ManufacturerContract) {
+                    console.error("ManufacturerContract not initialized");
+                    return { success: false, message: "ManufacturerContract not initialized" };
+                }
+        
+                
+                const response = await ManufacturerContract.updateBatchStage(batchId, newStage, {
+                    from: account,
+                });
+        
+                
+                if (response.status) {
+                    console.log(`Batch with ID ${batchId} stage updated successfully to ${newStage}`);
+                    return { success: true, message: `Batch stage updated successfully to ${newStage}` };
+                } else {
+                    console.error("Transaction failed");
+                    return { success: false, message: "Transaction failed" };
+                }
+            }
+            catch(error){
+                console.error("Error updating batch stage: ", error);
+                return { success: false, message: error.message };
+            }
+        },
+        record_package_delivery: async (packageId)=>{
+            try {
+                
+                if (!TransporterContract) {
+                    console.error("TransporterContract not initialized");
+                    return { success: false, message: "TransporterContract not initialized" };
+                }
+        
+                
+                const response = await TransporterContract.recordPackageDelivery(packageId, {
+                    from: account,
+                });
+        
+                if (response.status) {
+                    console.log(`Package with ID ${packageId} delivery recorded successfully`);
+                    return { success: true, message: `Package delivery recorded successfully` };
+                } else {
+                    console.error("Transaction failed");
+                    return { success: false, message: "Transaction failed" };
+                }
+            } catch (error) {
+                console.error("Error recording package delivery: ", error);
+                return { success: false, message: error.message };
+            }
+        },
+        record_batch_delivery: async (batchId)=>{
+            try{
+                if (!TransporterContract) {
+                    console.error("TransporterContract not initialized");
+                    return { success: false, message: "TransporterContract not initialized" };
+                }
+        
+                
+                const response = await TransporterContract.recordBatchDelivery(batchId, {
+                    from: account,
+                });
+        
+                
+                if (response.status) {
+                    console.log(`Batch with ID ${batchId} delivery recorded successfully`);
+                    return { success: true, message: `Batch delivery recorded successfully` };
+                } else {
+                    console.error("Transaction failed");
+                    return { success: false, message: "Transaction failed" };
+                }
+            }catch(error){
+                console.error("Error recording batch delivery: ", error);
+                return { success: false, message: error.message };
+            }
+        },       
 
     };
     const [state, setState] = useState({
         AdminContract: null,
         InventoryContract: null,
+
 
     });
 
