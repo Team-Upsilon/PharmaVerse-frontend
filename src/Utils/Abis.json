@@ -1,11 +1,10 @@
 {
     "AdminAbi": [],
     "InventoryAbi": [],
-    "AdminAbi": [],
-    "AdminAbi": [],
-    "AdminAbi": [],
-    "AdminAbi": [],
-    "AdminAbi": [],
-    "AdminAbi": [],
-    "AdminAbi": []
+    "InspectorAbi": [],
+    "ManufacturerAbi": [],
+    "BatchScheduleAbi": [],
+    "RealTimeMonitoringAbi": [],
+    "SupplierAbi": [],
+    "TransporterAbi": []
 }

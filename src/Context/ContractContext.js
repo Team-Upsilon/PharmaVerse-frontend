@@ -10,12 +10,25 @@ export const ContractContext = createContext();
 function ContractContextProvider(props) {
     let { account } = useContext(AuthContext);
     const [AdminContract, setAdminContract] = useState("");
+    const [InspectorContarct, setInspectorContarct] = useState("");
     const [InventoryContract, setInventoryContract] = useState("");
-    const [NFTS, setNFTS] = useState("");
+    const [ManufacturerContact, setManufacturerContact] = useState("");
+    const [BatchScheduleContarct, setBatchScheduleContarct] = useState("");
+    const [RealTimeMonitoringContarct, setRealTimeMonitoringContarct] = useState("");
+    const [SupplierContract, setSupplierContract] = useState("");
+    const [TransporterContract, setTransporterContract] = useState("");
+
 
     const updateContract = (data) => {
         setAdminContract(data.AdminContract.AdminContract);
-        // setInventoryContract(data.InventoryContract.InventoryContract);
+        setInspectorContarct(data.InspectorContract.InspectorContract);
+        setInventoryContract(data.InventoryContract.InventoryContract);
+        setManufacturerContact(data.ManufacturerContract.ManufacturerContract);
+        setBatchScheduleContarct(data.BatchSchedulerContract.BatchSchedulerContract);
+        setRealTimeMonitoringContarct(data.RealTimeMonitoringContract.RealTimeMonitoringContract);
+        setSupplierContract(data.SupplierContract.SupplierContract);
+        setTransporterContract(data.TransporterContract.TransporterContract);
+
     };
 
     useEffect(() => {
@@ -28,11 +41,12 @@ function ContractContextProvider(props) {
 
     const getContract = async () => {
         const contractResult = await GetContract();
+        console.log("contractResult", contractResult.data)
         updateContract(contractResult.data);
     };
 
     const Services = {
-        create_raw_material: async (_hash) => {
+        create_raw_material: async () => {
             try {
                 console.log("minting tokens");
 
