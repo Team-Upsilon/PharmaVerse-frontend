@@ -4,6 +4,8 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
@@ -118,8 +120,7 @@ function ResponsiveDrawer(props) {
             <MenuIcon />
 
           </IconButton>
-          <Button>connect
-          </Button>
+          <ConnectButton />
         </Toolbar>
 
       </AppBar>
