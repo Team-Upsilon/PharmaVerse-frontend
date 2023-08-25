@@ -17,7 +17,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Inventory from '../Component/Inventory';
-import { Tab, Tabs } from '@mui/material';
+import { Button, Stack, Tab, Tabs } from '@mui/material';
 import ChemicalListChart from '../Miscellaneous/ChemicalLineChart';
 import ChemicalList from '../Miscellaneous/ChemicalList';
 import TopChemicals from '../Miscellaneous/TopChemicals';
@@ -106,19 +106,24 @@ function ResponsiveDrawer(props) {
           ml: { sm: `${drawerWidth}px` },
         }}
       >
-        <Toolbar>
+        <Toolbar sx={{ display: "flex", justifyContent: { xs: 'space-between', sm: 'flex-end' } }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
             sx={{ mr: 2, display: { sm: 'none' } }}
+
           >
             <MenuIcon />
-          </IconButton>
 
+          </IconButton>
+          <Button>connect
+          </Button>
         </Toolbar>
+
       </AppBar>
+
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}

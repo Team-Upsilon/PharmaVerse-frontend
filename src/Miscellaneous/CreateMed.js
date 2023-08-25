@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 const CreateMed = () => {
+  const [img, setImg] = useState()
   return (
     <div>
       <form class="form">
