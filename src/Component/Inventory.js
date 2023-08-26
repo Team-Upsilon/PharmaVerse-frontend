@@ -118,7 +118,7 @@ function ResponsiveDrawer(props) {
             <MenuIcon />
 
           </IconButton>
-          <Button>connect
+          <Button>Connect
           </Button>
         </Toolbar>
 

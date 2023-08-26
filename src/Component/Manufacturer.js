@@ -28,6 +28,7 @@ import CreateNewBatch from '../Miscellaneous/CreateNewBatch';
 import OngoingBatches from '../Miscellaneous/OngoingBatches';
 import CompletedBatches from '../Miscellaneous/CompletedBatches';
 import CreateMed from '../Miscellaneous/CreateMed';
+import batchData from '../medicine.json'
 const drawerWidth = 240;
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -168,7 +169,7 @@ function ResponsiveDrawer(props) {
 
           </TabPanel>
           <TabPanel value={value} index={1}>
-            <CreateNewBatch />
+            <CreateNewBatch jsonData={batchData} />
           </TabPanel>
           <TabPanel value={value} index={2}>
             <OngoingBatches />

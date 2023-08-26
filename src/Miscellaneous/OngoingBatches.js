@@ -23,6 +23,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import transporterData from "../transporterData.json";
 import inspectorData from "../inspectorData.json";
+import Timeline from "./Timeline";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
