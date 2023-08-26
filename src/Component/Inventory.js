@@ -120,7 +120,9 @@ function ResponsiveDrawer(props) {
             <MenuIcon />
 
           </IconButton>
+
           <ConnectButton />
+
         </Toolbar>
 
       </AppBar>

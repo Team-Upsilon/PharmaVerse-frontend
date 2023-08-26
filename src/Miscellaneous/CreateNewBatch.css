@@ -1,79 +1,83 @@
-.datagrid-container {
+table {
+  border-collapse: collapse;
   width: 100%;
-  overflow-x: auto;
-  margin-top: 3rem;
-}
-
-.datagrid {
-  height: 400px;
-  min-width: 600px;
-}
-.cta {
-  position: relative;
-  margin: auto;
+  margin-bottom: 30px;
   margin-top: 2rem;
-  padding: 12px 18px;
-  transition: all 0.2s ease;
-  border: none;
-  background: none;
+  /* border-radius: 20px; */
 }
 
-.cta:before {
+table,
+th,
+td {
+  border: 1px solid #ccc; /* Use a subtle gray color for borders */
+  /* border-radius: 24px; */
+}
+
+th,
+td {
+  padding: 15px;
+  text-align: left;
+  /* border-radius: 24px; */
+}
+
+th {
+  background-color: #585858; /* Use a light gray background color for headers */
+  font-weight: bold;
+  /* border-radius: 24px; */
+}
+
+tr:hover {
+  background-color: #292929; /* Use a slightly darker gray for hover effect */
+}
+
+input[type="number"] {
+  width: 50px;
+  padding: 5px; /* Add padding for a more classic input appearance */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.button-container {
+  display: flex;
+  justify-content: center; /* Center the button horizontally */
+  margin-top: 1rem;
+}
+.button4 {
+  width: 9em;
+  height: 3em;
+  border-radius: 30em;
+  font-size: 15px;
+  font-family: inherit;
+  border: none;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 1;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: box-shadow 0.3s, color 0.3s; /* Smoother transition */
+}
+
+.button4::before {
   content: "";
+  width: 0;
+  height: 3em;
+  border-radius: 30em;
   position: absolute;
   top: 0;
   left: 0;
-  display: block;
-  border-radius: 50px;
-  background: #00fc22;
-  width: 45px;
-  height: 45px;
-  transition: all 0.3s ease;
+  background-image: linear-gradient(to right, #0fd850 0%, #f9f047 100%);
+  transition: 0.5s ease;
 }
 
-.cta span {
-  position: relative;
-  font-family: "Ubuntu", sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: green;
+.button4:hover::before {
+  width: 9em;
 }
 
-.cta svg {
-  position: relative;
-  top: 0;
-  margin-left: 10px;
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke: rgb(255, 255, 255);
-  stroke-width: 2;
-  transform: translateX(-5px);
-  transition: all 0.3s ease;
+.button4:hover {
+  /* box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff; */
+  color: #000;
+  transition: box-shadow 0.3s, color 0.3s; /* Smoother transition */
 }
-
-.cta:hover:before {
-  width: 100%;
-  background: #09ff00;
-}
-
-.cta:hover svg {
-  transform: translateX(0);
-}
-
-.cta:active {
-  transform: scale(0.95);
-}
-
-/* Apply media query for responsiveness */
-@media (max-width: 600px) {
-  .datagrid-container {
-    /* width: 100%; */
-    height: 100vh;
-    overflow-x: auto;
-  }
-  .datagrid {
-    overflow-x: scroll;
-  }
+.button4 p {
+  z-index: 10;
 }

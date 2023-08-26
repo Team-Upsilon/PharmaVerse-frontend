@@ -36,7 +36,7 @@
   color: rgb(23, 111, 211);
 }
 
-.form button {
+.form button3 {
   align-self: flex-end;
 }
 
@@ -86,7 +86,7 @@
   transform: translateY(-1px);
 }
 
-.button {
+.button3 {
   position: relative;
   width: 150px;
   height: 40px;
@@ -98,7 +98,7 @@
   background-color: #3aa856;
 }
 
-.button,
+.button3,
 .button__icon,
 .button__text {
   transition: all 0.3s;
@@ -106,14 +106,14 @@
   border-top-right-radius: 10px;
 }
 
-.button .button__text {
+.button3 .button__text {
   transform: translateX(30px);
   color: #fff;
   font-weight: 600;
   border-radius: 200px;
 }
 
-.button .button__icon {
+.button3 .button__icon {
   position: absolute;
   transform: translateX(109px);
   height: 100%;
@@ -124,29 +124,29 @@
   justify-content: center;
 }
 
-.button .svg {
+.button3 .svg {
   width: 30px;
   stroke: #fff;
 }
 
-.button:hover {
+.button3:hover {
   background: #34974d;
 }
 
-.button:hover .button__text {
+.button3:hover .button__text {
   color: transparent;
 }
 
-.button:hover .button__icon {
+.button3:hover .button__icon {
   width: 148px;
   transform: translateX(0);
 }
 
-.button:active .button__icon {
+.button3:active .button__icon {
   background-color: #2e8644;
 }
 
-.button:active {
+.button3:active {
   border: 1px solid #2e8644;
 }
 

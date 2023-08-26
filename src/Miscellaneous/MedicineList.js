@@ -10,9 +10,9 @@ const MedicineList = () => {
     <div>
       <div className='allcards' >
         {medicines.map((medicine, index) => (
-          <div className='card' key={index} style={{ cursor: "pointer" }}>
+          <div className='card' key={index} style={{ cursor: "pointer", backgroundImage: `url(${medicine.medpic})` }}>
             <p className="card__title">{medicine.medname}</p>
-            <img src={medicine.medpic} height="200px" width="160px" />
+            {/* <img src={medicine.medpic} height="200px" width="160px" /> */}
             <div className="card__content">
               <p className="card__title">{medicine.medname}:{medicine.medquantity}</p>
               <p className="card__description">{medicine.meddesc}</p>
