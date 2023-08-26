@@ -23,10 +23,10 @@ function ContractContextProvider(props) {
     const [packages, setPackages] = useState([])
     const [medicines, setMedicines] = useState([])
     const [batches, setBatches] = useState([])
-    const [packagereports, setPackageReports] = useState([])
+    const [packagereports, setPackageReports] = useState([])  // 1st element of array is the report
     const [batchreports, setBatchReports] = useState([])
-    const [packagedeliverdetails,setpackagedeliverdetails]=useState([])
-    const [batchdeliverdetails,setbatchdeliverdetails]=useState([])
+    const [packagedeliverdetails, setpackagedeliverdetails] = useState([])
+    const [batchdeliverdetails, setbatchdeliverdetails] = useState([])
 
 
     const updateContract = (data) => {
@@ -56,35 +56,18 @@ function ContractContextProvider(props) {
     };
 
     const Services = {
-        create_raw_material: async () => {
+        get_all_raw_materials: async () => {
             try {
-                console.log("minting tokens");
 
-                // const mintPrice = ethers.utils.parseEther("0.1");
-
-                // const response = await Minting.methods.mintToken(_hash).send({
-                //     from: account,
-                //     value: mintPrice
-                // });
-
-                return { success: true, data: {} };
-            } catch (err) {
-                console.log("Error in minting token ", err);
-                return { success: false, message: err.message };
-            }
-        },
-        get_all_raw_materials: async()=>{
-            try {
-                
                 if (!InventoryContract) {
                     console.error("InventoryContract not initialized");
                     return;
                 }
-    
-                
+
+
                 const rawMaterialCount = await InventoryContract.materialCount();
                 const rawMaterials = [];
-    
+
                 // Loop through the raw materials and fetch each one
                 for (let i = 1; i <= rawMaterialCount; i++) {
                     const rawMaterial = await InventoryContract.rawMaterials(i);
@@ -98,26 +81,26 @@ function ContractContextProvider(props) {
                 }
 
                 setRawMaterials(rawMaterials);
-    
-                
+
+
                 console.log("Raw Materials: ", rawMaterials);
             } catch (error) {
                 console.error("Error fetching raw materials: ", error);
             }
         },
 
-        get_all_packages: async()=>{
+        get_all_packages: async () => {
             try {
                 // Ensure that SupplierContract is available
                 if (!SupplierContract) {
                     console.error("SupplierContract not initialized");
                     return;
                 }
-    
+
                 // Call the contract's view function to get the package count
                 const packageCount = await SupplierContract.packageCount();
                 const packageList = [];
-    
+
                 // Loop through the packages and fetch each one
                 for (let i = 1; i <= packageCount; i++) {
                     const packageInfo = await SupplierContract.rawMaterialPackages(i);
@@ -134,8 +117,8 @@ function ContractContextProvider(props) {
                 }
 
                 setPackages(packageList);
-    
-                
+
+
                 setPackages(packageList);
                 console.log("Packages: ", packageList);
             } catch (error) {
@@ -143,18 +126,18 @@ function ContractContextProvider(props) {
             }
 
         },
-        get_all_medicines: async()=>{
+        get_all_medicines: async () => {
             try {
                 // Ensure that ManufacturerContract is available
                 if (!ManufacturerContract) {
                     console.error("ManufacturerContract not initialized");
                     return;
                 }
-    
+
                 // Call the contract's view function to get the medicine count
                 const medicineCount = await ManufacturerContract.medicineCount();
                 const medicineList = [];
-    
+
                 // Loop through the medicines and fetch each one
                 for (let i = 1; i <= medicineCount; i++) {
                     const medicineInfo = await ManufacturerContract.medicines(i);
@@ -166,7 +149,7 @@ function ContractContextProvider(props) {
                         ipfs_hash: medicineInfo[4],
                     });
                 }
-    
+
                 // Now you have the medicineList array containing all medicines
                 setMedicines(medicineList);
                 console.log("Medicines: ", medicineList);
@@ -175,19 +158,19 @@ function ContractContextProvider(props) {
             }
 
         },
-        get_all_batches: async()=>{
+        get_all_batches: async () => {
             try {
                 // Ensure that ManufacturerContract is available
                 if (!ManufacturerContract) {
                     console.error("ManufacturerContract not initialized");
                     return;
                 }
-        
+
                 // Call the contract's view function to get the total batch count
                 const batchCount = await ManufacturerContract.batchCount();
-        
+
                 const batchList = [];
-        
+
                 // Loop through the batches and fetch each one
                 for (let i = 1; i <= batchCount; i++) {
                     const batchInfo = await ManufacturerContract.batches(i);
@@ -210,32 +193,32 @@ function ContractContextProvider(props) {
                 }
 
                 setBatches(batchList);
-        
+
                 // Now you have the batchList array containing all batches
                 console.log("Batches: ", batchList);
             } catch (error) {
                 console.error("Error fetching batches: ", error);
             }
         },
-        create_raw_material: async(name, description, ipfs_hash, quantity)=>{
+        create_raw_material: async (name, description, ipfs_hash, quantity) => {
             try {
-                
+
                 if (!InventoryContract) {
                     console.error("InventoryContract not initialized");
                     return { success: false, message: "InventoryContract not initialized" };
                 }
-        
-                
+
+
                 const response = await InventoryContract.addRawMaterial(name, description, ipfs_hash, quantity, {
                     from: account, // suppliers address
                 });
-        
-            
+
+
                 if (response.status) {
                     console.log("Raw material created successfully");
                     return { success: true, message: "Raw material created successfully" };
                 } else {
-                   
+
                     console.error("Transaction failed");
                     return { success: false, message: "Transaction failed" };
                 }
@@ -244,26 +227,26 @@ function ContractContextProvider(props) {
                 return { success: false, message: error.message };
             }
         },
-        create_medicine: async (name, description, ipfs_hash)=>{
+        create_medicine: async (name, description, ipfs_hash) => {
             try {
-               
+
                 if (!ManufacturerContract) {
                     console.error("ManufacturerContract not initialized");
                     return { success: false, message: "ManufacturerContract not initialized" };
                 }
-        
-                
+
+
                 const response = await ManufacturerContract.createMedicine(name, description, ipfs_hash, {
-                    from: account, 
+                    from: account,
                 });
-        
-                
+
+
                 if (response.status) {
-                    
+
                     console.log("Medicine created successfully");
                     return { success: true, message: "Medicine created successfully" };
                 } else {
-                    
+
                     console.error("Transaction failed");
                     return { success: false, message: "Transaction failed" };
                 }
@@ -274,20 +257,20 @@ function ContractContextProvider(props) {
 
         },
 
-        check_availibity: async (materialId, desiredQuantity)=>{
+        check_availibity: async (materialId, desiredQuantity) => {
             try {
-                
+
                 if (!InventoryContract) {
                     console.error("InventoryContract not initialized");
                     return { success: false, message: "InventoryContract not initialized" };
                 }
-        
-                
+
+
                 const availability = await InventoryContract.checkAvailability(materialId, desiredQuantity, {
                     from: account,
                 });
-        
-                
+
+
                 if (availability > 0) {
                     console.log(`Raw material with ID ${materialId} is available in the desired quantity: ${availability}`);
                     return { success: true, message: `Raw material available in quantity: ${availability}` };
@@ -300,20 +283,20 @@ function ContractContextProvider(props) {
                 return { success: false, message: error.message };
             }
         },
-        increase_quantity: async (materialId, additionalQuantity)=>{
+        increase_quantity: async (materialId, additionalQuantity) => {
             try {
-                
+
                 if (!InventoryContract) {
                     console.error("InventoryContract not initialized");
                     return { success: false, message: "InventoryContract not initialized" };
                 }
-        
-                
+
+
                 const response = await InventoryContract.increaseQuantity(materialId, additionalQuantity, {
                     from: account,
                 });
-        
-                
+
+
                 if (response.status) {
                     console.log(`Quantity increased successfully for material with ID ${materialId}`);
                     return { success: true, message: `Quantity increased successfully for material with ID ${materialId}` };
@@ -326,19 +309,19 @@ function ContractContextProvider(props) {
                 return { success: false, message: error.message };
             }
         },
-        update_raw_materials : async (materialId, name, description, ipfs_hash, quantity)=>{
-            try{
+        update_raw_materials: async (materialId, name, description, ipfs_hash, quantity) => {
+            try {
                 if (!InventoryContract) {
                     console.error("InventoryContract not initialized");
                     return { success: false, message: "InventoryContract not initialized" };
                 }
-        
-                
+
+
                 const response = await InventoryContract.updateRawMaterial(materialId, name, description, ipfs_hash, quantity, {
                     from: account,
                 });
-        
-                
+
+
                 if (response.status) {
                     console.log(`Raw material with ID ${materialId} updated successfully`);
                     return { success: true, message: `Raw material with ID ${materialId} updated successfully` };
@@ -346,25 +329,25 @@ function ContractContextProvider(props) {
                     console.error("Transaction failed");
                     return { success: false, message: "Transaction failed" };
                 }
-            }catch(error){
+            } catch (error) {
                 console.error("Error updating raw material: ", error);
                 return { success: false, message: error.message };
             }
         },
-        update_package_state: async (packageId, newStage)=>{
+        update_package_state: async (packageId, newStage) => {
             try {
-                
+
                 if (!SupplierContract) {
                     console.error("SupplierContract not initialized");
                     return { success: false, message: "SupplierContract not initialized" };
                 }
-        
-               
+
+
                 const response = await SupplierContract.updatePackageStage(packageId, newStage, {
-                    from: account, 
+                    from: account,
                 });
-        
-                
+
+
                 if (response.status) {
                     console.log(`Package with ID ${packageId} stage updated successfully to ${newStage}`);
                     return { success: true, message: `Package stage updated successfully to ${newStage}` };
@@ -377,19 +360,19 @@ function ContractContextProvider(props) {
                 return { success: false, message: error.message };
             }
         },
-        update_batch_state: async (batchId, newStage)=>{
-            try{
+        update_batch_state: async (batchId, newStage) => {
+            try {
                 if (!ManufacturerContract) {
                     console.error("ManufacturerContract not initialized");
                     return { success: false, message: "ManufacturerContract not initialized" };
                 }
-        
-                
+
+
                 const response = await ManufacturerContract.updateBatchStage(batchId, newStage, {
                     from: account,
                 });
-        
-                
+
+
                 if (response.status) {
                     console.log(`Batch with ID ${batchId} stage updated successfully to ${newStage}`);
                     return { success: true, message: `Batch stage updated successfully to ${newStage}` };
@@ -398,24 +381,24 @@ function ContractContextProvider(props) {
                     return { success: false, message: "Transaction failed" };
                 }
             }
-            catch(error){
+            catch (error) {
                 console.error("Error updating batch stage: ", error);
                 return { success: false, message: error.message };
             }
         },
-        record_package_delivery: async (packageId)=>{
+        record_package_delivery: async (packageId) => {
             try {
-                
+
                 if (!TransporterContract) {
                     console.error("TransporterContract not initialized");
                     return { success: false, message: "TransporterContract not initialized" };
                 }
-        
-                
+
+
                 const response = await TransporterContract.recordPackageDelivery(packageId, {
                     from: account,
                 });
-        
+
                 if (response.status) {
                     console.log(`Package with ID ${packageId} delivery recorded successfully`);
                     return { success: true, message: `Package delivery recorded successfully` };
@@ -428,19 +411,19 @@ function ContractContextProvider(props) {
                 return { success: false, message: error.message };
             }
         },
-        record_batch_delivery: async (batchId)=>{
-            try{
+        record_batch_delivery: async (batchId) => {
+            try {
                 if (!TransporterContract) {
                     console.error("TransporterContract not initialized");
                     return { success: false, message: "TransporterContract not initialized" };
                 }
-        
-                
+
+
                 const response = await TransporterContract.recordBatchDelivery(batchId, {
                     from: account,
                 });
-        
-                
+
+
                 if (response.status) {
                     console.log(`Batch with ID ${batchId} delivery recorded successfully`);
                     return { success: true, message: `Batch delivery recorded successfully` };
@@ -448,26 +431,26 @@ function ContractContextProvider(props) {
                     console.error("Transaction failed");
                     return { success: false, message: "Transaction failed" };
                 }
-            }catch(error){
+            } catch (error) {
                 console.error("Error recording batch delivery: ", error);
                 return { success: false, message: error.message };
             }
         },
-        check_quality: async (packageId, description, quantityArray, concentrationArray)=>{
+        check_quality_of_package: async (packageId, description, quantityArray, concentrationArray) => {
             try {
                 if (!InspectorContarct) {
                     console.error("InspectorContract not initialized");
                     return { success: false, message: "InspectorContract not initialized" };
                 }
-        
-               
+
+
                 const quantity = quantityArray.map((value) => ethers.BigNumber.from(value));
                 const concentration = concentrationArray.map((value) => ethers.BigNumber.from(value));
-        
+
                 const response = await InspectorContarct.checkquality(packageId, description, quantity, concentration, {
                     from: account,
                 });
-        
+
                 if (response.status) {
                     console.log(`Quality checked for package with ID ${packageId}`);
                     return { success: true, message: `Quality checked for package with ID ${packageId}` };
@@ -480,123 +463,159 @@ function ContractContextProvider(props) {
                 return { success: false, message: error.message };
             }
         },
-        get_package_reports : async(packageId)=>{
+        get_package_reports: async () => {
             try {
                 if (!InspectorContarct) {
                     console.error("InspectorContract not initialized");
                     return [];
                 }
-        
-                const packageReports = await InspectorContarct.packageReports(packageId);
-        
-                
-                const formattedPackageReports = packageReports.map((report) => ({
-                    packageid: report.packageid.toNumber(),
-                    description: report.description,
-                    grade: report.grade.toNumber(),
-                    timestamp: report.timestamp.toNumber(),
-                    inspectorId: report.inspectorId,
-                    isApproved: report.isApproved,
-                }));
+
+                const packageCount = await SupplierContract.packageCount();
+
+                let formattedPackageReports = [];
+
+                for (let index = 1; index <= packageCount; index++) {
+
+
+                    if (SupplierContract.rawMaterialPackages(index).stage == "Inspected") {
+                        let packageReport = await InspectorContarct.packageReports(index)[0];
+
+                        formattedPackageReports.push({
+                            packageid: packageReport[0].toNumber(),
+                            description: packageReport[1],
+                            grade: packageReport[2].toNumber(),
+                            timestamp: new Date(packageReport[3].toNumber() * 1000),
+                            inspectorId: packageReport[4],
+                            isApproved: packageReport[5],
+                        });
+                    }
+
+                }
+
                 setPackageReports(formattedPackageReports)
-        
-                console.log("Package Reports for Package ID", packageId, ":", formattedPackageReports);
+
                 return formattedPackageReports;
             } catch (error) {
                 console.error("Error fetching package reports: ", error);
                 return [];
             }
         },
-        get_batch_reports: async (batchId)=>{
+
+        get_batch_reports: async () => {
             try {
-                
                 if (!RealTimeMonitoringContarct) {
                     console.error("RealTimeMonitoringContract not initialized");
                     return [];
                 }
-        
-               
-                const batchReports = await RealTimeMonitoringContarct.batchReports(batchId);
-        
-                
-                const formattedBatchReports = batchReports.map((report) => ({
-                    batchId: report.batchId.toNumber(),
-                    stage: report.stage.toNumber(),
-                    batchReportResult: report.batchReportResult.toNumber(),
-                }));
+
+                const batchCount = ManufacturerContract.batchCount();
+
+                let formattedBatchReports = [];
+
+                for (let index = 1; index <= batchCount; index++) {
+
+                    if (ManufacturerContract.batches(index).InspectionStage != "STAGE_0") {
+                        let batchReportArray = await RealTimeMonitoringContarct.batchReports(index);
+
+                        batchReportArray.map((report) => (
+                            formattedBatchReports.push({
+                                batchId: report[0].toNumber(),
+                                stage: report[1].toNumber(),
+                                batchReportResult: report[2].toNumber(),
+                            })));
+
+                    }
+
+                }
                 setBatchReports(formattedBatchReports)
-        
-               
-                console.log("Batch Reports for Batch ID", batchId, ":", formattedBatchReports);
+
                 return formattedBatchReports;
             } catch (error) {
                 console.error("Error fetching batch reports: ", error);
                 return [];
             }
         },
-        get_packagedelivery_details : async (packageId)=>{
-            try{
+
+        get_package_delivery_details: async () => {
+            try {
                 if (!TransporterContract) {
                     console.error("TransporterContract not initialized");
                     return null
                 }
 
-                const deliveryDetails = await TransporterContract.packageDeliveries(packageId);
-                if(deliveryDetails[0].toNumber() === 0){
-                    console.log("Package with ID", packageId, "has not been delivered yet");
-                    return null;
+                const packageCount = await SupplierContract.packageCount();
+
+                let formattedDeliveryDetails = [];
+
+                for (let index = 1; index <= packageCount; index++) {
+
+
+                    if (SupplierContract.rawMaterialPackages(index).stage == "Delivered") {
+                        let deliveryDetails = await TransporterContract.packageDeliveries(index);
+
+                        formattedDeliveryDetails.push({
+                            packageId: deliveryDetails[0].toNumber(),
+                            supplierId: deliveryDetails[1],
+                            transporterId: deliveryDetails[2],
+                            deliveryTime: new Date(deliveryDetails[3].toNumber() * 1000),
+                        });
+                    }
+
                 }
 
-                const formattedDeliveryDetails = {
-                    packageId: deliveryDetails[0].toNumber(),
-                    supplierId: deliveryDetails[1],
-                    transporterId: deliveryDetails[2],
-                    deliveryTime: new Date(deliveryDetails[3].toNumber() * 1000),
-                };
-                console.log("Delivery details for package ID", packageId, ":", formattedDeliveryDetails);
                 setpackagedeliverdetails(formattedDeliveryDetails)
+
                 return formattedDeliveryDetails;
-            }catch(error){
+            } catch (error) {
                 console.error("Error fetching package delivery details: ", error);
                 return null;
-            }  
+            }
         },
-        get_batchdelivery_details : async (batchId)=>{
-            try{
+
+        get_batch_delivery_details: async () => {
+            try {
                 if (!TransporterContract) {
                     console.error("TransporterContract not initialized");
                     return null
                 }
 
-                const deliveryDetails = await TransporterContract.batchDeliveries(batchId);
-                if(deliveryDetails[0].toNumber() === 0){
-                    console.log("Batch with ID", batchId, "has not been delivered yet");
-                    return null;
+                const batchCount = ManufacturerContract.batchCount();
+
+                let formattedDeliveryDetails = [];
+
+                for (let index = 1; index <= batchCount; index++) {
+
+                    if (ManufacturerContract.batches(index).stage == "Delivered") {
+                        let deliveryDetails = await TransporterContract.batchDeliveries(index);
+
+                        formattedDeliveryDetails.push({
+                            batchId: deliveryDetails[0].toNumber(),
+                            manufacturerId: deliveryDetails[1],
+                            transporterId: deliveryDetails[2],
+                            deliveryTime: new Date(deliveryDetails[3].toNumber() * 1000),
+                        });
+                    }
+
                 }
 
-                const formattedDeliveryDetails = {
-                    batchId: deliveryDetails[0].toNumber(),
-                    manufacturerId: deliveryDetails[1],
-                    transporterId: deliveryDetails[2],
-                    deliveryTime: new Date(deliveryDetails[3].toNumber() * 1000),
-                };
-                console.log("Delivery details for batch ID", batchId, ":", formattedDeliveryDetails);
                 setbatchdeliverdetails(formattedDeliveryDetails)
+
                 return formattedDeliveryDetails;
-            }catch(error){
+
+            } catch (error) {
                 console.error("Error fetching batch delivery details: ", error);
                 return null;
-            }  
+            }
         },
-        record_batch_report:async (batchId, stage, stagecondition)=>{
+        record_batch_report: async (batchId, stage, stagecondition) => {
             try {
-               
+
                 if (!RealTimeMonitoringContarct) {
                     console.error("RealTimeMonitoringContract not initialized");
                     return { success: false, message: "RealTimeMonitoringContract not initialized" };
                 }
-        
-               
+
+
                 const response = await RealTimeMonitoringContarct.recordBatchReport(
                     batchId,
                     stage,
@@ -605,7 +624,7 @@ function ContractContextProvider(props) {
                         from: account,
                     }
                 );
-        
+
                 if (response.status) {
                     console.log(`Batch report recorded successfully for Batch ID ${batchId}`);
                     return { success: true, message: `Batch report recorded successfully` };
@@ -618,52 +637,109 @@ function ContractContextProvider(props) {
                 return { success: false, message: error.message };
             }
         },
-        create_rawmaterial_package: async (
-            description,
-            ipfs_hash,
-            manufacturerId,
-            transporterId,
-            inspectorId)=>{
 
-                try {
-                    if (!SupplierContract) {
-                        console.error("SupplierContract not initialized");
-                        return { success: false, message: "SupplierContract not initialized" };
-                    }
-            
-                    const response = await SupplierContract.createRawMaterialPackage(
-                        description,
-                        ipfs_hash,
-                        manufacturerId,
-                        transporterId,
-                        inspectorId,
-                        {
-                            from: account, 
-                        }
-                    );
-            
-                    if (response.status) {
-                        console.log("Raw material package created successfully");
-                        return { success: true, message: "Raw material package created successfully" };
-                    } else {
-                        console.error("Transaction failed");
-                        return { success: false, message: "Transaction failed" };
-                    }
-                } catch (error) {
-                    console.error("Error creating raw material package: ", error);
-                    return { success: false, message: error.message };
+        assign_role: async (address, key) => {
+            try {
+
+                if (!AdminContract) {
+                    console.error("AdminContract not initialized");
+                    return { success: false, message: "AdminContract not initialized" };
                 }
 
-        }
+                if (key == 1) {
 
+                    await AdminContract.addSupplier(address);
 
+                }
+                else if (key == 2) {
+                    await AdminContract.addManufacturer(address);
+                }
+                else if (key == 3) {
+                    await AdminContract.addInspector(address);
+                }
+                else if (key == 4) {
+                    await AdminContract.addTransporter(address);
+                }
+                else {
+                    await AdminContract.addWholesaler(address);
+                }
 
+            } catch (error) {
+                console.error("Error in assigning role: ", error);
+                return { success: false, message: error.message };
+            }
+        },
+
+        deAssign_role: async (address, key) => {
+            try {
+
+                if (!AdminContract) {
+                    console.error("AdminContract not initialized");
+                    return { success: false, message: "AdminContract not initialized" };
+                }
+
+                if (key == 1) {
+
+                    await AdminContract.removeSupplier(address);
+
+                }
+                else if (key == 2) {
+                    await AdminContract.removeManufacturer(address);
+                }
+                else if (key == 3) {
+                    await AdminContract.removeInspector(address);
+                }
+                else if (key == 4) {
+                    await AdminContract.removeTransporter(address);
+                }
+                else {
+                    await AdminContract.removeWholesaler(address);
+                }
+
+            } catch (error) {
+                console.error("Error in deAssigning role: ", error);
+                return { success: false, message: error.message };
+            }
+        },
+        request_raw_material_package: async (_rawMaterialsIds, _rawMaterialsQuantities, _description, _transporterId, _supplierId, _inspectorId) => {
+            try {
+
+                if (!SupplierContract) {
+                    console.error("SupplierContract not initialized");
+                    return { success: false, message: "SupplierContract not initialized" };
+                }
+
+                await SupplierContract.requestRawMaterialPackage(_rawMaterialsIds, _rawMaterialsQuantities, _description, account, _transporterId, _supplierId, _inspectorId);
+
+                return { success: true, message: "Raw material package requested successfully" };
+
+            } catch (error) {
+                console.error("Error in requesting raw material package: ", error);
+                return { success: false, message: error.message };
+            }   
+        },
+
+        create_batch: async (_medicineIds, _medicineQuantities, estimatedCost, productionRatePerDay, _idealstage1conditions, _idealstage2conditions, _idealpackagingconditions, _inspectorId, _transporterId, _wholesalerId) => {
+            try {
+
+                if (!ManufacturerContract) {
+                    console.error("ManufacturerContract not initialized");
+                    return { success: false, message: "ManufacturerContract not initialized" };
+                }
+
+                await ManufacturerContract.requestRawMaterialPackage(_medicineIds, _medicineQuantities, estimatedCost, productionRatePerDay, _idealstage1conditions, _idealstage2conditions, _idealpackagingconditions, _inspectorId, _transporterId, _wholesalerId);
+
+                return { success: true, message: "Batch Created successfully" };
+
+            } catch (error) {
+                console.error("Error in creating batch: ", error);
+                return { success: false, message: error.message };
+            }
+        },
     };
+
     const [state, setState] = useState({
         AdminContract: null,
-        InventoryContract: null,
-
-
     });
 
     return (
