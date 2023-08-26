@@ -56,7 +56,7 @@ const ChemicalList = () => {
       <div className="allcards">
         {xAxisData.filter((qd) => qd.x.toLowerCase().includes(searchValue.toLowerCase())).map((qd) => (
           <div className='card' key={qd.x} style={{ backgroundImage: `url(${chemimg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover" }} >
-            <p className="card__title">{qd.x}</p>
+            <p className="card__title" style={{color:"white", marginBottom:"-20px"}}>{qd.x}</p>
             {/* <img src={chemimg} alt="" height="200px" width="160px" /> */}
             <div className="card__content">
               <p className="card__title">{qd.x}:{qd.quantity}</p>
