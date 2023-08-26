@@ -15,6 +15,7 @@ const ChemicalList = () => {
     newData[0].quantity[index] += 1;
     setD(newData);
   };
+
   return (
     <div className="chemical-list">
       <div class="searchBox">
