@@ -9,6 +9,7 @@ const ChemicalList = () => {
   // Creating an array of objects with x-axis and quantity
   const xAxisData = data.xaxis.map((x, index) => ({ x, quantity: data.quantity[index] }));
   const [d, setD] = useState(jsonData);
+  const [searchValue, setSearchValue] = useState("");
   const [enableUpdate, setEnableUpdate] = useState(false);
   const increaseQuantity = (index) => {
     const newData = [...d];
@@ -19,7 +20,9 @@ const ChemicalList = () => {
     <div className="chemical-list">
       <div class="searchBox">
 
-        <input class="searchInput" type="text" name="" placeholder="Search something" />
+        <input class="searchInput" type="text" name="" placeholder="Search something"
+          value={searchValue} // Bind the value to the searchValue state
+          onChange={(e) => setSearchValue(e.target.value)} />
         <button class="searchButton" href="#">
 
 
@@ -51,15 +54,14 @@ const ChemicalList = () => {
         </button>
       </div>
       <div className="allcards">
-        {xAxisData.map(qd => (
-          <div className='card' key={qd.x}>
+        {xAxisData.filter((qd) => qd.x.toLowerCase().includes(searchValue.toLowerCase())).map((qd) => (
+          <div className='card' key={qd.x} style={{ backgroundImage: `url(${chemimg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover" }} >
             <p className="card__title">{qd.x}</p>
-            <img src={chemimg} alt="" height="200px" width="160px" />
+            {/* <img src={chemimg} alt="" height="200px" width="160px" /> */}
             <div className="card__content">
               <p className="card__title">{qd.x}:{qd.quantity}</p>
               <p className="card__description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
             </div>
-
 
           </div>
         ))}
@@ -72,7 +74,7 @@ const ChemicalList = () => {
               <button onClick={() => {
                 increaseQuantity(index)
                 setEnableUpdate(true)
-              }}>Increase</button>
+              }}>+</button>
             </p>
           </div>
         ))}

@@ -1,57 +1,45 @@
-import React, { useState } from 'react'
-import { DataGrid } from '@mui/x-data-grid';
-import MedicineData from '../medicine.json'
-import '../Miscellaneous/CreateNewBatch.css'
-const CreateNewBatch = () => {
-  const [selectedRows, setSelectedRows] = useState([])
-  const [selectionModel, setSelectionModel] = useState([]);
-  const CustomQuantityCell = ({ value, row }) => {
-    const [quantity, setQuantity] = useState(value);
+import React, { useState } from 'react';
+import './CreateNewBatch.css'
 
-    const handleQuantityChange = (event) => {
-      const newQuantity = parseInt(event.target.value);
-      setQuantity(newQuantity);
-      // You might want to update your data source (e.g., MedicineData) here too
-    };
-    return <input type="number" value={quantity} style={{ borderRadius: "10px" }} onChange={handleQuantityChange} />;
+const CreateNewBatch = ({ jsonData }) => {
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [quantityInputs, setQuantityInputs] = useState({});
+  const [searchValue, setSearchValue] = useState("");
+
+  const handleRowSelect = (medname) => {
+    if (selectedRows.includes(medname)) {
+      setSelectedRows(selectedRows.filter(row => row !== medname));
+      setQuantityInputs({ ...quantityInputs, [medname]: undefined });
+    } else {
+      setSelectedRows([...selectedRows, medname]);
+      setQuantityInputs({ ...quantityInputs, [medname]: 1 }); // Initialize quantity to 1
+    }
   };
-  const submitHandler = () => {
-    console.log("Selected Medicines", selectedRows);
 
-    selectedRows.forEach((row) => {
-      const selectedRowData = rows.find((rowData) => rowData.id === row);
-      console.log("Selected Row Data:", selectedRowData);
-    });
-  }
-  const handleRowSelection = (newSelection) => {
-    console.log("Selected Rows", newSelection);
-    // setSelectedRows([...selectedRows, newSelection]);
+  const handleQuantityChange = (medname, value) => {
+    setQuantityInputs({ ...quantityInputs, [medname]: value });
   };
-  const columns = [
-    {
-      field: 'medpic',
-      headerName: 'Picture',
-      type: 'image',
-      sortable: false,
-      width: 160
-    },
-    { field: 'medname', headerName: 'Medicine Name', width: 230 },
-    { field: 'meddesc', headerName: 'Description', width: 500 },
-    {
-      field: 'Quantity',
-      headerName: 'Quantity',
-      renderCell: CustomQuantityCell,
-      width: 90,
-    },
 
-  ];
+  const handleCreateButtonClick = () => {
+    // Check if entered quantity exceeds given quantity
+    const selectedData = jsonData.filter(item => selectedRows.includes(item.medname));
+    const hasExceededQuantity = selectedData.some(item => quantityInputs[item.medname] > item.medquantity);
 
-  const rows = MedicineData.map((medicine, index) => ({ ...medicine, id: index + 1 }));
+    if (hasExceededQuantity) {
+      console.error("Entered quantity exceeds available quantity.");
+      return;
+    }
+
+    console.log("Selected data:", selectedData);
+  };
+
   return (
     <div>
       <div class="searchBox">
 
-        <input class="searchInput" type="text" name="" placeholder="Search something" />
+        <input class="searchInput" type="text" name="" placeholder="Search something"
+          value={searchValue} // Bind the value to the searchValue state
+          onChange={(e) => setSearchValue(e.target.value)} />
         <button class="searchButton" href="#">
 
 
@@ -82,75 +70,48 @@ const CreateNewBatch = () => {
 
         </button>
       </div>
-
-
-      <div className="datagrid-container" >
-        <div className="datagrid">
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            selectionModel={selectionModel}
-            onSelectionModelChange={handleRowSelection}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 5 },
-              },
-            }}
-            pageSizeOptions={[5, 10]}
-            checkboxSelection
-          />
-        </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Select</th>
+            <th>Med Name</th>
+            <th>Med Pic</th>
+            <th>Med Desc</th>
+            <th>Med Quantity</th>
+            <th>Enter Quantity</th>
+          </tr>
+        </thead>
+        <tbody>
+          {jsonData.filter((item) => item.medname.toLowerCase().includes(searchValue.toLowerCase())).map(item => (
+            <tr key={item.medname}>
+              <td>
+                <input
+                  type="checkbox"
+                  checked={selectedRows.includes(item.medname)}
+                  onChange={() => handleRowSelect(item.medname)}
+                />
+              </td>
+              <td>{item.medname}</td>
+              <td>{item.medpic}</td>
+              <td>{item.meddesc}</td>
+              <td>{item.medquantity}</td>
+              <td>
+                <input
+                  type="number"
+                  value={quantityInputs[item.medname] || ''}
+                  onChange={(e) => handleQuantityChange(item.medname, parseInt(e.target.value))}
+                  disabled={!selectedRows.includes(item.medname)}
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className='button-container'>
+        <button className='button' onClick={handleCreateButtonClick}><p>Create Batch</p></button>
       </div>
-      <button class="cta" onClick={submitHandler}>
-        <span>Create Batch</span>
-        <svg viewBox="0 0 13 10" height="10px" width="15px">
-          <path d="M1,5 L11,5"></path>
-          <polyline points="8 1 12 5 8 9"></polyline>
-        </svg>
-      </button>
     </div>
-  )
-}
-
-// export default CreateNewBatch
-
-
-// import React, { useState } from 'react';
-// import { DataGrid } from '@mui/x-data-grid';
-
-// const CreateNewBatch = () => {
-//   const [selectedRows, setSelectedRows] = useState([]);
-
-//   const handleRowSelection = (newSelection) => {
-//     setSelectedRows(newSelection);
-//   };
-//   const columns = [
-//     { field: 'medname', headerName: 'Medicine Name', width: 230 },
-//     { field: 'meddesc', headerName: 'Description', width: 500 },
-//   ];
-
-//   const rows = [
-//     { id: 1, medname: 'a', meddesc: 'lorem ipsum1' },
-//     { id: 2, medname: 'b', meddesc: 'lorem ipsum2' },
-//     { id: 3, medname: 'c', meddesc: 'lorem ipsum3' },
-//     { id: 4, medname: 'd', meddesc: 'lorem ipsum4' },
-//   ];
-
-//   const submitHandler = () => {
-//     console.log("Selected Rows:", selectedRows);
-//   };
-//   return (
-//     <div>
-//       <DataGrid
-//         rows={rows}
-//         columns={columns}
-//         selectionModel={selectedRows}
-//         onSelectionModelChange={handleRowSelection}
-//         checkboxSelection
-//       />
-//       <button onClick={submitHandler}>Submit</button>
-//     </div>
-//   );
-// }
+  );
+};
 
 export default CreateNewBatch;

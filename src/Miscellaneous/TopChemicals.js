@@ -17,7 +17,7 @@ const TopChemicals = () => {
   const topXAxisData = xAxisData.slice(0, 3);
   return (
     <>
-      <div style={{ marginTop: '20px' }}>
+      <div style={{ marginTop: '20px', display: "flex", gap: "2rem" }}>
         {topXAxisData.map(item => (
           <div key={item.x}>
             <div className='card'>
