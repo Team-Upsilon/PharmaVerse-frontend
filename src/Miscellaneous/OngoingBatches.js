@@ -1,35 +1,55 @@
 import React, { useState } from "react";
 import batchData from "../batch.json";
+import wholeSalerData from "../wholesaler.json";
 import "../Miscellaneous/OngoingBatches.css";
 import {
   AppBar,
+  Button,
   Card,
   CardActionArea,
   CardContent,
+  CardHeader,
   CardMedia,
   Dialog,
+  DialogActions,
   DialogContent,
   Divider,
   IconButton,
   Slide,
+  Stack,
   Toolbar,
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-
+import transporterData from "../transporterData.json";
+import inspectorData from "../inspectorData.json";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 const OngoingBatches = () => {
   const [batches, setBatches] = useState(batchData);
+  const [fullWidth, setFullWidth] = React.useState(true);
+  const [maxWidth, setMaxWidth] = React.useState("md");
   const [openDialog, setOpenDialog] = useState(false);
-  const handleOpenDialog = () => {
+  const [selectedBatch, setSelectedBatch] = useState(null); // Track selected batch
+  const [selectedTransporter, setSelectedTransporter] = useState(null);
+  const [selectedInspector, setSelectedInspector] = useState(null);
+  const [selectedWholesaler, setSelectedWholesaler] = useState(null);
+  const handleOpenDialog = (batch) => {
+    setSelectedBatch(batch);
+    setSelectedTransporter(null); // Reset selected transporter
+    setSelectedInspector(null);
+    setSelectedWholesaler(null);
     setOpenDialog(true);
   };
+
   const handleCloseDialog = () => {
+    setSelectedBatch(null); // Reset selected batch when closing dialog
     setOpenDialog(false);
   };
-
+  const handleSendPackage = () => {
+    setOpenDialog(false);
+  };
   return (
     <div>
       <div class="searchBox">
@@ -111,41 +131,39 @@ const OngoingBatches = () => {
         </button>
       </div>
 
-      <div
-        className="allcards"
-        onClick={handleOpenDialog}
-        style={{ cursor: "pointer" }}
-      >
+      <div className="allcards">
         {batches.map((batch, index) => (
-          <div className="card" key={index}>
+          <div
+            className="card"
+            key={index}
+            onClick={() => handleOpenDialog(batch)}
+            style={{ cursor: "pointer" }}
+          >
             <div className="remove-when-use">
               <img src={batch.batchpic} alt="pic" />
             </div>
             <div className="details">
-              <p>Stage:{batch.currentstage}</p>
+              <p>Stage: {batch.currentstage}</p>
               <div style={{ display: "flex" }}>
                 {batch.materialname.map((e, materialIndex) => (
-                  <div>
-                    <div key={materialIndex}>
-                      {materialIndex + 1}:{e}
-                    </div>
+                  <div key={materialIndex}>
+                    {materialIndex + 1}:{e}
                   </div>
                 ))}
               </div>
-              {/* <div>
-                  {batch.materialquantity.map((f, quantityIndex) => (
-                    <div key={quantityIndex}>Material Quantity:{f}</div>
-                  ))}
-                </div> */}
             </div>
           </div>
         ))}
       </div>
+
+    
       <Dialog
+           fullWidth={fullWidth}
+           maxWidth={maxWidth}
         TransitionComponent={Transition}
-        fullScreen
         open={openDialog}
         onClose={handleCloseDialog}
+        sx={{ backdropFilter: "blur(20px)" }}
       >
         <AppBar sx={{ position: "relative" }}>
           <Toolbar>
@@ -158,40 +176,73 @@ const OngoingBatches = () => {
               <CloseIcon />
             </IconButton>
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              Package Details
+              Batch Details
             </Typography>
           </Toolbar>
         </AppBar>
 
         <DialogContent>
-          <div>
-            <Typography variant="body2" color="text.secondary">
-              <div className="card-container" style={{ marginTop: "8px" }}>
-                {/* {data.chemicals.map((chemical, index) => (
-                  <Card sx={{ maxWidth: 700, marginBottom: "16px" }}>
-                    <CardActionArea>
-                      <CardMedia
-                        component="img"
-                        height="140"
-                        image={chemical.image}
-                        alt={chemical.name}
-                      />
-                      <CardContent>
-                        <Typography gutterBottom variant="h5" component="div">
-                          {chemical.name} ({chemical.quantity} Kg)
-                        </Typography>
+        {selectedBatch && (
+            <Card sx={{ marginBottom: "16px", width: "100%" }}>
+              <CardActionArea>
+                <CardMedia
+                  component="img"
+                  height="140"
+                  image={selectedBatch.batchpic}
+                  alt="material"
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    Stage : {selectedBatch.currentstage}
+                  </Typography>
 
-                        <Typography variant="body2" color="text.secondary">
-                          {chemical.description}
-                        </Typography>
-                      </CardContent>
-                    </CardActionArea>
-                  </Card>
-                ))} */}
-              </div>
-            </Typography>
-            <Divider />
+                  <Typography variant="body2" color="text.secondary">
+                    {selectedBatch.materialname.map((e, materialIndex) => (
+                      <div key={materialIndex}>
+                        {e} : {selectedBatch.materialquantity[materialIndex]} Kg
+                      </div>
+                    ))}
+                  </Typography>
+                  <Divider sx={{ marginTop: "10px", marginBottom: "24px" }} />
+                  <div>
+            {selectedBatch &&
+              selectedBatch.transporter.map((transporter) => (
+                <Card key={transporter.id} sx={{ marginBottom: "16px" }}>
+                  <CardHeader
+                    title={transporter.name}
+                    subheader={transporter.address}
+                  />
+                </Card>
+              ))}
           </div>
+          <div>
+            {selectedBatch &&
+              selectedBatch.inspector.map((inspector) => (
+                <Card key={inspector.id} sx={{ marginBottom: "16px" }}>
+                  <CardHeader
+                    title={inspector.name}
+                    subheader={inspector.address}
+                  />
+                </Card>
+              ))}
+          </div> 
+          <div>
+            {selectedBatch &&
+              selectedBatch.wholesaler.map((wholesaler) => (
+                <Card key={wholesaler.id} sx={{ marginBottom: "16px" }}>
+                  <CardHeader
+                    title={wholesaler.name}
+                    subheader={wholesaler.address}
+                  />
+                </Card>
+              ))}
+          </div>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          )}
+         
+        
         </DialogContent>
       </Dialog>
     </div>
