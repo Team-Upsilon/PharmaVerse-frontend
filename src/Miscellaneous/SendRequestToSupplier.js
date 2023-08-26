@@ -1,23 +1,44 @@
-import React, { useState } from 'react';
-import jsonData from '../data.json';
-import './ChemicalList.css';
-import chemimg from '../Images/raul.jpg'
-import { Button, Icon } from '@mui/material';
-const ChemicalList = () => {
-  const data = jsonData[0];
+import React, { useState } from 'react'
 
-  // Creating an array of objects with x-axis and quantity
-  const xAxisData = data.xaxis.map((x, index) => ({ x, quantity: data.quantity[index] }));
-  const [d, setD] = useState(jsonData);
+const SendRequestToSupplier = ({ jsonData }) => {
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [quantityInputs, setQuantityInputs] = useState({});
   const [searchValue, setSearchValue] = useState("");
-  const [enableUpdate, setEnableUpdate] = useState(false);
-  const increaseQuantity = (index) => {
-    const newData = [...d];
-    newData[0].quantity[index] += 1;
-    setD(newData);
+
+  const handleRowSelect = (medname) => {
+    if (selectedRows.includes(medname)) {
+      setSelectedRows(selectedRows.filter(row => row !== medname));
+      setQuantityInputs({ ...quantityInputs, [medname]: undefined });
+    } else {
+      setSelectedRows([...selectedRows, medname]);
+      setQuantityInputs({ ...quantityInputs, [medname]: 1 }); // Initialize quantity to 1
+    }
   };
+
+  const handleQuantityChange = (medname, value) => {
+    setQuantityInputs({ ...quantityInputs, [medname]: value });
+  };
+
+  const handleCreateButtonClick = () => {
+    // Check if entered quantity exceeds given quantity
+    const selectedData = jsonData.filter(item => selectedRows.includes(item.medname));
+
+
+    const selectedMedicineDetails = selectedData.map(item => {
+      const enteredQuantity = quantityInputs[item.medname] || 0;
+      return {
+        medname: item.medname,
+        medpic: item.medpic,
+        meddesc: item.meddesc,
+        quantity: enteredQuantity
+      };
+    });
+
+    console.log("Selected data:", selectedMedicineDetails);
+  };
+
   return (
-    <div className="chemical-list">
+    <div>
       <div class="searchBox">
 
         <input class="searchInput" type="text" name="" placeholder="Search something"
@@ -53,39 +74,47 @@ const ChemicalList = () => {
 
         </button>
       </div>
-      <div className="allcards">
-        {xAxisData.filter((qd) => qd.x.toLowerCase().includes(searchValue.toLowerCase())).map((qd) => (
-          <div className='card' key={qd.x} style={{ backgroundImage: `url(${chemimg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover" }} >
-            <p className="card__title">{qd.x}</p>
-            {/* <img src={chemimg} alt="" height="200px" width="160px" /> */}
-            <div className="card__content">
-              <p className="card__title">{qd.x}:{qd.quantity}</p>
-              <p className="card__description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
-            </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Select</th>
+            <th>Med Name</th>
+            <th>Med Pic</th>
+            <th>Med Desc</th>
 
-          </div>
-        ))}
-        <h1>increment</h1>
-        {xAxisData.map((item, index) => (
-          <div key={item.x}>
-            <p>{item.x}</p>
-            <p>{item.quantity}</p>
-            <p>
-              <button className='button2' onClick={() => {
-                increaseQuantity(index)
-                setEnableUpdate(true)
-              }}>+</button>
-            </p>
-          </div>
-        ))}
-        <Button
-          variant='contained'
-          disabled={!enableUpdate}>
-          Update
-        </Button>
+            <th>Enter Quantity</th>
+          </tr>
+        </thead>
+        <tbody>
+          {jsonData.filter((item) => item.medname.toLowerCase().includes(searchValue.toLowerCase())).map(item => (
+            <tr key={item.medname}>
+              <td>
+                <input
+                  type="checkbox"
+                  checked={selectedRows.includes(item.medname)}
+                  onChange={() => handleRowSelect(item.medname)}
+                />
+              </td>
+              <td>{item.medname}</td>
+              <td>{item.medpic}</td>
+              <td>{item.meddesc}</td>
+              <td>
+                <input
+                  type="number"
+                  value={quantityInputs[item.medname] || ''}
+                  onChange={(e) => handleQuantityChange(item.medname, parseInt(e.target.value))}
+                  disabled={!selectedRows.includes(item.medname)}
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className='button-container'>
+        <button className='button' onClick={handleCreateButtonClick}><p>Send Request</p></button>
       </div>
     </div>
   );
-};
+}
 
-export default ChemicalList;
+export default SendRequestToSupplier

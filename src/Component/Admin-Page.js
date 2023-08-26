@@ -5,6 +5,7 @@ const Admin_Page = () => {
     <div className='elem'>
       <div className='nav-bar'>
         <SideDrawer />
+    
       </div>
     </div>
   )
