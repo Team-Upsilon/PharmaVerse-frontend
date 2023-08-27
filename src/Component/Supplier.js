@@ -25,7 +25,10 @@ import ChemicalList from "../Miscellaneous/ChemicalList";
 import TopChemicals from "../Miscellaneous/TopChemicals";
 import SupplierListCardRequests from "../Miscellaneous/SupplierListCardRequests";
 import SupplierListCardSent from "../Miscellaneous/SupplierListCardSent";
-import Logo from '../Images/logoPharma.png'
+import Logo from '../Images/logoPharma.png';
+import { useEffect, useContext } from "react";
+import { ContractContext } from "../Context/ContractContext";
+import { AuthContext } from "../Context/AuthContext";
 
 const drawerWidth = 240;
 function TabPanel(props) {
@@ -61,9 +64,35 @@ function a11yProps(index) {
   };
 }
 function ResponsiveDrawer(props) {
+  const { packages, Services } = useContext(ContractContext);
+  let { account } = useContext(AuthContext);
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [value, setValue] = React.useState(0);
+  const [ReceivedRequestData, setReceivedRequestData] = React.useState([]);
+  const [SentRequestData, setSentRequestData] = React.useState([]);
+
+  useEffect(() => {
+    setData();
+  }, []);
+
+  const setData = async () => {
+
+    if (!packages || !account) return;
+
+    const filteredPackages1 = packages.filter((item) => {
+      return item.supplierId === account && item.stage === "Requested";
+    });
+
+    setReceivedRequestData(filteredPackages1);
+
+    const filteredPackages2 = packages.filter((item) => {
+      return item.supplierId === account && item.stage === "Created";
+    });
+
+    setSentRequestData(filteredPackages2);
+
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -199,6 +228,9 @@ function ResponsiveDrawer(props) {
                 .map((data, index) => (
                   <SupplierListCardRequests key={index} data={data} />
                 ))}
+              {/* {ReceivedRequestData.map((data, index) => (
+                  <SupplierListCardRequests key={index} data={data} />
+                ))} */}
             </div>
           </TabPanel>
 
@@ -209,6 +241,9 @@ function ResponsiveDrawer(props) {
                 .map((data, index) => (
                   <SupplierListCardSent key={index} data={data} />
                 ))}
+              {/* {SentRequestData.map((data, index) => (
+                  <SupplierListCardSent key={index} data={data} />
+                ))} */}
             </div>
           </TabPanel>
         </Typography>
