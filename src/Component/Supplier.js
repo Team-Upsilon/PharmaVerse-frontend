@@ -64,7 +64,7 @@ function a11yProps(index) {
   };
 }
 function ResponsiveDrawer(props) {
-  const { packages, Services } = useContext(ContractContext);
+  const { packages, Services, rawMaterials } = useContext(ContractContext);
   let { account } = useContext(AuthContext);
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -77,21 +77,31 @@ function ResponsiveDrawer(props) {
   }, []);
 
   const setData = async () => {
-
     if (!packages || !account) return;
 
-    const filteredPackages1 = packages.filter((item) => {
-      return item.supplierId === account && item.stage === "Requested";
-    });
+    const receivedRequests = packages
+      .filter((item) => item.supplierId === account && item.stage === "Requested")
+      .map((item) => {
+        const materialId = item.rawMaterials[0]?.materialId; // Get the materialId from the first object
+        const rawMaterial = rawMaterials.find((rm) => rm.id === materialId); // Find the raw material with matching id
+        const ipfsHash = rawMaterial ? rawMaterial.ipfs_hash : ""; // Get the ipfs_hash if rawMaterial exists
 
-    setReceivedRequestData(filteredPackages1);
+        return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the package data
+      });
 
-    const filteredPackages2 = packages.filter((item) => {
-      return item.supplierId === account && item.stage === "Created";
-    });
+    setReceivedRequestData(receivedRequests);
 
-    setSentRequestData(filteredPackages2);
+    const sentRequests = packages
+      .filter((item) => item.supplierId === account && item.stage === "Created")
+      .map((item) => {
+        const materialId = item.rawMaterials[0]?.materialId; // Get the materialId from the first object
+        const rawMaterial = rawMaterials.find((rm) => rm.id === materialId); // Find the raw material with matching id
+        const ipfsHash = rawMaterial ? rawMaterial.ipfs_hash : ""; // Get the ipfs_hash if rawMaterial exists
 
+        return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the package data
+      });
+
+    setSentRequestData(sentRequests);
   };
 
   const handleChange = (event, newValue) => {
@@ -184,7 +194,7 @@ function ResponsiveDrawer(props) {
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, 
+            keepMounted: true,
           }}
           sx={{
             display: { xs: "block", sm: "none" },

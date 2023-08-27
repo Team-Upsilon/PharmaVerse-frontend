@@ -105,6 +105,7 @@ export default function SupplierListCardSent({ data }) {
         component="img"
         height="194"
         image="/static/images/cards/paella.jpg"
+        //  image={`${CONSTANTS.IPFSURL}/${data.ipfs_hash}`}
         alt="Manufacturer"
       />
 

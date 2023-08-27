@@ -18,6 +18,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useContext } from "react";
 import { ContractContext } from "../Context/ContractContext";
 import { AuthContext } from "../Context/AuthContext";
+import CONSTANTS from "../Utils/Constants";
 import {
   AppBar,
   Button,
@@ -151,6 +152,7 @@ export default function SupplierListCardRequests({ data }) {
           component="img"
           height="194"
           image="/static/images/cards/paella.jpg"
+          // image={`${CONSTANTS.IPFSURL}/${data.ipfs_hash}`}
           alt="Manufacturer"
         />
         <CardContent>
