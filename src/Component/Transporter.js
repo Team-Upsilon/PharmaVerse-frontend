@@ -1,5 +1,6 @@
 import React from "react";
 import transporterPage from "../transporterPage.json";
+import batch from "../batch.json";
 import "./Supplier.css"; // Import your custom CSS file for styling
 import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
@@ -27,7 +28,9 @@ import SupplierListCardRequests from "../Miscellaneous/SupplierListCardRequests"
 import SupplierListCardSent from "../Miscellaneous/SupplierListCardSent";
 import TransporterListCardRequests from "../Miscellaneous/TransporterListCardRequests";
 import TransporterListCardSent from "../Miscellaneous/TransporterListCardSent";
-import Logo from '../Images/logoPharma.png'
+import Logo from "../Images/logoPharma.png";
+import TransportBatchListSent from "../Miscellaneous/TransportBatchListSent";
+import TransportBatchListRequests from "../Miscellaneous/TransportBatchListRequests";
 const drawerWidth = 240;
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -76,8 +79,13 @@ function ResponsiveDrawer(props) {
   const drawer = (
     <div>
       <div>
-        <img src={Logo} alt="Logo" width={"200rem"} height={"50rem"}
-          style={{ marginTop: "1rem", marginBottom: "1rem" }} />
+        <img
+          src={Logo}
+          alt="Logo"
+          width={"200rem"}
+          height={"50rem"}
+          style={{ marginTop: "1rem", marginBottom: "1rem" }}
+        />
       </div>
       {/* <Toolbar /> */}
       <Divider />
@@ -102,7 +110,7 @@ function ResponsiveDrawer(props) {
                 color: "green",
               },
             }}
-            label="My Requests"
+            label="Package Requests"
             {...a11yProps(0)}
           />
           <Tab
@@ -111,10 +119,27 @@ function ResponsiveDrawer(props) {
                 color: "green",
               },
             }}
-            label="Transported Requests"
+            label="Transported Packages"
             {...a11yProps(1)}
           />
-          {/* <Tab label="Top 3 Chemicals" {...a11yProps(2)} /> */}
+          <Tab
+            sx={{
+              "&.Mui-selected": {
+                color: "green",
+              },
+            }}
+            label="Batch Requests"
+            {...a11yProps(2)}
+          />
+          <Tab
+            sx={{
+              "&.Mui-selected": {
+                color: "green",
+              },
+            }}
+            label="Transported Batches"
+            {...a11yProps(3)}
+          />
         </Tabs>
       </List>
       <Divider />
@@ -210,6 +235,16 @@ function ResponsiveDrawer(props) {
                 .map((data, index) => (
                   <TransporterListCardSent key={index} data={data} />
                 ))}
+            </div>
+          </TabPanel>
+          <TabPanel value={value} index={2}>
+            <div className="card-container">
+              <TransportBatchListRequests />
+            </div>
+          </TabPanel>
+          <TabPanel value={value} index={3}>
+            <div className="card-container">
+              <TransportBatchListSent />
             </div>
           </TabPanel>
         </Typography>

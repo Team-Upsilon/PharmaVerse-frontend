@@ -19,6 +19,7 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import Timeline from "./Timeline";
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -172,8 +173,7 @@ const CompletedBatches = () => {
         ))}
       </div>
       <Dialog
-           fullWidth={fullWidth}
-           maxWidth={maxWidth}
+       fullScreen
         TransitionComponent={Transition}
         open={openDialog}
         onClose={handleCloseDialog}
@@ -255,8 +255,11 @@ const CompletedBatches = () => {
               </CardActionArea>
             </Card>
           )}
-         
-        
+          <Divider/>
+            <div>
+              <Timeline/>
+              </div>
+              <Divider />
         </DialogContent>
       </Dialog>
     </div>

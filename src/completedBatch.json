@@ -1,5 +1,7 @@
 [
   {
+    "manufacturer_id": "A1235",
+    "name": "ABCD Pharma",
     "batchpic": "fsasas",
     "materialname": ["a", "b", "d"],
     "materialquantity": [1, 2, 3],
@@ -30,6 +32,8 @@
     ]
   },
   {
+    "manufacturer_id": "A1235",
+    "name": "ABCD Pharma",
     "batchpic": "gsasas",
     "materialname": ["a", "c", "d"],
     "materialquantity": [1, 2, 3],
@@ -60,6 +64,8 @@
     ]
   },
   {
+    "manufacturer_id": "A1235",
+    "name": "ABCD Pharma",
     "batchpic": "hsasas",
     "materialname": ["a", "b", "c"],
     "materialquantity": [1, 2, 3],
@@ -90,6 +96,8 @@
     ]
   },
   {
+    "manufacturer_id": "A1235",
+    "name": "ABCD Pharma",
     "batchpic": "isasas",
     "materialname": ["c", "b", "d"],
     "materialquantity": [1, 2, 3],
@@ -120,6 +128,8 @@
     ]
   },
   {
+    "manufacturer_id": "A1235",
+    "name": "ABCD Pharma",
     "batchpic": "jsasas",
     "materialname": ["a", "b", "d"],
     "materialquantity": [1, 2, 3],
