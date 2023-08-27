@@ -758,7 +758,7 @@ function ContractContextProvider(props) {
                 console.error("Error in creating batch: ", error);
                 return { success: false, message: error.message };
             }
-        },
+        }
     };
 
     const [state, setState] = useState({

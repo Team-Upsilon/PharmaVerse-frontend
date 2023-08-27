@@ -67,50 +67,60 @@ export default function SupplierListCardRequests({ data }) {
   const [selectedTransporter, setSelectedTransporter] = useState(null);
   const [selectedInspector, setSelectedInspector] = useState(null);
 
-  
+
   useEffect(() => {
     setData();
   }, []);
 
   const setData = async () => {
-
     if (!rawMaterials || !account) return;
 
-    
+    const updatedPackageRawMaterials = data.rawMaterials.map(item => {
+      const rawMaterial = rawMaterials.find(item1 => item1.materialId === item.materialId);
+      if (rawMaterial) {
+        return {
+          ...rawMaterial,
+          quantity: item.quantity, 
+        };
+      } else {
+        return null; 
+      }
+    });
 
+    setPackageRawMaterials(updatedPackageRawMaterials.filter(item => item !== null));
+    
   };
+
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
   const handleCheckAvailability = () => {
     setLoading(true);
-  
-    // Simulate an API call for availability check
     setTimeout(() => {
       const updatedAvailability = data.chemicals.map((chemical) => {
         const manufacturerName = data.name;
         const manufacturerAvailability = availabilityData.find(
           (item) => item.name === manufacturerName
         );
-  
+
         if (manufacturerAvailability) {
           const availableQuantity = manufacturerAvailability.chemicals.find(
             (availabilityItem) => availabilityItem.name === chemical.name
           )?.quantity || 0;
           return chemical.quantity <= availableQuantity;
         } else {
-          return false; // Default to false if manufacturer availability is not defined
+          return false; 
         }
       });
       setAvailability(updatedAvailability);
       setLoading(false);
     }, 2000);
   };
-  
+
 
   const handleOpenDialog = () => {
-    setSelectedTransporter(null); // Reset selected transporter
+    setSelectedTransporter(null); 
     setSelectedInspector(null);
     setOpenDialog(true);
   };
@@ -124,10 +134,9 @@ export default function SupplierListCardRequests({ data }) {
     setOpenDialogDetalis(false);
   };
   const handleSendPackage = () => {
-    // Place the order with the selected transporter
+ 
     console.log("Order placed with transporter:", selectedTransporter);
     console.log("Order placed with inspector:", selectedInspector);
-    // Close the dialog
     handleCloseDialog();
   };
 
@@ -135,52 +144,53 @@ export default function SupplierListCardRequests({ data }) {
 
   return (
     <Fade bottom>
-    <Card sx={{ maxWidth: 363, borderRadius: "24px", borderColor: "white" }}>
-      <CardHeader title={data.name} subheader={data.manufacturer_id} />
-      {/* <CardHeader title={data.description} subheader={data.manufacturerId} /> */}
-      <CardMedia
-        component="img"
-        height="194"
-        image="/static/images/cards/paella.jpg"
-        alt="Manufacturer"
-      />
-      <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          {data.chemicals.map((chemical, index) => (
-            <Typography
-              key={index}
-              variant="subtitle1"
-              color="text.primary"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "8px",
-              }}
-            >
-              {chemical.name}
-              <span
+      <Card sx={{ maxWidth: 363, borderRadius: "24px", borderColor: "white" }}>
+        <CardHeader title={data.name} subheader={data.manufacturer_id} />
+        {/* <CardHeader title={data.description} subheader={data.manufacturerId} /> */}
+        <CardMedia
+          component="img"
+          height="194"
+          image="/static/images/cards/paella.jpg"
+          alt="Manufacturer"
+        />
+        <CardContent>
+          <Typography variant="body2" color="text.secondary">
+            {/* {PackageRawMaterials.map((chemical, index) => ( */}
+            {data.chemicals.map((chemical, index) => (
+              <Typography
+                key={index}
+                variant="subtitle1"
+                color="text.primary"
                 style={{
-                  color: "#777",
-                  marginLeft: "8px",
-                  marginRight: "12px",
+                  display: "flex",
+                  alignItems: "center",
+                  marginBottom: "8px",
                 }}
               >
-                {chemical.quantity} kg
-              </span>
-              {loading ? (
-                <CircularProgress size={16} style={{ marginRight: "8px" }} />
-              ) : availability[index] === null ? (
-                ""
-              ) : availability[index] ? (
-                <CheckCircleIcon style={{ color: "green" }} />
-              ) : (
-                <CancelIcon style={{ color: "red" }} />
-              )}
-            </Typography>
-          ))}
-        </Typography>
-      </CardContent>
-      {!data["send-package"] && (
+                {chemical.name}
+                <span
+                  style={{
+                    color: "#777",
+                    marginLeft: "8px",
+                    marginRight: "12px",
+                  }}
+                >
+                  {chemical.quantity} kg
+                </span>
+                {loading ? (
+                  <CircularProgress size={16} style={{ marginRight: "8px" }} />
+                ) : availability[index] === null ? (
+                  ""
+                ) : availability[index] ? (
+                  <CheckCircleIcon style={{ color: "green" }} />
+                ) : (
+                  <CancelIcon style={{ color: "red" }} />
+                )}
+              </Typography>
+            ))}
+          </Typography>
+        </CardContent>
+
         <CardActions>
           <Stack spacing={0.2}>
             <Grid item xs={24} sm={6}>
@@ -226,140 +236,140 @@ export default function SupplierListCardRequests({ data }) {
             </Stack>
           </Stack>
         </CardActions>
-      )}
-
-      <Dialog sx={{backdropFilter: "blur(10px)"}}  TransitionComponent={Transition} open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>Confirmation Details</DialogTitle>
-        <DialogContent>
-          <DialogContentText style={{ marginBottom: "8px" }}>
-            Are you sure you want to send the package?
-          </DialogContentText>
-          <Typography variant="subtitle1">Choose a Transporter : </Typography>
-
-          {transporterData.map((transporter) => (
-            <Button
-              key={transporter.id}
-              variant="outlined"
-              onClick={() => setSelectedTransporter(transporter)}
-              style={{ margin: "8px" }}
-              color="success"
-            >
-              {transporter.name}
-            </Button>
-          ))}
-
-          {/* Display selected transporter's information */}
-          {selectedTransporter && (
-            <Card sx={{ marginTop: "16px", width: "500px" }}>
-              <CardHeader
-                title={selectedTransporter.name}
-                subheader={selectedTransporter.address}
-              />
-            </Card>
-          )}
-          <Divider sx={{ marginTop: "10px" }} />
-          <Typography sx={{ marginTop: "10px" }} variant="subtitle1">
-            Choose an Inspector :{" "}
-          </Typography>
-          {inspectorData.map((inspector) => (
-            <Button
-              key={inspector.id}
-              variant="outlined"
-              onClick={() => setSelectedInspector(inspector)}
-              style={{ margin: "8px" }}
-              color="success"
-            >
-              {inspector.name}
-            </Button>
-          ))}
-
-          {selectedInspector && (
-            <Card sx={{ marginTop: "16px", width: "500px" }}>
-              <CardHeader
-                title={selectedInspector.name}
-                subheader={selectedInspector.address}
-              />
-            </Card>
-          )}
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
-            Cancel
-          </Button>
-          {selectedTransporter && selectedInspector && (
-            <Button onClick={handleSendPackage} color="primary" autoFocus>
-              Send
-            </Button>
-          )}
-        </DialogActions>
-      </Dialog>
 
 
-      <Dialog
-        TransitionComponent={Transition}
-        fullScreen
-        open={openDialogDetalis}
-        onClose={handleCloseDialogDetails}
-      >
-        <AppBar sx={{ position: "relative" }}>
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={handleCloseDialogDetails}
-              aria-label="close"
-            >
-              <CloseIcon />
-            </IconButton>
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              Package Details
+        <Dialog sx={{ backdropFilter: "blur(10px)" }} TransitionComponent={Transition} open={openDialog} onClose={handleCloseDialog}>
+          <DialogTitle>Confirmation Details</DialogTitle>
+          <DialogContent>
+            <DialogContentText style={{ marginBottom: "8px" }}>
+              Are you sure you want to send the package?
+            </DialogContentText>
+            <Typography variant="subtitle1">Choose a Transporter : </Typography>
+
+            {transporterData.map((transporter) => (
+              <Button
+                key={transporter.id}
+                variant="outlined"
+                onClick={() => setSelectedTransporter(transporter)}
+                style={{ margin: "8px" }}
+                color="success"
+              >
+                {transporter.name}
+              </Button>
+            ))}
+
+            {selectedTransporter && (
+              <Card sx={{ marginTop: "16px", width: "500px" }}>
+                <CardHeader
+                  title={selectedTransporter.name}
+                  subheader={selectedTransporter.id}
+                />
+              </Card>
+            )}
+            <Divider sx={{ marginTop: "10px" }} />
+            <Typography sx={{ marginTop: "10px" }} variant="subtitle1">
+              Choose an Inspector :{" "}
             </Typography>
-            <Button
+            {inspectorData.map((inspector) => (
+              <Button
+                key={inspector.id}
+                variant="outlined"
+                onClick={() => setSelectedInspector(inspector)}
+                style={{ margin: "8px" }}
+                color="success"
+              >
+                {inspector.name}
+              </Button>
+            ))}
+
+            {selectedInspector && (
+              <Card sx={{ marginTop: "16px", width: "500px" }}>
+                <CardHeader
+                  title={selectedInspector.name}
+                  subheader={selectedInspector.id}
+                />
+              </Card>
+            )}
+          </DialogContent>
+
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color="primary">
+              Cancel
+            </Button>
+            {selectedTransporter && selectedInspector && (
+              <Button onClick={handleSendPackage} color="primary" autoFocus>
+                Send
+              </Button>
+            )}
+          </DialogActions>
+        </Dialog>
+
+
+        <Dialog
+          TransitionComponent={Transition}
+          fullScreen
+          open={openDialogDetalis}
+          onClose={handleCloseDialogDetails}
+        >
+          <AppBar sx={{ position: "relative" }}>
+            <Toolbar>
+              <IconButton
+                edge="start"
+                color="inherit"
+                onClick={handleCloseDialogDetails}
+                aria-label="close"
+              >
+                <CloseIcon />
+              </IconButton>
+              <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                Package Details
+              </Typography>
+              <Button
                 variant="outlined"
                 endIcon={<SendIcon />}
                 onClick={handleOpenDialog}
-                    //  disabled={!allChemicalsAvailable}
+                //  disabled={!allChemicalsAvailable}
                 sx={{ borderRadius: "50px" }}
                 color="success"
               >
                 Send Package
               </Button>
-          </Toolbar>
-        </AppBar>
+            </Toolbar>
+          </AppBar>
 
-        <DialogContent>
-          <div>
-            <Typography variant="body2" color="text.secondary">
-              <div className="card-container" style={{ marginTop: "8px" }}>
-                {data.chemicals.map((chemical, index) => (
-                  <Card sx={{ maxWidth: 700, marginBottom: "16px" }}>
-                    <CardActionArea>
-                      <CardMedia
-                        component="img"
-                        height="140"
-                        image={chemical.image}
-                        alt={chemical.name}
-                      />
-                      <CardContent>
-                        <Typography gutterBottom variant="h5" component="div">
-                          {chemical.name} ({chemical.quantity} Kg)
-                        </Typography>
+          <DialogContent>
+            <div>
+              <Typography variant="body2" color="text.secondary">
+                <div className="card-container" style={{ marginTop: "8px" }}>
+                  {/* {PackageRawMaterials.map((chemical, index) => ( */}
+                  {data.chemicals.map((chemical, index) => (
+                    <Card sx={{ maxWidth: 700, marginBottom: "16px" }}>
+                      <CardActionArea>
+                        <CardMedia
+                          component="img"
+                          height="140"
+                          image={chemical.image}  // chemical.ipfs_hash
+                          alt={chemical.name}
+                        />
+                        <CardContent>
+                          <Typography gutterBottom variant="h5" component="div">
+                            {chemical.name} ({chemical.quantity} Kg)
+                          </Typography>
 
-                        <Typography variant="body2" color="text.secondary">
-                          {chemical.description}
-                        </Typography>
-                      </CardContent>
-                    </CardActionArea>
-                  </Card>
-                ))}
-              </div>
-            </Typography>
-            <Divider />
-          </div>
-        </DialogContent>
-      </Dialog>
-    </Card>
+                          <Typography variant="body2" color="text.secondary">
+                            {chemical.description}
+                          </Typography>
+                        </CardContent>
+                      </CardActionArea>
+                    </Card>
+                  ))}
+                </div>
+              </Typography>
+              <Divider />
+            </div>
+          </DialogContent>
+        </Dialog>
+      </Card>
     </Fade>
   );
 }
