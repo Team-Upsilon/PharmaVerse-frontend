@@ -15,6 +15,10 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CloseIcon from "@mui/icons-material/Close";
+import { useEffect, useContext } from "react";
+import { ContractContext } from "../Context/ContractContext";
+import { AuthContext } from "../Context/AuthContext";
+import CONSTANTS from "../Utils/Constants";
 import {
   AppBar,
   Button,
@@ -50,6 +54,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 export default function SupplierListCardRequests({ data }) {
+  const { rawMaterials, Services } = useContext(ContractContext);
+  let { account } = useContext(AuthContext);
+
+  const [PackageRawMaterials, setPackageRawMaterials] = useState([]);
   const [expanded, setExpanded] = useState(false);
   const [availability, setAvailability] = useState(
     new Array(data.chemicals.length).fill(null)
@@ -59,13 +67,37 @@ export default function SupplierListCardRequests({ data }) {
   const [openDialogDetalis, setOpenDialogDetalis] = useState(false);
   const [selectedTransporter, setSelectedTransporter] = useState(null);
   const [selectedInspector, setSelectedInspector] = useState(null);
+
+
+  useEffect(() => {
+    setData();
+  }, []);
+
+  const setData = async () => {
+    if (!rawMaterials || !account) return;
+
+    const updatedPackageRawMaterials = data.rawMaterials.map(item => {
+      const rawMaterial = rawMaterials.find(item1 => item1.materialId === item.materialId);
+      if (rawMaterial) {
+        return {
+          ...rawMaterial,
+          quantity: item.quantity, 
+        };
+      } else {
+        return null; 
+      }
+    });
+
+    setPackageRawMaterials(updatedPackageRawMaterials.filter(item => item !== null));
+    
+  };
+
+
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
   const handleCheckAvailability = () => {
     setLoading(true);
-
-    // Simulate an API call for availability check
     setTimeout(() => {
       const updatedAvailability = data.chemicals.map((chemical) => {
         const manufacturerName = data.name;
@@ -80,7 +112,7 @@ export default function SupplierListCardRequests({ data }) {
             )?.quantity || 0;
           return chemical.quantity <= availableQuantity;
         } else {
-          return false; // Default to false if manufacturer availability is not defined
+          return false; 
         }
       });
       setAvailability(updatedAvailability);
@@ -89,7 +121,7 @@ export default function SupplierListCardRequests({ data }) {
   };
 
   const handleOpenDialog = () => {
-    setSelectedTransporter(null); // Reset selected transporter
+    setSelectedTransporter(null); 
     setSelectedInspector(null);
     setOpenDialog(true);
   };
@@ -103,10 +135,9 @@ export default function SupplierListCardRequests({ data }) {
     setOpenDialogDetalis(false);
   };
   const handleSendPackage = () => {
-    // Place the order with the selected transporter
+ 
     console.log("Order placed with transporter:", selectedTransporter);
     console.log("Order placed with inspector:", selectedInspector);
-    // Close the dialog
     handleCloseDialog();
   };
 
@@ -116,14 +147,17 @@ export default function SupplierListCardRequests({ data }) {
     <Fade bottom>
       <Card sx={{ maxWidth: 363, borderRadius: "24px", borderColor: "white" }}>
         <CardHeader title={data.name} subheader={data.manufacturer_id} />
+        {/* <CardHeader title={data.description} subheader={data.manufacturerId} /> */}
         <CardMedia
           component="img"
           height="194"
           image="/static/images/cards/paella.jpg"
+          // image={`${CONSTANTS.IPFSURL}/${data.ipfs_hash}`}
           alt="Manufacturer"
         />
         <CardContent>
           <Typography variant="body2" color="text.secondary">
+            {/* {PackageRawMaterials.map((chemical, index) => ( */}
             {data.chemicals.map((chemical, index) => (
               <Typography
                 key={index}
@@ -158,60 +192,66 @@ export default function SupplierListCardRequests({ data }) {
             ))}
           </Typography>
         </CardContent>
-        {!data["send-package"] && (
-          <CardActions>
-            <Stack spacing={0.2}>
-              <Grid item xs={24} sm={6}>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  endIcon={<EventAvailableIcon />}
-                  onClick={handleCheckAvailability}
-                  disabled={loading}
-                  sx={{
-                    borderRadius: "50px",
-                    width: "345px",
-                    marginBottom: "10px",
-                  }}
-                  color="success"
-                >
-                  {loading ? "Checking..." : "Check Availability"}
-                </Button>
-              </Grid>
 
-              <Stack direction="row" spacing={0.6}>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  endIcon={<InfoOutlinedIcon />}
-                  onClick={handleOpenDialogDetails}
-                  sx={{ borderRadius: "50px" }}
-                  color="success"
-                >
-                  Details
-                </Button>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  endIcon={<SendIcon />}
-                  // disabled={!allChemicalsAvailable}
-                  onClick={handleOpenDialog}
-                  sx={{ borderRadius: "50px" }}
-                  color="success"
-                >
-                  Send Package
-                </Button>
-              </Stack>
+        <CardActions>
+          <Stack spacing={0.2}>
+            <Grid item xs={24} sm={6}>
+              <Button
+                fullWidth
+                variant="outlined"
+                endIcon={<EventAvailableIcon />}
+                onClick={handleCheckAvailability}
+                disabled={loading}
+                sx={{
+                  borderRadius: "50px",
+                  width: "345px",
+                  marginBottom: "10px",
+                }}
+                color="success"
+              >
+                {loading ? "Checking..." : "Check Availability"}
+              </Button>
+            </Grid>
+
+            <Stack direction="row" spacing={0.6}>
+              <Button
+                fullWidth
+                variant="outlined"
+                endIcon={<InfoOutlinedIcon />}
+                onClick={handleOpenDialogDetails}
+                sx={{ borderRadius: "50px" }}
+                color="success"
+              >
+                Details
+              </Button>
+              <Button
+                fullWidth
+                variant="contained"
+                endIcon={<SendIcon />}
+                // disabled={!allChemicalsAvailable}
+                onClick={handleOpenDialog}
+                sx={{ borderRadius: "50px" }}
+                color="success"
+              >
+                Send Package
+              </Button>
             </Stack>
-          </CardActions>
-        )}
+          </Stack>
+        </CardActions>
 
-        <Dialog
-          sx={{ backdropFilter: "blur(10px)" }}
-          TransitionComponent={Transition}
-          open={openDialog}
-          onClose={handleCloseDialog}
-        >
+            {transporterData.map((transporter) => (
+              <Button
+                key={transporter.id}
+                variant="outlined"
+                onClick={() => setSelectedTransporter(transporter)}
+                style={{ margin: "8px" }}
+                color="success"
+              >
+                {transporter.name}
+              </Button>
+            ))}
+
+        <Dialog sx={{ backdropFilter: "blur(10px)" }} TransitionComponent={Transition} open={openDialog} onClose={handleCloseDialog}>
           <DialogTitle>Confirmation Details</DialogTitle>
           <DialogContent>
             <DialogContentText style={{ marginBottom: "8px" }}>
@@ -231,12 +271,11 @@ export default function SupplierListCardRequests({ data }) {
               </Button>
             ))}
 
-            {/* Display selected transporter's information */}
             {selectedTransporter && (
               <Card sx={{ marginTop: "16px", width: "500px" }}>
                 <CardHeader
                   title={selectedTransporter.name}
-                  subheader={selectedTransporter.address}
+                  subheader={selectedTransporter.id}
                 />
               </Card>
             )}
@@ -260,7 +299,7 @@ export default function SupplierListCardRequests({ data }) {
               <Card sx={{ marginTop: "16px", width: "500px" }}>
                 <CardHeader
                   title={selectedInspector.name}
-                  subheader={selectedInspector.address}
+                  subheader={selectedInspector.id}
                 />
               </Card>
             )}
@@ -314,23 +353,26 @@ export default function SupplierListCardRequests({ data }) {
             <div>
               <Typography variant="body2" color="text.secondary">
                 <div className="card-container" style={{ marginTop: "8px" }}>
+                  {/* {PackageRawMaterials.map((chemical, index) => ( */}
                   {data.chemicals.map((chemical, index) => (
                     <Card sx={{ maxWidth: 700, marginBottom: "16px" }}>
-                      <CardMedia
-                        component="img"
-                        height="140"
-                        image={chemical.image}
-                        alt={chemical.name}
-                      />
-                      <CardContent>
-                        <Typography gutterBottom variant="h5" component="div">
-                          {chemical.name} ({chemical.quantity} Kg)
-                        </Typography>
+                      <CardActionArea>
+                        <CardMedia
+                          component="img"
+                          height="140"
+                          image={chemical.image}  // chemical.ipfs_hash
+                          alt={chemical.name}
+                        />
+                        <CardContent>
+                          <Typography gutterBottom variant="h5" component="div">
+                            {chemical.name} ({chemical.quantity} Kg)
+                          </Typography>
 
-                        <Typography variant="body2" color="text.secondary">
-                          {chemical.description}
-                        </Typography>
-                      </CardContent>
+                          <Typography variant="body2" color="text.secondary">
+                            {chemical.description}
+                          </Typography>
+                        </CardContent>
+                      </CardActionArea>
                     </Card>
                   ))}
                 </div>

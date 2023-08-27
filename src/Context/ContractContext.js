@@ -104,20 +104,31 @@ function ContractContextProvider(props) {
                 // Loop through the packages and fetch each one
                 for (let i = 1; i <= packageCount; i++) {
                     const packageInfo = await SupplierContract.rawMaterialPackages(i);
+
+                    const rawMaterialIds = packageInfo[1];
+                    const rawMaterialQuantities = packageInfo[2];
+
+                    const rawMaterials = [];
+
+                    for (let j = 0; j < rawMaterialIds.length; j++) {
+                        rawMaterials.push({
+                            materialId: rawMaterialIds[j].toNumber(),
+                            quantity: rawMaterialQuantities[j].toNumber(),
+                        });
+                    }
+
                     packageList.push({
                         packageId: packageInfo[0].toNumber(),
+                        rawMaterials: rawMaterials,
                         description: packageInfo[1],
                         ipfs_hash: packageInfo[2],
                         manufacturerId: packageInfo[3],
                         transporterId: packageInfo[4],
                         supplierId: packageInfo[5],
                         inspectorId: packageInfo[6],
-                        stage: packageInfo[7].toNumber(),
+                        stage: packageInfo[7],
                     });
                 }
-
-                setPackages(packageList);
-
 
                 setPackages(packageList);
                 console.log("Packages: ", packageList);
@@ -174,10 +185,22 @@ function ContractContextProvider(props) {
                 // Loop through the batches and fetch each one
                 for (let i = 1; i <= batchCount; i++) {
                     const batchInfo = await ManufacturerContract.batches(i);
+
+                    const medicineIds = batchInfo[1];
+                    const medicineQuantities = batchInfo[2];
+
+                    const medicines = [];
+
+                    for (let j = 0; j < medicineIds.length; j++) {
+                        medicines.push({
+                            materialId: medicineIds[j].toNumber(),
+                            quantity: medicineQuantities[j].toNumber(),
+                        });
+                    }
+
                     batchList.push({
                         batchId: batchInfo[0].toNumber(),
-                        medicineIds: batchInfo[1].map((id) => id.toNumber()),
-                        medicineQuantities: batchInfo[2].map((qty) => qty.toNumber()),
+                        medicines:medicines.toNumber(),
                         manufacturerId: batchInfo[3],
                         transporterId: batchInfo[4],
                         wholesalerId: batchInfo[5],
@@ -738,7 +761,7 @@ function ContractContextProvider(props) {
                 console.error("Error in creating batch: ", error);
                 return { success: false, message: error.message };
             }
-        },
+        }
     };
 
     const [state, setState] = useState({

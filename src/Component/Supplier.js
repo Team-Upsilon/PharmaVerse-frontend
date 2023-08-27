@@ -25,7 +25,10 @@ import ChemicalList from "../Miscellaneous/ChemicalList";
 import TopChemicals from "../Miscellaneous/TopChemicals";
 import SupplierListCardRequests from "../Miscellaneous/SupplierListCardRequests";
 import SupplierListCardSent from "../Miscellaneous/SupplierListCardSent";
-import Logo from '../Images/logoPharma.png'
+import Logo from '../Images/logoPharma.png';
+import { useEffect, useContext } from "react";
+import { ContractContext } from "../Context/ContractContext";
+import { AuthContext } from "../Context/AuthContext";
 
 const drawerWidth = 240;
 function TabPanel(props) {
@@ -61,9 +64,45 @@ function a11yProps(index) {
   };
 }
 function ResponsiveDrawer(props) {
+  const { packages, Services, rawMaterials } = useContext(ContractContext);
+  let { account } = useContext(AuthContext);
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [value, setValue] = React.useState(0);
+  const [ReceivedRequestData, setReceivedRequestData] = React.useState([]);
+  const [SentRequestData, setSentRequestData] = React.useState([]);
+
+  useEffect(() => {
+    setData();
+  }, []);
+
+  const setData = async () => {
+    if (!packages || !account) return;
+
+    const receivedRequests = packages
+      .filter((item) => item.supplierId === account && item.stage === "Requested")
+      .map((item) => {
+        const materialId = item.rawMaterials[0]?.materialId; // Get the materialId from the first object
+        const rawMaterial = rawMaterials.find((rm) => rm.id === materialId); // Find the raw material with matching id
+        const ipfsHash = rawMaterial ? rawMaterial.ipfs_hash : ""; // Get the ipfs_hash if rawMaterial exists
+
+        return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the package data
+      });
+
+    setReceivedRequestData(receivedRequests);
+
+    const sentRequests = packages
+      .filter((item) => item.supplierId === account && item.stage === "Created")
+      .map((item) => {
+        const materialId = item.rawMaterials[0]?.materialId; // Get the materialId from the first object
+        const rawMaterial = rawMaterials.find((rm) => rm.id === materialId); // Find the raw material with matching id
+        const ipfsHash = rawMaterial ? rawMaterial.ipfs_hash : ""; // Get the ipfs_hash if rawMaterial exists
+
+        return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the package data
+      });
+
+    setSentRequestData(sentRequests);
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -149,14 +188,13 @@ function ResponsiveDrawer(props) {
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
         aria-label="mailbox folders"
       >
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Drawer
           container={container}
           variant="temporary"
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true,
           }}
           sx={{
             display: { xs: "block", sm: "none" },
@@ -199,6 +237,9 @@ function ResponsiveDrawer(props) {
                 .map((data, index) => (
                   <SupplierListCardRequests key={index} data={data} />
                 ))}
+              {/* {ReceivedRequestData.map((data, index) => (
+                  <SupplierListCardRequests key={index} data={data} />
+                ))} */}
             </div>
           </TabPanel>
 
@@ -209,6 +250,9 @@ function ResponsiveDrawer(props) {
                 .map((data, index) => (
                   <SupplierListCardSent key={index} data={data} />
                 ))}
+              {/* {SentRequestData.map((data, index) => (
+                  <SupplierListCardSent key={index} data={data} />
+                ))} */}
             </div>
           </TabPanel>
         </Typography>
