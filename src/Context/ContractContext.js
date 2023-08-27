@@ -131,9 +131,6 @@ function ContractContextProvider(props) {
                 }
 
                 setPackages(packageList);
-
-
-                setPackages(packageList);
                 console.log("Packages: ", packageList);
             } catch (error) {
                 console.error("Error fetching packages: ", error);

@@ -15,6 +15,9 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CloseIcon from "@mui/icons-material/Close";
+import { useEffect, useContext } from "react";
+import { ContractContext } from "../Context/ContractContext";
+import { AuthContext } from "../Context/AuthContext";
 import {
   AppBar,
   Button,
@@ -50,6 +53,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 export default function SupplierListCardRequests({ data }) {
+  const { rawMaterials, Services } = useContext(ContractContext);
+  let { account } = useContext(AuthContext);
+
+  const [PackageRawMaterials, setPackageRawMaterials] = useState([]);
   const [expanded, setExpanded] = useState(false);
   const [availability, setAvailability] = useState(
     new Array(data.chemicals.length).fill(null)
@@ -59,6 +66,20 @@ export default function SupplierListCardRequests({ data }) {
   const [openDialogDetalis, setOpenDialogDetalis] = useState(false);
   const [selectedTransporter, setSelectedTransporter] = useState(null);
   const [selectedInspector, setSelectedInspector] = useState(null);
+
+  
+  useEffect(() => {
+    setData();
+  }, []);
+
+  const setData = async () => {
+
+    if (!rawMaterials || !account) return;
+
+    
+
+  };
+
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -116,6 +137,7 @@ export default function SupplierListCardRequests({ data }) {
     <Fade bottom>
     <Card sx={{ maxWidth: 363, borderRadius: "24px", borderColor: "white" }}>
       <CardHeader title={data.name} subheader={data.manufacturer_id} />
+      {/* <CardHeader title={data.description} subheader={data.manufacturerId} /> */}
       <CardMedia
         component="img"
         height="194"
