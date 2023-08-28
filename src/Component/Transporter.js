@@ -69,7 +69,7 @@ function a11yProps(index) {
 }
 function ResponsiveDrawer(props) {
 
-  const { packages, Services, rawMaterials } = useContext(ContractContext);
+  const { packages, Services, rawMaterials, batches, medicines } = useContext(ContractContext);
   let { account } = useContext(AuthContext);
 
   const { window } = props;
@@ -77,15 +77,18 @@ function ResponsiveDrawer(props) {
   const [value, setValue] = React.useState(0);
   const [ReceivedPackageRequestData, setReceivedPackageRequestData] = React.useState([]);
   const [SentPackageRequestData, setSentPackageRequestData] = React.useState([]);
+  const [ReceivedBatchRequestData, setReceivedBatchRequestData] = React.useState([]);
+  const [SentBatchRequestData, setSentBatchRequestData] = React.useState([]);
+  
 
   useEffect(() => {
     setData();
   }, []);
 
   const setData = async () => {
-    if (!packages || !account) return;
+    if (!packages || !account || !batches) return;
 
-    const receivedRequests = packages
+    const receivedRequestsPackage = packages
       .filter((item) => item.transporterId === account && item.stage === "Created")
       .map((item) => {
         const materialId = item.rawMaterials[0]?.materialId; // Get the materialId from the first object
@@ -95,19 +98,31 @@ function ResponsiveDrawer(props) {
         return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the package data
       });
 
-      setReceivedPackageRequestData(receivedRequests);
+      setReceivedPackageRequestData(receivedRequestsPackage);
 
-    const sentRequests = packages
-      .filter((item) => item.transporterId === account && item.stage === "Delivered")
+    const sentRequestsBatch = batches
+      .filter((item) => item.transporterId === account && item.stage === "Packaging" && item.InspectionStage === "STAGE_3")
       .map((item) => {
-        const materialId = item.rawMaterials[0]?.materialId; // Get the materialId from the first object
-        const rawMaterial = rawMaterials.find((rm) => rm.id === materialId); // Find the raw material with matching id
-        const ipfsHash = rawMaterial ? rawMaterial.ipfs_hash : ""; // Get the ipfs_hash if rawMaterial exists
+        const medicineId = item.medicines[0]?.materialId; // Get the materialId from the first object
+        const medicine = medicines.find((rm) => rm.id === medicineId); // Find the medicine with matching id
+        const ipfsHash = medicine ? medicine.ipfs_hash : ""; // Get the ipfs_hash if medicine exists
 
-        return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the package data
+        return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the batch data
       });
 
-      setSentPackageRequestData(sentRequests);
+      setReceivedBatchRequestData(sentRequestsBatch);
+
+      const receivedRequestsBatch = batches
+      .filter((item) => item.transporterId === account && item.stage === "Delivered" && item.InspectionStage === "STAGE_3")
+      .map((item) => {
+        const medicineId = item.medicines[0]?.materialId; // Get the materialId from the first object
+        const medicine = medicines.find((rm) => rm.id === medicineId); // Find the medicine with matching id
+        const ipfsHash = medicine ? medicine.ipfs_hash : ""; // Get the ipfs_hash if medicine exists
+
+        return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the batch data
+      });
+
+      setSentBatchRequestData(receivedRequestsBatch);
   };
 
   const handleChange = (event, newValue) => {
@@ -286,12 +301,12 @@ function ResponsiveDrawer(props) {
           </TabPanel>
           <TabPanel value={value} index={2}>
             <div className="card-container">
-              <TransportBatchListRequests />
+              <TransportBatchListRequests data={ReceivedBatchRequestData} />
             </div>
           </TabPanel>
           <TabPanel value={value} index={3}>
             <div className="card-container">
-              <TransportBatchListSent />
+              <TransportBatchListSent data ={SentBatchRequestData} />
             </div>
           </TabPanel>
         </Typography>
