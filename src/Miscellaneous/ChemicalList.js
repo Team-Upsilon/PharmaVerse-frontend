@@ -129,7 +129,7 @@ const ChemicalList = () => {
               }}
               onClick={() => handleCardClick(qd)}
             >
-              <p className="card__title">{qd.x}</p>
+              <p className="card__title" style={{ color: "white", fontSize: "2rem", marginTop: "12rem" }}>{qd.x}</p>
               {/* <img src={chemimg} alt="" height="200px" width="160px" /> */}
               <div className="card__content">
                 <p className="card__title">
