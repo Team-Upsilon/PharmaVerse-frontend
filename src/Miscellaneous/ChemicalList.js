@@ -282,7 +282,7 @@ const ChemicalList = () => {
               }}
               onClick={() => handleCardClick(qd)}
             >
-              <p className="card__title">{qd.x}</p>
+              <p className="card__title" style={{ color: "white", fontSize: "2rem", marginTop: "12rem" }}>{qd.x}</p>
               {/* <img src={chemimg} alt="" height="200px" width="160px" /> */}
               <div className="card__content">
                 <p className="card__title">
@@ -296,6 +296,7 @@ const ChemicalList = () => {
               </div>
             </div>
           ))}
+<<<<<<< HEAD
 
         <Dialog
           fullScreen
@@ -318,6 +319,49 @@ const ChemicalList = () => {
               </Typography>
             </Toolbar>
           </AppBar>
+=======
+        <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+          {selectedChemical && (
+            <>
+              <DialogTitle>{selectedChemical.x}</DialogTitle>
+              <DialogContent>
+                <p>{selectedChemical.x}: {selectedChemical.quantity + incrementValue}</p>
+                <input
+                  type="number"
+                  value={incrementValue}
+                  onChange={(e) => setIncrementValue(parseInt(e.target.value))}
+                />
+                <button
+                  className="button2"
+                  onClick={() => {
+                    increaseQuantity(xAxisData.findIndex(item => item.x === selectedChemical.x), incrementValue);
+                    setIncrementValue(0);
+                  }}
+                >
+                  Apply
+                </button>
+                {/* Add other chemical information */}
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setDialogOpen(false)} color="primary">
+                  Close
+                </Button>
+                <Button
+                  onClick={() => {
+                    setDialogOpen(false);
+                    setEnableUpdate(true);
+                  }}
+                  color="primary"
+                >
+                  Update
+                </Button>
+              </DialogActions>
+            </>
+          )}
+        </Dialog>
+
+
+>>>>>>> 36ae9662a8d4e46f87069c1b58cc2a9e2df16290
 
           <DialogContent>
             <div>

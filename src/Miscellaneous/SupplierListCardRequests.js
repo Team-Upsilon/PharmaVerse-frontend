@@ -81,15 +81,15 @@ export default function SupplierListCardRequests({ data }) {
       if (rawMaterial) {
         return {
           ...rawMaterial,
-          quantity: item.quantity, 
+          quantity: item.quantity,
         };
       } else {
-        return null; 
+        return null;
       }
     });
 
     setPackageRawMaterials(updatedPackageRawMaterials.filter(item => item !== null));
-    
+
   };
 
 
@@ -112,7 +112,7 @@ export default function SupplierListCardRequests({ data }) {
             )?.quantity || 0;
           return chemical.quantity <= availableQuantity;
         } else {
-          return false; 
+          return false;
         }
       });
       setAvailability(updatedAvailability);
@@ -121,7 +121,7 @@ export default function SupplierListCardRequests({ data }) {
   };
 
   const handleOpenDialog = () => {
-    setSelectedTransporter(null); 
+    setSelectedTransporter(null);
     setSelectedInspector(null);
     setOpenDialog(true);
   };
@@ -134,11 +134,24 @@ export default function SupplierListCardRequests({ data }) {
   const handleCloseDialogDetails = () => {
     setOpenDialogDetalis(false);
   };
-  const handleSendPackage = () => {
- 
-    console.log("Order placed with transporter:", selectedTransporter);
-    console.log("Order placed with inspector:", selectedInspector);
+  const handleSendPackage = async () => {
+
+    // const response = await Services.update_package_state(data.packageId, 1);
+
+    // if (response.success) {
+    //   console.log("Order placed with transporter:", selectedTransporter);
+    //   console.log("Order placed with inspector:", selectedInspector);
+    //   handleCloseDialog();
+
+
+    // }
+    // else{
+    //   console.log("Error" + response.message);
+    //   handleCloseDialog();
+    // }
+
     handleCloseDialog();
+
   };
 
   const allChemicalsAvailable = availability.every((available) => available);
@@ -348,7 +361,7 @@ export default function SupplierListCardRequests({ data }) {
                         <CardMedia
                           component="img"
                           height="140"
-                          image={chemical.image}  // chemical.ipfs_hash
+                          image={chemical.image}  // {`${CONSTANTS.IPFSURL}/${chemical.ipfs_hash}`}
                           alt={chemical.name}
                         />
                         <CardContent>

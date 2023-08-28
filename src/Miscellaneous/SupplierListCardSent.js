@@ -100,6 +100,7 @@ export default function SupplierListCardSent({ data }) {
   return (
     <Fade bottom>
     <Card sx={{ maxWidth: 370, borderRadius: "24px", borderColor: "white" }}>
+        {/* <CardHeader title={data.description} subheader={data.manufacturerId} /> */}
       <CardHeader title={data.name} subheader={data.manufacturer_id} />
       <CardMedia
         component="img"
@@ -218,7 +219,7 @@ export default function SupplierListCardSent({ data }) {
                       <CardMedia
                         component="img"
                         height="140"
-                        image={chemical.image} // ipfs_hash
+                        image={chemical.image} // {`${CONSTANTS.IPFSURL}/${chemical.ipfs_hash}`}
                         alt={chemical.name}
                       />
                       <CardContent>

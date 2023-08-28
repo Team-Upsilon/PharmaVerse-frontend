@@ -31,6 +31,9 @@ import TransporterListCardSent from "../Miscellaneous/TransporterListCardSent";
 import Logo from "../Images/logoPharma.png";
 import TransportBatchListSent from "../Miscellaneous/TransportBatchListSent";
 import TransportBatchListRequests from "../Miscellaneous/TransportBatchListRequests";
+import { useEffect, useContext } from "react";
+import { ContractContext } from "../Context/ContractContext";
+import { AuthContext } from "../Context/AuthContext";
 const drawerWidth = 240;
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -65,9 +68,62 @@ function a11yProps(index) {
   };
 }
 function ResponsiveDrawer(props) {
+
+  const { packages, Services, rawMaterials, batches, medicines } = useContext(ContractContext);
+  let { account } = useContext(AuthContext);
+
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [value, setValue] = React.useState(0);
+  const [ReceivedPackageRequestData, setReceivedPackageRequestData] = React.useState([]);
+  const [SentPackageRequestData, setSentPackageRequestData] = React.useState([]);
+  const [ReceivedBatchRequestData, setReceivedBatchRequestData] = React.useState([]);
+  const [SentBatchRequestData, setSentBatchRequestData] = React.useState([]);
+  
+
+  useEffect(() => {
+    setData();
+  }, []);
+
+  const setData = async () => {
+    if (!packages || !account || !batches) return;
+
+    const receivedRequestsPackage = packages
+      .filter((item) => item.transporterId === account && item.stage === "Created")
+      .map((item) => {
+        const materialId = item.rawMaterials[0]?.materialId; // Get the materialId from the first object
+        const rawMaterial = rawMaterials.find((rm) => rm.id === materialId); // Find the raw material with matching id
+        const ipfsHash = rawMaterial ? rawMaterial.ipfs_hash : ""; // Get the ipfs_hash if rawMaterial exists
+
+        return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the package data
+      });
+
+      setReceivedPackageRequestData(receivedRequestsPackage);
+
+    const sentRequestsBatch = batches
+      .filter((item) => item.transporterId === account && item.stage === "Packaging" && item.InspectionStage === "STAGE_3")
+      .map((item) => {
+        const medicineId = item.medicines[0]?.materialId; // Get the materialId from the first object
+        const medicine = medicines.find((rm) => rm.id === medicineId); // Find the medicine with matching id
+        const ipfsHash = medicine ? medicine.ipfs_hash : ""; // Get the ipfs_hash if medicine exists
+
+        return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the batch data
+      });
+
+      setReceivedBatchRequestData(sentRequestsBatch);
+
+      const receivedRequestsBatch = batches
+      .filter((item) => item.transporterId === account && item.stage === "Delivered" && item.InspectionStage === "STAGE_3")
+      .map((item) => {
+        const medicineId = item.medicines[0]?.materialId; // Get the materialId from the first object
+        const medicine = medicines.find((rm) => rm.id === medicineId); // Find the medicine with matching id
+        const ipfsHash = medicine ? medicine.ipfs_hash : ""; // Get the ipfs_hash if medicine exists
+
+        return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the batch data
+      });
+
+      setSentBatchRequestData(receivedRequestsBatch);
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -87,7 +143,7 @@ function ResponsiveDrawer(props) {
           style={{ marginTop: "1rem", marginBottom: "1rem" }}
         />
       </div>
-      {/* <Toolbar /> */}
+
       <Divider />
       <List>
         <Tabs
@@ -176,14 +232,14 @@ function ResponsiveDrawer(props) {
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
         aria-label="mailbox folders"
       >
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+
         <Drawer
           container={container}
           variant="temporary"
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true, 
           }}
           sx={{
             display: { xs: "block", sm: "none" },
@@ -221,6 +277,9 @@ function ResponsiveDrawer(props) {
         <Typography paragraph>
           <TabPanel value={value} index={0}>
             <div className="card-container">
+            {/* {ReceivedPackageRequestData.map((data, index) => (
+                  <TransporterListCardRequests key={index} data={data} />
+                ))} */}
               {transporterPage
                 .filter((data) => !data["send-package"])
                 .map((data, index) => (
@@ -230,6 +289,9 @@ function ResponsiveDrawer(props) {
           </TabPanel>
           <TabPanel value={value} index={1}>
             <div className="card-container">
+            {/* {SentPackageRequestData.map((data, index) => (
+                  <TransporterListCardSent key={index} data={data} />
+                ))} */}
               {transporterPage
                 .filter((data) => data["send-package"])
                 .map((data, index) => (
@@ -239,12 +301,12 @@ function ResponsiveDrawer(props) {
           </TabPanel>
           <TabPanel value={value} index={2}>
             <div className="card-container">
-              <TransportBatchListRequests />
+              <TransportBatchListRequests data={ReceivedBatchRequestData} />
             </div>
           </TabPanel>
           <TabPanel value={value} index={3}>
             <div className="card-container">
-              <TransportBatchListSent />
+              <TransportBatchListSent data ={SentBatchRequestData} />
             </div>
           </TabPanel>
         </Typography>
@@ -254,10 +316,6 @@ function ResponsiveDrawer(props) {
 }
 
 ResponsiveDrawer.propTypes = {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
   window: PropTypes.func,
 };
 

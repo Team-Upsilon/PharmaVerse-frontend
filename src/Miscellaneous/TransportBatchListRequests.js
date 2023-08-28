@@ -16,6 +16,10 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CloseIcon from "@mui/icons-material/Close";
+import { useEffect, useContext } from "react";
+import { ContractContext } from "../Context/ContractContext";
+import { AuthContext } from "../Context/AuthContext";
+import CONSTANTS from "../Utils/Constants";
 import {
   AppBar,
   Button,
@@ -49,22 +53,53 @@ const ExpandMore = styled((props) => {
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-export default function TransportBatchListRequests() {
-  const [batches, setBatches] = useState(batchData);
+
+export default function TransportBatchListRequests({ data }) {
+
+  const { packages, Services, medicines } = useContext(ContractContext);
+  let { account } = useContext(AuthContext);
+
+  const [BatchMedicines, setBatchMedicines] = useState([]);
+  const [batches, setBatches] = useState(batchData); // out
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedBatch, setSelectedBatch] = useState(null); // Track selected batch
+  const [selectedBatch, setSelectedBatch] = useState(null); 
   const [selectedTransporter, setSelectedTransporter] = useState(null);
   const [selectedInspector, setSelectedInspector] = useState(null);
   const [selectedWholesaler, setSelectedWholesaler] = useState(null);
+
+  useEffect(() => {
+    setData();
+  }, []);
+
+  const setData = async () => {
+    if (!medicines || !account) return;
+
+    const updatedBatchMedicines = data.medicines.map(item => {
+      const Medicine = medicines.find(item1 => item1.medicineId === item.medicineId);
+      if (Medicine) {
+        return {
+          ...Medicine,
+          quantity: item.quantity,
+        };
+      } else {
+        return null;
+      }
+    });
+
+    setBatchMedicines(updatedBatchMedicines.filter(item => item !== null));
+
+  };
+
+
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
   const handleOpenDialog = (batch) => {
     setSelectedBatch(batch);
-    setSelectedTransporter(null); // Reset selected transporter
+    setSelectedTransporter(null);
     setSelectedInspector(null);
     setSelectedWholesaler(null);
     setOpenDialog(true);
@@ -72,25 +107,38 @@ export default function TransportBatchListRequests() {
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
-  const handleSendPackage = () => {
+  const handleSendPackage = async (ID) => {
+    // const response = await Services.update_batch_state(ID,4);
+
+    // if (response.success) {
+    //   handleCloseDialog();
+    // }
+    // else{
+    //   console.log("Error" + response.message);
+    //   handleCloseDialog();
+
     handleCloseDialog();
   };
 
   return (
     <Fade bottom>
+      {/* {data.map((batch, index) => ( */}
       {batches.map((batch, index) => (
         <Card
           sx={{ maxWidth: 363, borderRadius: "24px", borderColor: "white" }}
         >
+          {/* <CardHeader title={`${batch.batchId.slice(0, 10)}..`} subheader={batch.manufacturerId} /> */}
           <CardHeader title={batch.name} subheader={batch.manufacturer_id} />
           <CardMedia
             component="img"
             height="194"
             image={batch.batchpic}
+            // image={`${CONSTANTS.IPFSURL}/${batch.ipfs_hash}`}
             alt="Batch"
           />
           <CardContent>
             <Typography variant="body2" color="text.secondary">
+              {/* Current Stage : {batch.stage} */}
               Current Stage : {batch.currentstage}
             </Typography>
           </CardContent>
@@ -117,7 +165,7 @@ export default function TransportBatchListRequests() {
                   fullWidth
                   variant="contained"
                   endIcon={<SendIcon />}
-                  onClick={handleSendPackage}
+                  onClick={() => handleSendPackage(batch.batchId)}
                   sx={{
                     borderRadius: "50px",
                     width: "345px",
@@ -156,7 +204,7 @@ export default function TransportBatchListRequests() {
                 <Button
                   variant="outlined"
                   endIcon={<SendIcon />}
-                  onClick={handleCloseDialog}
+                  onClick={() => handleSendPackage(batch.batchId)}
                   sx={{ borderRadius: "50px" }}
                   color="success"
                 >
@@ -166,66 +214,66 @@ export default function TransportBatchListRequests() {
             </AppBar>
 
             <DialogContent>
-              {selectedBatch && (
-                <Card sx={{ marginBottom: "16px", width: "100%" }}>
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      height="140"
-                      image={selectedBatch.batchpic}
-                      alt="material"
-                    />
-                    <CardContent>
-                      <Typography gutterBottom variant="h5" component="div">
-                        Stage : {selectedBatch.currentstage}
-                      </Typography>
+              <Card sx={{ marginBottom: "16px", width: "100%" }}>
+                <CardActionArea>
+                  <CardMedia
+                    component="img"
+                    height="140"
+                    // image={`${CONSTANTS.IPFSURL}/${batch.ipfs_hash}`}
+                    alt="material"
+                  />
+                  <CardContent>
+                    <Typography gutterBottom variant="h5" component="div">
+                      {/* Stage : {batch.stage} */}
+                      Stage : 2
+                    </Typography>
 
-                      <Typography variant="body2" color="text.secondary">
-                        {selectedBatch.materialname.map((e, materialIndex) => (
-                          <div key={materialIndex}>
-                            {e} :{" "}
-                            {selectedBatch.materialquantity[materialIndex]} Kg
+                    <Typography variant="body2" color="text.secondary">
+
+                      {/* {BatchMedicines.map((medicine, i) => (
+                          <div key={i}>
+                            {medicine.name} :{" "}
+                            {medicine.quantity} Kg
                           </div>
-                        ))}
-                      </Typography>
-                      <Divider
-                        sx={{ marginTop: "10px", marginBottom: "24px" }}
-                      />
+                        ))} */}
+                      <div >
+                        {"A"} :{" "}
+                        {"2"} Kg
+                      </div>
 
-                      <div>
-                        {selectedBatch &&
-                          selectedBatch.inspector.map((inspector) => (
-                            <Card
-                              key={inspector.id}
-                              sx={{ marginBottom: "16px" }}
-                            >
-                              <CardHeader
-                                title={inspector.name}
-                                subheader={inspector.address}
-                              />
-                            </Card>
-                          ))}
-                      </div>
-                      <div>
-                        {selectedBatch &&
-                          selectedBatch.wholesaler.map((wholesaler) => (
-                            <Card
-                              key={wholesaler.id}
-                              sx={{ marginBottom: "16px" }}
-                            >
-                              <CardHeader
-                                title={wholesaler.name}
-                                subheader={wholesaler.address}
-                              />
-                            </Card>
-                          ))}
-                      </div>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              )}
-               <div>
-              <Timeline/>
+                    </Typography>
+                    <Divider
+                      sx={{ marginTop: "10px", marginBottom: "24px" }}
+                    />
+
+                    <div>
+                      <Card
+                        sx={{ marginBottom: "16px" }}
+                      >
+                        <CardHeader
+                          title="Inspector"
+                          subheader="0x511F0e5A8495d7c7709f905186A01751D8b3f7C8"
+                        // subheader={batch.inspectorId}
+                        />
+                      </Card>
+                    </div>
+                    <div>
+                      <Card
+                        sx={{ marginBottom: "16px" }}
+                      >
+                        <CardHeader
+                          title="Wholesaler"
+                          subheader="0x511F0e5A8495d7c7709f905186A01751D8b3f7C8"
+                        // subheader={batch.wholesalerId}
+                        />
+                      </Card>
+
+                    </div>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+              <div>
+                <Timeline />
               </div>
               <Divider />
             </DialogContent>

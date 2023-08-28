@@ -475,6 +475,7 @@ const Timeline = () => {
     setSelectedStage(null);
     setStageThreeInspection(true);
   };
+  
   return (
     <>
       <VerticalTimeline>
