@@ -20,6 +20,10 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Timeline from "./Timeline";
+import { useEffect, useContext } from "react";
+import { ContractContext } from "../Context/ContractContext";
+import { AuthContext } from "../Context/AuthContext";
+import CONSTANTS from "../Utils/Constants";
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -27,23 +31,60 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const CompletedBatches = () => {
-  const [batches, setBatches] = useState(CompletebatchData);
+
+  const { batches, Services, medicines } = useContext(ContractContext);
+  let { account } = useContext(AuthContext);
+
+  const [CompletedBatches, setCompletedBatches] = useState(CompletebatchData);
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedBatch, setSelectedBatch] = useState(null); // Track selected batch
+  const [selectedBatch, setSelectedBatch] = useState(null);
   const [selectedTransporter, setSelectedTransporter] = useState(null);
   const [selectedInspector, setSelectedInspector] = useState(null);
   const [selectedWholesaler, setSelectedWholesaler] = useState(null);
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState('md');
+
+  useEffect(() => {
+    setData();
+  }, []);
+
+  const setData = async () => {
+    // if (!batches || !account) return;
+
+    // const updatedBatches = batches
+    //   .filter((item) => item.manufacturerId === account && item.stage !== "Delivered" && item.InspectionStage !== "STAGE_3")
+    //   .map((item) => {
+    //     const updatedMedicines = item.medicines.map((medicine) => {
+    //       const matchedMedicine = medicines.find((m) => m.medicineId === medicine.medicineId);
+    //       if (matchedMedicine) {
+    //         return {
+    //           ...matchedMedicine,
+    //           quantity: medicine.quantity,
+    //         };
+    //       } else {
+    //         return medicine;
+    //       }
+    //     });
+
+    //     return {
+    //       ...item,
+    //       medicines: updatedMedicines,
+    //     };
+    //   });
+
+    // setCompletedBatches(updatedBatches);
+  };
+
+
   const handleOpenDialog = (batch) => {
     setSelectedBatch(batch);
-    setSelectedTransporter(null); // Reset selected transporter
+    setSelectedTransporter(null);
     setSelectedInspector(null);
     setSelectedWholesaler(null);
     setOpenDialog(true);
   };
   const handleCloseDialog = () => {
-    setSelectedBatch(null); // Reset selected batch when closing dialog
+    setSelectedBatch(null);
     setOpenDialog(false);
   };
 
@@ -52,7 +93,6 @@ const CompletedBatches = () => {
   };
   const handleMaxWidthChange = (event) => {
     setMaxWidth(
-      // @ts-expect-error autofill of arbitrary value is not handled.
       event.target.value,
     );
   };
@@ -63,117 +103,135 @@ const CompletedBatches = () => {
 
   return (
     <div>
-    <div class="searchBox">
-      <input
-        class="searchInput"
-        type="text"
-        name=""
-        placeholder="Search something"
-      />
-      <button class="searchButton" href="#">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="29"
-          height="29"
-          viewBox="0 0 29 29"
-          fill="none"
-        >
-          <g clip-path="url(#clip0_2_17)">
-            <g filter="url(#filter0_d_2_17)">
-              <path
-                d="M23.7953 23.9182L19.0585 19.1814M19.0585 19.1814C19.8188 18.4211 20.4219 17.5185 20.8333 16.5251C21.2448 15.5318 21.4566 14.4671 21.4566 13.3919C21.4566 12.3167 21.2448 11.252 20.8333 10.2587C20.4219 9.2653 19.8188 8.36271 19.0585 7.60242C18.2982 6.84214 17.3956 6.23905 16.4022 5.82759C15.4089 5.41612 14.3442 5.20435 13.269 5.20435C12.1938 5.20435 11.1291 5.41612 10.1358 5.82759C9.1424 6.23905 8.23981 6.84214 7.47953 7.60242C5.94407 9.13789 5.08145 11.2204 5.08145 13.3919C5.08145 15.5634 5.94407 17.6459 7.47953 19.1814C9.01499 20.7168 11.0975 21.5794 13.269 21.5794C15.4405 21.5794 17.523 20.7168 19.0585 19.1814Z"
-                stroke="white"
-                stroke-width="3"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                shape-rendering="crispEdges"
-              ></path>
+      <div class="searchBox">
+        <input
+          class="searchInput"
+          type="text"
+          name=""
+          placeholder="Search something"
+        />
+        <button class="searchButton" href="#">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="29"
+            height="29"
+            viewBox="0 0 29 29"
+            fill="none"
+          >
+            <g clip-path="url(#clip0_2_17)">
+              <g filter="url(#filter0_d_2_17)">
+                <path
+                  d="M23.7953 23.9182L19.0585 19.1814M19.0585 19.1814C19.8188 18.4211 20.4219 17.5185 20.8333 16.5251C21.2448 15.5318 21.4566 14.4671 21.4566 13.3919C21.4566 12.3167 21.2448 11.252 20.8333 10.2587C20.4219 9.2653 19.8188 8.36271 19.0585 7.60242C18.2982 6.84214 17.3956 6.23905 16.4022 5.82759C15.4089 5.41612 14.3442 5.20435 13.269 5.20435C12.1938 5.20435 11.1291 5.41612 10.1358 5.82759C9.1424 6.23905 8.23981 6.84214 7.47953 7.60242C5.94407 9.13789 5.08145 11.2204 5.08145 13.3919C5.08145 15.5634 5.94407 17.6459 7.47953 19.1814C9.01499 20.7168 11.0975 21.5794 13.269 21.5794C15.4405 21.5794 17.523 20.7168 19.0585 19.1814Z"
+                  stroke="white"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  shape-rendering="crispEdges"
+                ></path>
+              </g>
             </g>
-          </g>
-          <defs>
-            <filter
-              id="filter0_d_2_17"
-              x="-0.418549"
-              y="3.70435"
-              width="29.7139"
-              height="29.7139"
-              filterUnits="userSpaceOnUse"
-              color-interpolation-filters="sRGB"
-            >
-              <feFlood
-                flood-opacity="0"
-                result="BackgroundImageFix"
-              ></feFlood>
-              <feColorMatrix
-                in="SourceAlpha"
-                type="matrix"
-                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                result="hardAlpha"
-              ></feColorMatrix>
-              <feOffset dy="4"></feOffset>
-              <feGaussianBlur stdDeviation="2"></feGaussianBlur>
-              <feComposite in2="hardAlpha" operator="out"></feComposite>
-              <feColorMatrix
-                type="matrix"
-                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
-              ></feColorMatrix>
-              <feBlend
-                mode="normal"
-                in2="BackgroundImageFix"
-                result="effect1_dropShadow_2_17"
-              ></feBlend>
-              <feBlend
-                mode="normal"
-                in="SourceGraphic"
-                in2="effect1_dropShadow_2_17"
-                result="shape"
-              ></feBlend>
-            </filter>
-            <clipPath id="clip0_2_17">
-              <rect
-                width="28.0702"
-                height="28.0702"
-                fill="white"
-                transform="translate(0.403503 0.526367)"
-              ></rect>
-            </clipPath>
-          </defs>
-        </svg>
-      </button>
-    </div>
+            <defs>
+              <filter
+                id="filter0_d_2_17"
+                x="-0.418549"
+                y="3.70435"
+                width="29.7139"
+                height="29.7139"
+                filterUnits="userSpaceOnUse"
+                color-interpolation-filters="sRGB"
+              >
+                <feFlood
+                  flood-opacity="0"
+                  result="BackgroundImageFix"
+                ></feFlood>
+                <feColorMatrix
+                  in="SourceAlpha"
+                  type="matrix"
+                  values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                  result="hardAlpha"
+                ></feColorMatrix>
+                <feOffset dy="4"></feOffset>
+                <feGaussianBlur stdDeviation="2"></feGaussianBlur>
+                <feComposite in2="hardAlpha" operator="out"></feComposite>
+                <feColorMatrix
+                  type="matrix"
+                  values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
+                ></feColorMatrix>
+                <feBlend
+                  mode="normal"
+                  in2="BackgroundImageFix"
+                  result="effect1_dropShadow_2_17"
+                ></feBlend>
+                <feBlend
+                  mode="normal"
+                  in="SourceGraphic"
+                  in2="effect1_dropShadow_2_17"
+                  result="shape"
+                ></feBlend>
+              </filter>
+              <clipPath id="clip0_2_17">
+                <rect
+                  width="28.0702"
+                  height="28.0702"
+                  fill="white"
+                  transform="translate(0.403503 0.526367)"
+                ></rect>
+              </clipPath>
+            </defs>
+          </svg>
+        </button>
+      </div>
 
-    <div className="allcards" style={{ cursor: "pointer" }}>
-      {batches.map((batch, index) => (
-        <div
-          className="card"
-          key={index}
-          onClick={() => handleOpenDialog(batch)}
-        >
-          <div className="remove-when-use">
-            <img src={batch.batchpic} alt="pic" />
-          </div>
-          <div className="details">
-            <p>Grade:{batch.grade}</p>
-            <div style={{ display: "flex" }}>
-              {batch.materialname.map((e, materialIndex) => (
-                <div>
-                  <div key={materialIndex}>
-                    {materialIndex + 1}:{e}
-                  </div>
-                </div>
-              ))}
+      <div className="allcards" style={{ cursor: "pointer" }}>
+        {/* {CompletedBatches.map((batch, index) => (
+          <div
+            className="card"
+            key={index}
+            onClick={() => handleOpenDialog(batch)}
+            style={{ cursor: "pointer" }}
+          >
+            <div className="remove-when-use">
+              <img src={`${CONSTANTS.IPFSURL}/${batch.ipfs_hash}`} alt="pic" />
             </div>
-            {/* <div>
-                {batch.materialquantity.map((f, quantityIndex) => (
-                  <div key={quantityIndex}>Material Quantity:{f}</div>
+            <div className="details">
+              <p>Stage: {batch.stage}</p>
+              <div style={{ display: "flex" }}>
+                {batch.medicines.map((item, materialIndex) => (
+                  <div key={item.medicineId}>
+                    {item.name}:{item.quantity}
+                  </div>
                 ))}
-              </div> */}
+              </div>
+            </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))} */}
+
+        {CompletedBatches.map((batch, index) => (
+          <div
+            className="card"
+            key={index}
+            onClick={() => handleOpenDialog(batch)}
+          >
+            <div className="remove-when-use">
+              <img src={batch.batchpic} alt="pic" />
+            </div>
+            <div className="details">
+              <p>Grade:{batch.grade}</p>
+              <div style={{ display: "flex" }}>
+                {batch.materialname.map((e, materialIndex) => (
+                  <div>
+                    <div key={materialIndex}>
+                      {materialIndex + 1}:{e}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
       <Dialog
-       fullScreen
+        fullScreen
         TransitionComponent={Transition}
         open={openDialog}
         onClose={handleCloseDialog}
@@ -196,70 +254,78 @@ const CompletedBatches = () => {
         </AppBar>
 
         <DialogContent>
-        {selectedBatch && (
+          {selectedBatch && (
             <Card sx={{ marginBottom: "16px", width: "100%" }}>
               <CardActionArea>
                 <CardMedia
                   component="img"
                   height="140"
                   image={selectedBatch.batchpic}
+                  // image={`${CONSTANTS.IPFSURL}/${selectedBatch.ipfs_hash}`}
                   alt="material"
                 />
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
                     Grade : {selectedBatch.grade}
+                    {/* Grade : {selectedBatch.stage} */}
+                    {/* // to be integrated, fetch from batch report */}
                   </Typography>
 
-                  <Typography variant="body2" color="text.secondary">
-                    {selectedBatch.materialname.map((e, materialIndex) => (
-                      <div key={materialIndex}>
-                        {e} : {selectedBatch.materialquantity[materialIndex]} Kg
+                  {/* {selectedBatch.medicines.map((item, materialIndex) => (
+                      <div key={item.medicineId}>
+                        {item} : {item.quantity} Kg
                       </div>
-                    ))}
+                    ))} */}
+                  <Typography variant="body2" color="text.secondary">
+                    <div >
+                      A : 3 Kg
+                    </div>
+
                   </Typography>
+
                   <Divider sx={{ marginTop: "10px", marginBottom: "24px" }} />
                   <div>
-            {selectedBatch &&
-              selectedBatch.transporter.map((transporter) => (
-                <Card key={transporter.id} sx={{ marginBottom: "16px" }}>
-                  <CardHeader
-                    title={transporter.name}
-                    subheader={transporter.address}
-                  />
-                </Card>
-              ))}
-          </div>
-          <div>
-            {selectedBatch &&
-              selectedBatch.inspector.map((inspector) => (
-                <Card key={inspector.id} sx={{ marginBottom: "16px" }}>
-                  <CardHeader
-                    title={inspector.name}
-                    subheader={inspector.address}
-                  />
-                </Card>
-              ))}
-          </div> 
-          <div>
-            {selectedBatch &&
-              selectedBatch.wholesaler.map((wholesaler) => (
-                <Card key={wholesaler.id} sx={{ marginBottom: "16px" }}>
-                  <CardHeader
-                    title={wholesaler.name}
-                    subheader={wholesaler.address}
-                  />
-                </Card>
-              ))}
-          </div>
+
+                    <Card
+                      sx={{ marginBottom: "16px" }}
+                    >
+                      <CardHeader
+                        title="Transporter"
+                        subheader="0x511F0e5A8495d7c7709f905186A01751D8b3f7C8"
+                      // subheader={selectedBatch.transporterId}
+                      />
+                    </Card>
+
+                  </div>
+                  <div>
+                    <Card sx={{ marginBottom: "16px" }}>
+                      <CardHeader
+                        title="Inspector"
+                        subheader="0x511F0e5A8495d7c7709f905186A01751D8b3f7C8"
+                      // subheader={selectedBatch.inspectorId}
+                      />
+                    </Card>
+
+                  </div>
+                  <div>
+                    <Card sx={{ marginBottom: "16px" }}>
+                      <CardHeader
+                        title="Wholesaler"
+                        subheader="0x511F0e5A8495d7c7709f905186A01751D8b3f7C8"
+                      // subheader= {selectedBatch.wholesalerId}
+                      />
+                    </Card>
+
+                  </div>
                 </CardContent>
               </CardActionArea>
             </Card>
           )}
-          <Divider/>
-            <div>
-              <Timeline/>
-              </div>
-              <Divider />
+          <Divider />
+          <div>
+            <Timeline />
+          </div>
+          <Divider />
         </DialogContent>
       </Dialog>
     </div>
