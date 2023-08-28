@@ -373,7 +373,7 @@ export default function SupplierListCardRequests({ data }) {
                         <CardMedia
                           component="img"
                           height="140"
-                          image={chemical.image}  // chemical.ipfs_hash
+                          image={chemical.image}  // {`${CONSTANTS.IPFSURL}/${chemical.ipfs_hash}`}
                           alt={chemical.name}
                         />
                         <CardContent>
