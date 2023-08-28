@@ -81,7 +81,7 @@
 
 @media screen and (max-width: 768px) {
   .card {
-    flex-basis: 100%; /* Cards take full width on small screens */
+    flex-basis: 100%; /* Cards take full width on small screensÂ */
   }
 }
 

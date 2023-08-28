@@ -215,6 +215,7 @@ const TopChemicals = () => {
             </div>
           </div>
         ))}
+        
         <Dialog
           fullScreen
           TransitionComponent={Transition}
