@@ -1,5 +1,6 @@
 import React from "react";
 import transporterPage from "../transporterPage.json";
+import batch from "../batch.json";
 import "./Supplier.css"; // Import your custom CSS file for styling
 import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
@@ -27,7 +28,12 @@ import SupplierListCardRequests from "../Miscellaneous/SupplierListCardRequests"
 import SupplierListCardSent from "../Miscellaneous/SupplierListCardSent";
 import TransporterListCardRequests from "../Miscellaneous/TransporterListCardRequests";
 import TransporterListCardSent from "../Miscellaneous/TransporterListCardSent";
-import Logo from '../Images/logoPharma.png'
+import Logo from "../Images/logoPharma.png";
+import TransportBatchListSent from "../Miscellaneous/TransportBatchListSent";
+import TransportBatchListRequests from "../Miscellaneous/TransportBatchListRequests";
+import { useEffect, useContext } from "react";
+import { ContractContext } from "../Context/ContractContext";
+import { AuthContext } from "../Context/AuthContext";
 const drawerWidth = 240;
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -62,9 +68,47 @@ function a11yProps(index) {
   };
 }
 function ResponsiveDrawer(props) {
+
+  const { packages, Services, rawMaterials } = useContext(ContractContext);
+  let { account } = useContext(AuthContext);
+
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [value, setValue] = React.useState(0);
+  const [ReceivedPackageRequestData, setReceivedPackageRequestData] = React.useState([]);
+  const [SentPackageRequestData, setSentPackageRequestData] = React.useState([]);
+
+  useEffect(() => {
+    setData();
+  }, []);
+
+  const setData = async () => {
+    if (!packages || !account) return;
+
+    const receivedRequests = packages
+      .filter((item) => item.transporterId === account && item.stage === "Created")
+      .map((item) => {
+        const materialId = item.rawMaterials[0]?.materialId; // Get the materialId from the first object
+        const rawMaterial = rawMaterials.find((rm) => rm.id === materialId); // Find the raw material with matching id
+        const ipfsHash = rawMaterial ? rawMaterial.ipfs_hash : ""; // Get the ipfs_hash if rawMaterial exists
+
+        return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the package data
+      });
+
+      setReceivedPackageRequestData(receivedRequests);
+
+    const sentRequests = packages
+      .filter((item) => item.transporterId === account && item.stage === "Delivered")
+      .map((item) => {
+        const materialId = item.rawMaterials[0]?.materialId; // Get the materialId from the first object
+        const rawMaterial = rawMaterials.find((rm) => rm.id === materialId); // Find the raw material with matching id
+        const ipfsHash = rawMaterial ? rawMaterial.ipfs_hash : ""; // Get the ipfs_hash if rawMaterial exists
+
+        return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the package data
+      });
+
+      setSentPackageRequestData(sentRequests);
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -76,10 +120,15 @@ function ResponsiveDrawer(props) {
   const drawer = (
     <div>
       <div>
-        <img src={Logo} alt="Logo" width={"200rem"} height={"50rem"}
-          style={{ marginTop: "1rem", marginBottom: "1rem" }} />
+        <img
+          src={Logo}
+          alt="Logo"
+          width={"200rem"}
+          height={"50rem"}
+          style={{ marginTop: "1rem", marginBottom: "1rem" }}
+        />
       </div>
-      {/* <Toolbar /> */}
+
       <Divider />
       <List>
         <Tabs
@@ -102,7 +151,7 @@ function ResponsiveDrawer(props) {
                 color: "green",
               },
             }}
-            label="My Requests"
+            label="Package Requests"
             {...a11yProps(0)}
           />
           <Tab
@@ -111,10 +160,27 @@ function ResponsiveDrawer(props) {
                 color: "green",
               },
             }}
-            label="Transported Requests"
+            label="Transported Packages"
             {...a11yProps(1)}
           />
-          {/* <Tab label="Top 3 Chemicals" {...a11yProps(2)} /> */}
+          <Tab
+            sx={{
+              "&.Mui-selected": {
+                color: "green",
+              },
+            }}
+            label="Batch Requests"
+            {...a11yProps(2)}
+          />
+          <Tab
+            sx={{
+              "&.Mui-selected": {
+                color: "green",
+              },
+            }}
+            label="Transported Batches"
+            {...a11yProps(3)}
+          />
         </Tabs>
       </List>
       <Divider />
@@ -151,14 +217,14 @@ function ResponsiveDrawer(props) {
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
         aria-label="mailbox folders"
       >
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+
         <Drawer
           container={container}
           variant="temporary"
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true, 
           }}
           sx={{
             display: { xs: "block", sm: "none" },
@@ -196,6 +262,9 @@ function ResponsiveDrawer(props) {
         <Typography paragraph>
           <TabPanel value={value} index={0}>
             <div className="card-container">
+            {/* {ReceivedPackageRequestData.map((data, index) => (
+                  <TransporterListCardRequests key={index} data={data} />
+                ))} */}
               {transporterPage
                 .filter((data) => !data["send-package"])
                 .map((data, index) => (
@@ -205,11 +274,24 @@ function ResponsiveDrawer(props) {
           </TabPanel>
           <TabPanel value={value} index={1}>
             <div className="card-container">
+            {/* {SentPackageRequestData.map((data, index) => (
+                  <TransporterListCardSent key={index} data={data} />
+                ))} */}
               {transporterPage
                 .filter((data) => data["send-package"])
                 .map((data, index) => (
                   <TransporterListCardSent key={index} data={data} />
                 ))}
+            </div>
+          </TabPanel>
+          <TabPanel value={value} index={2}>
+            <div className="card-container">
+              <TransportBatchListRequests />
+            </div>
+          </TabPanel>
+          <TabPanel value={value} index={3}>
+            <div className="card-container">
+              <TransportBatchListSent />
             </div>
           </TabPanel>
         </Typography>
@@ -219,10 +301,6 @@ function ResponsiveDrawer(props) {
 }
 
 ResponsiveDrawer.propTypes = {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
   window: PropTypes.func,
 };
 

@@ -11,6 +11,9 @@ import EmojiTransportationRoundedIcon from "@mui/icons-material/EmojiTransportat
 import AirplayRoundedIcon from "@mui/icons-material/AirplayRounded";
 import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
 import CloseIcon from "@mui/icons-material/Close";
+import { useEffect, useContext } from "react";
+import { ContractContext } from "../Context/ContractContext";
+import { AuthContext } from "../Context/AuthContext";
 import {
   AppBar,
   Button,
@@ -32,15 +35,44 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 export default function SupplierListCardSent({ data }) {
+  const { rawMaterials, Services } = useContext(ContractContext);
+  let { account } = useContext(AuthContext);
+
+  const [PackageRawMaterials, setPackageRawMaterials] = useState([]);
+
   const [openDialog, setOpenDialog] = useState(false);
   const [openDialogDetalis, setOpenDialogDetails] = useState(false);
   const [selectedTransporter, setSelectedTransporter] = useState(null);
-  const [dialogType, setDialogType] = useState(""); // It can be "transporter" or "inspector"
+  const [dialogType, setDialogType] = useState(""); 
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState("sm");
+
+  useEffect(() => {
+    setData();
+  }, []);
+
+  const setData = async () => {
+    if (!rawMaterials || !account) return;
+
+    const updatedPackageRawMaterials = data.rawMaterials.map(item => {
+      const rawMaterial = rawMaterials.find(item1 => item1.materialId === item.materialId);
+      if (rawMaterial) {
+        return {
+          ...rawMaterial,
+          quantity: item.quantity, 
+        };
+      } else {
+        return null; 
+      }
+    });
+
+    setPackageRawMaterials(updatedPackageRawMaterials.filter(item => item !== null));
+    
+  };
+  
   const handleOpenDialog = (type) => {
-    setSelectedTransporter(null); // Reset selected transporter
-    setDialogType(type); // Set the type of dialog (either "transporter" or "inspector")
+    setSelectedTransporter(null); 
+    setDialogType(type); 
     setOpenDialog(true);
   };
 
@@ -57,7 +89,6 @@ export default function SupplierListCardSent({ data }) {
   };
   const handleMaxWidthChange = (event) => {
     setMaxWidth(
-      // @ts-expect-error autofill of arbitrary value is not handled.
       event.target.value
     );
   };
@@ -69,15 +100,16 @@ export default function SupplierListCardSent({ data }) {
   return (
     <Fade bottom>
     <Card sx={{ maxWidth: 370, borderRadius: "24px", borderColor: "white" }}>
+        {/* <CardHeader title={data.description} subheader={data.manufacturerId} /> */}
       <CardHeader title={data.name} subheader={data.manufacturer_id} />
       <CardMedia
         component="img"
         height="194"
         image="/static/images/cards/paella.jpg"
+        //  image={`${CONSTANTS.IPFSURL}/${data.ipfs_hash}`}
         alt="Manufacturer"
       />
 
-      {data["send-package"] && (
         <CardActions>
           <Stack spacing={1}>
             <Grid item xs={12} sm={6}>
@@ -110,7 +142,6 @@ export default function SupplierListCardSent({ data }) {
             </Grid>
           </Stack>
         </CardActions>
-      )}
 
       <Dialog
         open={openDialog}
@@ -123,27 +154,28 @@ export default function SupplierListCardSent({ data }) {
 
         <DialogContent>
           <div>
-            {data.transporter.map((transporter) => (
               <>
-                <Card key={transporter.id} sx={{ marginBottom: "16px" }}>
+                <Card sx={{ marginBottom: "16px" }}>
                   <CardHeader
-                    title={transporter.name}
-                    subheader={transporter.address}
+                    title="Transporter"
+                    subheader="0xAB6bDA0a4e847Af362d54f88cC3663C219688c27"
+                    // subheader={data.transporterId}
                   />
                 </Card>
               </>
-            ))}
+      
           </div>
 
           <div>
-            {data.inspector.map((inspector) => (
-              <Card key={inspector.id} sx={{ marginBottom: "16px" }}>
+          
+              <Card sx={{ marginBottom: "16px" }}>
                 <CardHeader
-                  title={inspector.name}
-                  subheader={inspector.address}
+                  title= "Inspector"
+                  subheader= "0xE8Dc9F3cecc1E7DD7737001f1987cc2813246A93"
+                  // subheader={data.inspectorId}
                 />
               </Card>
-            ))}
+         
           </div>
         </DialogContent>
 
@@ -180,13 +212,14 @@ export default function SupplierListCardSent({ data }) {
           <div>
             <Typography variant="body2" color="text.secondary">
               <div className="card-container" style={{ marginTop: "8px" }}>
+              {/* {PackageRawMaterials.map((chemical, index) => ( */}
                 {data.chemicals.map((chemical, index) => (
                   <Card sx={{ maxWidth: 700, marginBottom: "16px" }}>
                     <CardActionArea>
                       <CardMedia
                         component="img"
                         height="140"
-                        image={chemical.image}
+                        image={chemical.image} // {`${CONSTANTS.IPFSURL}/${chemical.ipfs_hash}`}
                         alt={chemical.name}
                       />
                       <CardContent>

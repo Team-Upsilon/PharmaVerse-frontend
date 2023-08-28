@@ -10,6 +10,7 @@ import Manufacturer from './Component/Manufacturer';
 import Transporter from './Component/Transporter'
 import Inspector from './Component/Inspector'
 // import ContactUs from './Component/ContactUs';
+import Timeline from './Miscellaneous/Timeline';
 
 const darkTheme = createTheme({
   palette: {
@@ -56,6 +57,7 @@ function App() {
             }
           />
           <Route path='/manufacturer' element={<Manufacturer />} />
+          <Route path='/timeline' element={<Timeline />} />
           {/* <Route path='/contactus' element={<><ContactUs /></>} /> */}
           {/* <Route path='/homepage' element{} /> */}
         </Routes>
