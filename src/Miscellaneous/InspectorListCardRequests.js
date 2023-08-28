@@ -86,7 +86,7 @@ export default function InspectorListCardRequests({ data }) {
     setExpanded(!expanded);
   };
   const handleOpenDialog = () => {
-    setSelectedTransporter(null); // Reset selected transporter
+    setSelectedTransporter(null);
     setSelectedInspector(null);
     setOpenDialog(true);
   };
@@ -178,85 +178,85 @@ export default function InspectorListCardRequests({ data }) {
                 <div className="card-container" style={{ marginTop: "8px" }}>
                   {data.chemicals.map((chemical, index) => (
                     <Card sx={{ maxWidth: 700, marginBottom: "16px" }}>
-                      <CardActionArea>
-                        <CardMedia
-                          component="img"
-                          height="140"
-                          image={chemical.image}
-                          alt={chemical.name}
-                        />
-                        <CardContent>
-                          <Typography gutterBottom variant="h5" component="div">
-                            {chemical.name} ({chemical.quantity} Kg)
-                          </Typography>
 
-                          <Typography variant="body2" color="text.secondary">
-                            {chemical.description}
-                          </Typography>
-                          <Divider
-                            sx={{ marginBottom: "16px", marginTop: "8px" }}
+                      <CardMedia
+                        component="img"
+                        height="140"
+                        image={chemical.image}
+                        alt={chemical.name}
+                      />
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                          {chemical.name} ({chemical.quantity} Kg)
+                        </Typography>
+
+                        <Typography variant="body2" color="text.secondary">
+                          {chemical.description}
+                        </Typography>
+                        <Divider
+                          sx={{ marginBottom: "16px", marginTop: "8px" }}
+                        />
+                        <Stack
+                          direction="row"
+                          spacing={4}
+                          sx={{ justifyContent: "flex-start" }}
+                        >
+                          <TextField
+                            required
+                            id={`concentration-${index}`} // Use a unique identifier for each concentration field
+                            label="Concentration"
+                            value={cardStates[index].concentration}
+                            onChange={(e) => {
+                              const updatedCardStates = [...cardStates];
+                              updatedCardStates[index].concentration =
+                                e.target.value;
+                              setCardStates(updatedCardStates);
+                            }}
+                            variant="outlined"
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            disabled={cardDisabled[index]}
+                            color="success"
                           />
-                          <Stack
-                            direction="row"
-                            spacing={4}
-                            sx={{ justifyContent: "flex-start" }}
+                        </Stack>
+                        <Stack
+                          direction="row"
+                          sx={{ justifyContent: "flex-end" }}
+                        >
+                          <Button
+                            onClick={() => handleSaveClick(index)}
+                            variant="filled"
+                            sx={{
+                              borderRadius: "50px",
+                              marginTop: "48px",
+                            }}
+                            disabled={cardDisabled[index]}
+                            color="green"
                           >
-                            <TextField
-                              required
-                              id={`concentration-${index}`} // Use a unique identifier for each concentration field
-                              label="Concentration"
-                              value={cardStates[index].concentration}
-                              onChange={(e) => {
-                                const updatedCardStates = [...cardStates];
-                                updatedCardStates[index].concentration =
-                                  e.target.value;
-                                setCardStates(updatedCardStates);
-                              }}
-                              variant="outlined"
-                              InputLabelProps={{
-                                shrink: true,
-                              }}
-                              disabled={cardDisabled[index]}
-                              color="success"
-                            />
-                          </Stack>
-                          <Stack
-                            direction="row"
-                            sx={{ justifyContent: "flex-end" }}
-                          >
-                            <Button
-                              onClick={() => handleSaveClick(index)}
-                              variant="filled"
-                              sx={{
-                                borderRadius: "50px",
-                                marginTop: "48px",
-                              }}
-                              disabled={cardDisabled[index]}
-                              color="green"
-                            >
-                              SAVE
-                            </Button>
-                          </Stack>
-                        </CardContent>
-                      </CardActionArea>
+                            SAVE
+                          </Button>
+                        </Stack>
+                      </CardContent>
+
                     </Card>
                   ))}
                 </div>
-                <Stack direction="row" sx={{justifyContent:"space-around"}}>
-                <TextField
-                  label="Remarks"
-                  multiline
-                  variant="filled"
-                  sx={{ width:"100%",maxWidth: "1000px" , marginTop: "24px",alignContent:"center" }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  value={remarks}
-                  onChange={(e) => {
-                    setRemarks(e.target.value);
-                  }}
-                  color="success"
-                />
+                <Stack direction="row" sx={{ justifyContent: "space-around" }}>
+                  <TextField
+                    label="Remarks"
+                    multiline
+                    variant="filled"
+                    sx={{ width: "100%", maxWidth: "1000px", marginTop: "24px", alignContent: "center" }}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    value={remarks}
+                    onChange={(e) => {
+                      setRemarks(e.target.value);
+                    }}
+                    color="success"
+                  />
                 </Stack>
               </Typography>
               <Divider sx={{ marginTop: "24px" }} />
