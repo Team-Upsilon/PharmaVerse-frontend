@@ -111,7 +111,7 @@ const SendRequestToSupplier = ({ jsonData }) => {
         </tbody>
       </table>
       <div className='button-container'>
-        <button className='button' onClick={handleCreateButtonClick}><p>Send Request</p></button>
+        <button className='button0' onClick={handleCreateButtonClick}><p>Send Request</p></button>
       </div>
     </div>
   );

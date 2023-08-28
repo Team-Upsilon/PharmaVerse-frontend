@@ -108,7 +108,7 @@ const CreateNewBatch = ({ jsonData }) => {
         </tbody>
       </table>
       <div className='button-container'>
-        <button className='button3' onClick={handleCreateButtonClick}><p>Create Batch</p></button>
+        <button className='button0' onClick={handleCreateButtonClick}><p>Create Batch</p></button>
       </div>
     </div>
   );

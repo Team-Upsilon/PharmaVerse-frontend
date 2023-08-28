@@ -23,7 +23,7 @@ const ChemicalListChart = () => {
           <YAxis stroke="#333" />
           <Tooltip />
           <Legend verticalAlign="top" />
-          <Line type="monotone" dataKey="y" stroke="#007bff" strokeWidth={2} dot={{ fill: '#007bff', r: 6 }} />
+          <Line type="monotone" dataKey="y" stroke="#09b30c" strokeWidth={2} dot={{ fill: '#09b30c', r: 6 }} />
         </LineChart>
       </ResponsiveContainer>
 
