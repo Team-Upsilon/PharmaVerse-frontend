@@ -238,19 +238,7 @@ export default function SupplierListCardRequests({ data }) {
             </Stack>
           </Stack>
         </CardActions>
-
-            {transporterData.map((transporter) => (
-              <Button
-                key={transporter.id}
-                variant="outlined"
-                onClick={() => setSelectedTransporter(transporter)}
-                style={{ margin: "8px" }}
-                color="success"
-              >
-                {transporter.name}
-              </Button>
-            ))}
-
+        
         <Dialog sx={{ backdropFilter: "blur(10px)" }} TransitionComponent={Transition} open={openDialog} onClose={handleCloseDialog}>
           <DialogTitle>Confirmation Details</DialogTitle>
           <DialogContent>

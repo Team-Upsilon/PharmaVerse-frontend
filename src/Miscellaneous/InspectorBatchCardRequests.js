@@ -250,42 +250,7 @@ export default function InspectorBatchCardRequests() {
             <DialogContent>
               {selectedBatch && (
                 <Card sx={{ marginBottom: "16px", width: "100%" }}>
-                    <Typography
-                      variant="subtitle1"
-                      sx={{ marginTop: "16px", marginBottom: "24px",marginLeft:"24px" }}
-                    >
-                      Actual Conditions for the Batch:
-                    </Typography>
-                    <Stack
-                      direction="row"
-                      gap={1}
-                      sx={{ justifyContent: "flex-start", flexWrap: "wrap",marginLeft:"24px" }}
-                    >
-                      <FormControl defaultValue="" required>
-                        <Label>Concentration:</Label>
-                        <StyledInput placeholder="Write the concentration here" />
-                        <HelperText />
-                      </FormControl>
-
-                      <FormControl defaultValue="" required>
-                        <Label>Pressure:</Label>
-                        <StyledInput placeholder="Write the pressure here" />
-                        <HelperText />
-                      </FormControl>
-
-                      <FormControl defaultValue="" required>
-                        <Label>Density:</Label>
-                        <StyledInput placeholder="Write the density here" />
-                        <HelperText />
-                      </FormControl>
-
-                      <FormControl defaultValue="" required>
-                        <Label>Volume:</Label>
-                        <StyledInput placeholder="Write the volume here" />
-                        <HelperText />
-                      </FormControl>
-                    </Stack>
-                    <Divider sx={{ marginTop: "20px", marginBottom: "24px" }} />
+                   
                   <CardMedia
                     component="img"
                     height="140"

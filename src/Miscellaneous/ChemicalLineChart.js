@@ -19,11 +19,11 @@ const ChemicalListChart = () => {
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="x" stroke="#333" />
-          <YAxis stroke="#333" />
+          <XAxis dataKey="x" stroke="white" />
+          <YAxis stroke="white" />
           <Tooltip />
           <Legend verticalAlign="top" />
-          <Line type="monotone" dataKey="y" stroke="#007bff" strokeWidth={2} dot={{ fill: '#007bff', r: 6 }} />
+          <Line type="monotone" dataKey="y" stroke="green" strokeWidth={2} dot={{ fill: 'green', r: 6 }} />
         </LineChart>
       </ResponsiveContainer>
 
