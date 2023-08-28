@@ -113,7 +113,7 @@ const ChemicalList = () => {
           </svg>
         </button>
       </div>
-      <div className="allcards" style={{cursor:"pointer"}}>
+      <div className="allcards" style={{ cursor: "pointer" }}>
         {xAxisData
           .filter((qd) =>
             qd.x.toLowerCase().includes(searchValue.toLowerCase())
@@ -143,45 +143,45 @@ const ChemicalList = () => {
               </div>
             </div>
           ))}
-<Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-  {selectedChemical && (
-    <>
-      <DialogTitle>{selectedChemical.x}</DialogTitle>
-      <DialogContent>
-        <p>{selectedChemical.x}: {selectedChemical.quantity + incrementValue}</p>
-        <input
-          type="number"
-          value={incrementValue}
-          onChange={(e) => setIncrementValue(parseInt(e.target.value))}
-        />
-        <button
-          className="button2"
-          onClick={() => {
-            increaseQuantity(xAxisData.findIndex(item => item.x === selectedChemical.x), incrementValue);
-            setIncrementValue(0);
-          }}
-        >
-          Apply
-        </button>
-        {/* Add other chemical information */}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => setDialogOpen(false)} color="primary">
-          Close
-        </Button>
-        <Button
-          onClick={() => {
-            setDialogOpen(false);
-            setEnableUpdate(true);
-          }}
-          color="primary"
-        >
-          Update
-        </Button>
-      </DialogActions>
-    </>
-  )}
-</Dialog>
+        <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+          {selectedChemical && (
+            <>
+              <DialogTitle>{selectedChemical.x}</DialogTitle>
+              <DialogContent>
+                <p>{selectedChemical.x}: {selectedChemical.quantity + incrementValue}</p>
+                <input
+                  type="number"
+                  value={incrementValue}
+                  onChange={(e) => setIncrementValue(parseInt(e.target.value))}
+                />
+                <button
+                  className="button2"
+                  onClick={() => {
+                    increaseQuantity(xAxisData.findIndex(item => item.x === selectedChemical.x), incrementValue);
+                    setIncrementValue(0);
+                  }}
+                >
+                  Apply
+                </button>
+                {/* Add other chemical information */}
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setDialogOpen(false)} color="primary">
+                  Close
+                </Button>
+                <Button
+                  onClick={() => {
+                    setDialogOpen(false);
+                    setEnableUpdate(true);
+                  }}
+                  color="primary"
+                >
+                  Update
+                </Button>
+              </DialogActions>
+            </>
+          )}
+        </Dialog>
 
 
 
