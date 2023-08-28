@@ -24,7 +24,6 @@ import MedicineList from "../Miscellaneous/MedicineList";
 import CompletedBatches from "../Miscellaneous/CompletedBatches";
 import SupplierListCardSent from "../Miscellaneous/SupplierListCardSent";
 import ChemicalList from "../Miscellaneous/ChemicalList";
-import RolesChanged from "../Miscellaneous/RolesChanged";
 const drawerWidth = 240;
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -104,66 +103,14 @@ function ResponsiveDrawer(props) {
                 color: "green",
               },
             }}
-            label="List of Medicines"
+            label="Completed Batches"
             {...a11yProps(0)}
           />
-          <Tab
-            sx={{
-              "&.Mui-selected": {
-                color: "green",
-              },
-            }}
-            label="List of Raw Materials"
-            {...a11yProps(1)}
-          />
-          <Tab
-            sx={{
-              "&.Mui-selected": {
-                color: "green",
-              },
-            }}
-            label="Chemical Graph"
-            {...a11yProps(2)}
-          />
-          <Tab
-            sx={{
-              "&.Mui-selected": {
-                color: "green",
-              },
-            }}
-            label="Completed Batches"
-            {...a11yProps(3)}
-          />
-          <Tab
-            sx={{
-              "&.Mui-selected": {
-                color: "green",
-              },
-            }}
-            label="Sent Request (Supplier)"
-            {...a11yProps(4)}
-          />
-          <Tab
-            sx={{
-              "&.Mui-selected": {
-                color: "green",
-              },
-            }}
-            label="Assign Role"
-            {...a11yProps(5)}
-          />
-          <Tab
-            sx={{
-              "&.Mui-selected": {
-                color: "green",
-              },
-            }}
-            label="Deassign Role"
-            {...a11yProps(6)}
-          />
+        
+    
         </Tabs>
       </List>
-      <Divider />
+
     </div>
   );
 
@@ -240,39 +187,15 @@ function ResponsiveDrawer(props) {
       >
         <Toolbar />
         <Typography paragraph>
+       
           <TabPanel value={value} index={0}>
-            <MedicineList />
-          </TabPanel>
-          <TabPanel value={value} index={1}>
-            <ChemicalList />
-          </TabPanel>
-          <TabPanel value={value} index={2}>
-            <ChemicalListChart />
-          </TabPanel>
-          <TabPanel value={value} index={3}>
             <div className="card-container">
-              <CompletedBatches />
+            <CompletedBatches />
             </div>
           </TabPanel>
-          <TabPanel value={value} index={4}>
-            <div className="card-container">
-              {manufacturerData
-                .filter((data) => data["send-package"])
-                .map((data, index) => (
-                  <SupplierListCardSent key={index} data={data} />
-                ))}
-              {/* {SentRequestData.map((data, index) => (
-                  <SupplierListCardSent key={index} data={data} />
-                ))} */}
-            </div>
-          </TabPanel>
-          <TabPanel value={value} index={4}>
-            <ChemicalList />
-          </TabPanel>
-          <TabPanel value={value} index={5}>
-            <RolesChanged />
-          </TabPanel>
+         
         </Typography>
+        
       </Box>
     </Box>
   );
