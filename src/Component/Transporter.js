@@ -301,12 +301,12 @@ function ResponsiveDrawer(props) {
           </TabPanel>
           <TabPanel value={value} index={2}>
             <div className="card-container">
-              <TransportBatchListRequests />
+              <TransportBatchListRequests data={ReceivedBatchRequestData} />
             </div>
           </TabPanel>
           <TabPanel value={value} index={3}>
             <div className="card-container">
-              <TransportBatchListSent />
+              <TransportBatchListSent data ={SentBatchRequestData} />
             </div>
           </TabPanel>
         </Typography>

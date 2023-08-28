@@ -16,6 +16,10 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CloseIcon from "@mui/icons-material/Close";
+import { useEffect, useContext } from "react";
+import { ContractContext } from "../Context/ContractContext";
+import { AuthContext } from "../Context/AuthContext";
+import CONSTANTS from "../Utils/Constants";
 import {
   AppBar,
   Button,
@@ -49,8 +53,13 @@ const ExpandMore = styled((props) => {
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-export default function TransportBatchListRequests() {
-  const [batches, setBatches] = useState(batchData);
+
+export default function TransportBatchListRequests({ data }) {
+
+  const { packages, Services, rawMaterials, medicines } = useContext(ContractContext);
+  let { account } = useContext(AuthContext);
+
+  const [batches, setBatches] = useState(batchData); // out
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
@@ -64,7 +73,7 @@ export default function TransportBatchListRequests() {
 
   const handleOpenDialog = (batch) => {
     setSelectedBatch(batch);
-    setSelectedTransporter(null); // Reset selected transporter
+    setSelectedTransporter(null); 
     setSelectedInspector(null);
     setSelectedWholesaler(null);
     setOpenDialog(true);
@@ -72,25 +81,38 @@ export default function TransportBatchListRequests() {
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
-  const handleSendPackage = () => {
+  const handleSendPackage = async (ID) => {
+    // const response = await Services.update_batch_state(ID,4);
+
+    // if (response.success) {
+    //   handleCloseDialog();
+    // }
+    // else{
+    //   console.log("Error" + response.message);
+    //   handleCloseDialog();
+
     handleCloseDialog();
   };
 
   return (
     <Fade bottom>
+         {/* {data.map((batch, index) => ( */}
       {batches.map((batch, index) => (
         <Card
           sx={{ maxWidth: 363, borderRadius: "24px", borderColor: "white" }}
         >
+          {/* <CardHeader title={`${batch.batchId.slice(0, 10)}..`} subheader={batch.manufacturerId} /> */}
           <CardHeader title={batch.name} subheader={batch.manufacturer_id} />
           <CardMedia
             component="img"
             height="194"
             image={batch.batchpic}
+            // image={`${CONSTANTS.IPFSURL}/${batch.ipfs_hash}`}
             alt="Batch"
           />
           <CardContent>
             <Typography variant="body2" color="text.secondary">
+            {/* Current Stage : {batch.stage} */}
               Current Stage : {batch.currentstage}
             </Typography>
           </CardContent>
@@ -117,7 +139,7 @@ export default function TransportBatchListRequests() {
                   fullWidth
                   variant="contained"
                   endIcon={<SendIcon />}
-                  onClick={handleSendPackage}
+                  onClick={handleSendPackage(batch.batchId)}
                   sx={{
                     borderRadius: "50px",
                     width: "345px",
@@ -156,7 +178,7 @@ export default function TransportBatchListRequests() {
                 <Button
                   variant="outlined"
                   endIcon={<SendIcon />}
-                  onClick={handleCloseDialog}
+                  onClick={handleSendPackage(batch.batchId)}
                   sx={{ borderRadius: "50px" }}
                   color="success"
                 >
@@ -166,17 +188,18 @@ export default function TransportBatchListRequests() {
             </AppBar>
 
             <DialogContent>
-              {selectedBatch && (
                 <Card sx={{ marginBottom: "16px", width: "100%" }}>
                   <CardActionArea>
                     <CardMedia
                       component="img"
                       height="140"
                       image={selectedBatch.batchpic}
+                      // image={`${CONSTANTS.IPFSURL}/${batch.ipfs_hash}`}
                       alt="material"
                     />
                     <CardContent>
                       <Typography gutterBottom variant="h5" component="div">
+                        {/* Stage : {batch.stage} */}
                         Stage : {selectedBatch.currentstage}
                       </Typography>
 
@@ -223,7 +246,6 @@ export default function TransportBatchListRequests() {
                     </CardContent>
                   </CardActionArea>
                 </Card>
-              )}
                <div>
               <Timeline/>
               </div>
