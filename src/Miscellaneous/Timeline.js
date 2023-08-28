@@ -22,6 +22,7 @@ const Timeline = () => {
   const [stageOneInspection, setStageOneInspection] = useState(false);
   const [stageTwoInspection, setStageTwoInspection] = useState(false);
   const [stageThreeInspection, setStageThreeInspection] = useState(false);
+
   const StageOneCompleted = () => {
     //API call
 
@@ -59,6 +60,7 @@ const Timeline = () => {
 
     setStageThreeInspection(true);
   };
+  
   return (
     <VerticalTimeline>
       <VerticalTimelineElement
