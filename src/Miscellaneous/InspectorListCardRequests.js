@@ -86,7 +86,7 @@ export default function InspectorListCardRequests({ data }) {
     setExpanded(!expanded);
   };
   const handleOpenDialog = () => {
-    setSelectedTransporter(null); // Reset selected transporter
+    setSelectedTransporter(null);
     setSelectedInspector(null);
     setOpenDialog(true);
   };
@@ -241,21 +241,21 @@ export default function InspectorListCardRequests({ data }) {
                     </Card>
                   ))}
                 </div>
-                <Stack direction="row" sx={{justifyContent:"space-around"}}>
-                <TextField
-                  label="Remarks"
-                  multiline
-                  variant="filled"
-                  sx={{ width:"100%",maxWidth: "1000px" , marginTop: "24px",alignContent:"center" }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  value={remarks}
-                  onChange={(e) => {
-                    setRemarks(e.target.value);
-                  }}
-                  color="success"
-                />
+                <Stack direction="row" sx={{ justifyContent: "space-around" }}>
+                  <TextField
+                    label="Remarks"
+                    multiline
+                    variant="filled"
+                    sx={{ width: "100%", maxWidth: "1000px", marginTop: "24px", alignContent: "center" }}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    value={remarks}
+                    onChange={(e) => {
+                      setRemarks(e.target.value);
+                    }}
+                    color="success"
+                  />
                 </Stack>
               </Typography>
               <Divider sx={{ marginTop: "24px" }} />
