@@ -728,37 +728,38 @@ function ContractContextProvider(props) {
             }
         },
 
-        deAssign_role: async (address, key) => {
+        deAssign_role: async (address) => {
             try {
-
                 if (!AdminContract) {
                     console.error("AdminContract not initialized");
                     return { success: false, message: "AdminContract not initialized" };
                 }
-
-                if (key == 1) {
-
+        
+                const isSupplier = await AdminContract.suppliers(address);
+                const isManufacturer = await AdminContract.manufacturers(address);
+                const isInspector = await AdminContract.inspectors(address);
+                const isTransporter = await AdminContract.transporters(address);
+                const isWholesaler = await AdminContract.wholesalers(address);
+        
+                if (isSupplier) {
                     await AdminContract.removeSupplier(address);
-
-                }
-                else if (key == 2) {
+                } else if (isManufacturer) {
                     await AdminContract.removeManufacturer(address);
-                }
-                else if (key == 3) {
+                } else if (isInspector) {
                     await AdminContract.removeInspector(address);
-                }
-                else if (key == 4) {
+                } else if (isTransporter) {
                     await AdminContract.removeTransporter(address);
-                }
-                else {
+                } else if (isWholesaler) {
                     await AdminContract.removeWholesaler(address);
+                } else {
+                    return { success: false, message: "No role assigned to this address" };
                 }
-
             } catch (error) {
                 console.error("Error in deAssigning role: ", error);
                 return { success: false, message: error.message };
             }
         },
+        
         request_raw_material_package: async (_rawMaterialsIds, _rawMaterialsQuantities, _description, _transporterId, _supplierId, _inspectorId) => {
             try {
 

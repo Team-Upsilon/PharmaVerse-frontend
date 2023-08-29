@@ -56,16 +56,17 @@ const RolesChanged = () => {
         // Assuming you have a way to determine the role of the account you want to deassign.
         // For example, you could have a function that queries the blockchain to get the role of an account.
         // Let's assume you have a function called getAccountRole that returns the role key.
-        const roleKey = await Services.getAccountRole(deassignId);
 
-        if (roleKey) {
-          await Services.deAssign_role(deassignId, roleKey);
+
+          const res = await Services.deAssign_role(deassignId);
           // Role deassigned successfully, you can show a success message or update the UI as needed.
-          console.log(`Role deassigned from account ${deassignId}`);
-        } else {
-          // Handle the case where you couldn't determine the role of the account.
-          console.error(`Unable to determine the role of account ${deassignId}`);
-        }
+
+          if(res.status){
+            console.log(`Role deassigned from account ${deassignId}`);
+          }
+
+          
+      
       }
     } catch (error) {
       console.error("Error deassigning role: ", error);
