@@ -1,18 +1,40 @@
-import React from 'react';
+import React,{useState, useEffect} from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import jsonData from '../data.json';
+// import jsonData from '../data.json';
+import { useContext } from 'react';
+import { ContractContext } from '../Context/ContractContext';
+
 
 const ChemicalListChart = () => {
-  if (!jsonData || jsonData.length === 0) {
-    return <div>No data available.</div>;
-  }
+  const [chartData, setChartData] = useState([]);
+  const { services, rawMaterials } = useContext(ContractContext);
 
-  const { xaxis, quantity } = jsonData[0];
+  useEffect(() => {
+    const fetchRawMaterials = async () => {
+      await services.get_all_raw_materials();
+      console.log(rawMaterials);
+      const processedChartData = rawMaterials.map(rawMaterial => ({
+        x: rawMaterial.name,
+        y: rawMaterial.quantity, // Use the appropriate property for y-axis data
+      }));
+      
+      setChartData(processedChartData);
+    };
 
-  const chartData = xaxis.map((xValue, index) => ({
-    x: xValue,
-    y: quantity[index],
-  }));
+    fetchRawMaterials();
+  }, [services, rawMaterials]);
+
+
+  // if (!jsonData || jsonData.length === 0) {
+  //   return <div>No data available.</div>;
+  // }
+
+  // const { xaxis, quantity } = jsonData[0];
+
+  // const chartData = xaxis.map((xValue, index) => ({
+  //   x: xValue,
+  //   y: quantity[index],
+  // }));
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

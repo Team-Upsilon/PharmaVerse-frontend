@@ -72,8 +72,12 @@ const RolesChanged = () => {
             <MenuItem value="Wholesaler">Wholesaler</MenuItem>
           </Select>
         </FormControl>
-        <Button color="primary" variant="contained" sx={{ maxWidth: "100px" }}
-         disabled={!(accountId && role)}>
+        <Button
+          color="primary"
+          variant="contained"
+          sx={{ maxWidth: "100px" }}
+          disabled={!(accountId && role)}
+        >
           Send
         </Button>
       </Stack>
@@ -102,8 +106,12 @@ const RolesChanged = () => {
           }}
           color="success"
         />
-        <Button color="primary" variant="contained" sx={{ maxWidth: "100px" }}
-        disabled={!deassignId}>
+        <Button
+          color="primary"
+          variant="contained"
+          sx={{ maxWidth: "100px" }}
+          disabled={!deassignId}
+        >
           Send
         </Button>
       </Stack>
