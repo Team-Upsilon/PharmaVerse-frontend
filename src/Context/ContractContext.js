@@ -42,7 +42,15 @@ function ContractContextProvider(props) {
     };
 
     useEffect(() => {
-        getContract();
+        Services.get_all_raw_materials();
+        Services.get_all_packages();
+        Services.get_all_medicines();
+        Services.get_all_batches();
+        Services.get_package_reports();
+        Services.get_batch_reports();
+        Services.get_package_delivery_details();
+        Services.get_batch_delivery_details();
+
     }, []);
 
     useEffect(() => {
@@ -786,9 +794,7 @@ function ContractContextProvider(props) {
                 return { success: false, message: error.message };
             }
         },
-        get_role_address: async (key) => {
-
-        }
+        
     };
 
     const [state, setState] = useState({
