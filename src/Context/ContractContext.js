@@ -467,11 +467,11 @@ function ContractContextProvider(props) {
                 }
 
 
-                const quantity = quantityArray.map((value) => ethers.BigNumber.from(value));
-                const concentration = concentrationArray.map((value) => ethers.BigNumber.from(value));
+                // const quantity = quantityArray.map((value) => ethers.BigNumber.from(value));
+                // const concentration = concentrationArray.map((value) => ethers.BigNumber.from(value));
 
-                // const quantity = [1000];
-                // const concentration = [1000];
+                const quantity = [1000];
+                const concentration = [1000];
 
                 const response = await InspectorContarct.checkquality(packageId, description, quantity, concentration, {
                     from: account,
@@ -761,6 +761,9 @@ function ContractContextProvider(props) {
                 console.error("Error in creating batch: ", error);
                 return { success: false, message: error.message };
             }
+        },
+        get_role_address: async (key) => {
+
         }
     };
 
