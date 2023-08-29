@@ -200,7 +200,7 @@ function ContractContextProvider(props) {
 
                     batchList.push({
                         batchId: batchInfo[0].toNumber(),
-                        medicines:medicines.toNumber(),
+                        medicines: medicines.toNumber(),
                         manufacturerId: batchInfo[3],
                         transporterId: batchInfo[4],
                         wholesalerId: batchInfo[5],
@@ -742,7 +742,7 @@ function ContractContextProvider(props) {
             } catch (error) {
                 console.error("Error in requesting raw material package: ", error);
                 return { success: false, message: error.message };
-            }   
+            }
         },
 
         create_batch: async (_medicineIds, _medicineQuantities, estimatedCost, productionRatePerDay, _idealstage1conditions, _idealstage2conditions, _idealpackagingconditions, _inspectorId, _transporterId, _wholesalerId) => {

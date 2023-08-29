@@ -13,7 +13,7 @@ import Inspector from './Component/Inspector'
 // import ContactUs from './Component/ContactUs';
 import Timeline from './Miscellaneous/Timeline';
 import HomePage from './Component/HomePage';
-
+import ContractContextProvider from './Context/ContractContext';
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
