@@ -58,7 +58,6 @@ export default function TransportBatchListSent({ data }) {
   const { packages, Services, medicines } = useContext(ContractContext);
   let { account } = useContext(AuthContext);
 
-  const [BatchMedicines, setBatchMedicines] = useState([]);
   const [batches, setBatches] = useState(batchData);
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -68,28 +67,6 @@ export default function TransportBatchListSent({ data }) {
   const [selectedInspector, setSelectedInspector] = useState(null);
   const [selectedWholesaler, setSelectedWholesaler] = useState(null);
 
-  useEffect(() => {
-    setData();
-  }, []);
-
-  const setData = async () => {
-    if (!medicines || !account) return;
-
-    const updatedBatchMedicines = data.medicines.map(item => {
-      const Medicine = medicines.find(item1 => item1.medicineId === item.medicineId);
-      if (Medicine) {
-        return {
-          ...Medicine,
-          quantity: item.quantity,
-        };
-      } else {
-        return null;
-      }
-    });
-
-    setBatchMedicines(updatedBatchMedicines.filter(item => item !== null));
-
-  };
 
 
   const handleExpandClick = () => {
@@ -192,20 +169,6 @@ export default function TransportBatchListSent({ data }) {
                       Stage : 2
                     </Typography>
 
-                    <Typography variant="body2" color="text.secondary">
-
-                      {/* {BatchMedicines.map((medicine, i) => (
-                          <div key={i}>
-                            {medicine.name} :{" "}
-                            {medicine.quantity} Kg
-                          </div>
-                        ))} */}
-                      <div >
-                        {"A"} :{" "}
-                        {"2"} Kg
-                      </div>
-
-                    </Typography>
                     <Divider
                       sx={{ marginTop: "10px", marginBottom: "24px" }}
                     />
@@ -237,7 +200,7 @@ export default function TransportBatchListSent({ data }) {
                 </CardActionArea>
               </Card>
               <div>
-                <Timeline />
+                <Timeline batch={batch} role={"transporter"} />
               </div>
               <Divider />
             </DialogContent>

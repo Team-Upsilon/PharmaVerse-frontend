@@ -259,78 +259,137 @@ const CompletedBatches = () => {
 
         <DialogContent>
           {selectedBatch && (
+            <>
+              <Card sx={{ marginBottom: "16px", width: "100%" }}>
+                <CardActionArea>
+                  <CardMedia
+                    component="img"
+                    height="140"
+                    image={selectedBatch.batchpic}
+                    // image={`${CONSTANTS.IPFSURL}/${selectedBatch.ipfs_hash}`}
+                    alt="material"
+                  />
+                  <CardContent>
+                    <Typography gutterBottom variant="h5" component="div">
+                      Grade : {selectedBatch.grade}
+                      {/* Grade : {selectedBatch.stage} */}
+                      {/* // to be integrated, fetch from batch report */}
+                    </Typography>
 
-            <Card sx={{ marginBottom: "16px", width: "100%" }}>
-              <CardActionArea>
-                <CardMedia
-                  component="img"
-                  height="140"
-                  image={selectedBatch.batchpic}
-                  // image={`${CONSTANTS.IPFSURL}/${selectedBatch.ipfs_hash}`}
-                  alt="material"
-                />
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    Grade : {selectedBatch.grade}
-                    {/* Grade : {selectedBatch.stage} */}
-                    {/* // to be integrated, fetch from batch report */}
-                  </Typography>
-
-                  {/* {selectedBatch.medicines.map((item, materialIndex) => (
+                    {/* {selectedBatch.medicines.map((item, materialIndex) => (
                       <div key={item.medicineId}>
                         {item} : {item.quantity} Kg
                       </div>
                     ))} */}
-                  <Typography variant="body2" color="text.secondary">
-                    <div >
-                      A : 3 Kg
+                    <Typography variant="body2" color="text.secondary">
+                      <div >
+                        A : 3 Kg
+                      </div>
+
+                    </Typography>
+
+                    <Divider sx={{ marginTop: "10px", marginBottom: "24px" }} />
+                    <div>
+                      {selectedBatch &&
+                        selectedBatch.transporter.map((transporter) => (
+                          <Card key={transporter.id} sx={{ marginBottom: "16px" }}>
+                            <CardHeader
+                              title={transporter.name}
+                              subheader={transporter.address}
+                            />
+                          </Card>
+                        ))}
                     </div>
+                    <div>
+                      <Card sx={{ marginBottom: "16px", width: "100%" }}>
+                        <CardActionArea>
+                          <CardMedia
+                            component="img"
+                            height="140"
+                            image={selectedBatch.batchpic}
+                            // image={`${CONSTANTS.IPFSURL}/${selectedBatch.ipfs_hash}`}
+                            alt="material"
+                          />
+                          <CardContent>
+                            <Typography gutterBottom variant="h5" component="div">
+                              {/* Stage : {selectedBatch.stage} */}
+                              Stage : {selectedBatch.currentstage}
+                            </Typography>
 
-                  </Typography>
+                            {/* {selectedBatch.medicines.map((item, materialIndex) => (
+                      <div key={item.medicineId}>
+                        {item} : {item.quantity} Kg
+                      </div>
+                    ))} */}
+                            <Typography variant="body2" color="text.secondary">
+                              <div >
+                                A : 3 Kg
+                              </div>
 
-                  <Divider sx={{ marginTop: "10px", marginBottom: "24px" }} />
-                  <div>
-                    {selectedBatch &&
-                      selectedBatch.transporter.map((transporter) => (
-                        <Card key={transporter.id} sx={{ marginBottom: "16px" }}>
-                          <CardHeader
-                            title={transporter.name}
-                            subheader={transporter.address}
-                          />
-                        </Card>
-                      ))}
-                  </div>
-                  <div>
-                    {selectedBatch &&
-                      selectedBatch.inspector.map((inspector) => (
-                        <Card key={inspector.id} sx={{ marginBottom: "16px" }}>
-                          <CardHeader
-                            title={inspector.name}
-                            subheader={inspector.address}
-                          />
-                        </Card>
-                      ))}
-                  </div>
-                  <div>
-                    {selectedBatch &&
-                      selectedBatch.wholesaler.map((wholesaler) => (
-                        <Card key={wholesaler.id} sx={{ marginBottom: "16px" }}>
-                          <CardHeader
-                            title={wholesaler.name}
-                            subheader={wholesaler.address}
-                          />
-                        </Card>
-                      ))}
-                  </div>
-                </CardContent>
-              </CardActionArea>
-            </Card>
+                            </Typography>
+                            <Divider sx={{ marginTop: "10px", marginBottom: "24px" }} />
+                            <div>
+                              {selectedBatch &&
+                                selectedBatch.transporter.map((transporter) => (
+                                  <Card
+                                    key={transporter.id}
+                                    sx={{ marginBottom: "16px" }}
+                                  >
+                                    <CardHeader
+                                      title={transporter.name}
+                                      subheader={transporter.address}
+                                    />
+                                  </Card>
+                                ))}
+                            </div>
+                            <div>
+                              {selectedBatch &&
+                                selectedBatch.inspector.map((inspector) => (
+                                  <Card key={inspector.id} sx={{ marginBottom: "16px" }}>
+                                    <CardHeader
+                                      title={inspector.name}
+                                      subheader={inspector.address}
+                                    />
+                                  </Card>
+                                ))}
+                            </div>
+                            <div>
+                              <Card
+                                sx={{ marginBottom: "16px" }}
+                              >
+                                <CardHeader
+                                  title="Inspector"
+                                  subheader="0x511F0e5A8495d7c7709f905186A01751D8b3f7C8"
+                                // subheader={selectedBatch.inspectorId}
+                                />
+                              </Card>
+                            </div>
+                          </CardContent>
+                        </CardActionArea>
+                      </Card>
+                    </div>
+                    <div>
+                      <Card
+                        sx={{ marginBottom: "16px" }}
+                      >
+                        <CardHeader
+                          title="Wholesaler"
+                          subheader="0x511F0e5A8495d7c7709f905186A01751D8b3f7C8"
+                        // subheader={selectedBatch.wholesalerId}
+                        />
+                      </Card>
+                    </div>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+              <Divider />
+              <div>
+                <Timeline batch={selectedBatch} role={"manufacturer"} />
+              </div>
+              <Divider />
+            </>
           )}
-          <Divider />
-          <div>
-            <Timeline />
-          </div>
-          <Divider />
+
         </DialogContent>
       </Dialog>
     </div>
