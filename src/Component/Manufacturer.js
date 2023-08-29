@@ -11,6 +11,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import ListItemText from "@mui/material/ListItemText";
 import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -184,7 +185,12 @@ function ResponsiveDrawer(props) {
           ml: { sm: `${drawerWidth}px` },
         }}
       >
-        <Toolbar>
+        <Toolbar
+          sx={{
+            display: "flex",
+            justifyContent: { xs: "space-between", sm: "flex-end" },
+          }}
+        >
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -194,6 +200,7 @@ function ResponsiveDrawer(props) {
           >
             <MenuIcon />
           </IconButton>
+          <ConnectButton />
         </Toolbar>
       </AppBar>
       <Box
