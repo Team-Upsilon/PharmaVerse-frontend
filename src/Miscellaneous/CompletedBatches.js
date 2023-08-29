@@ -20,6 +20,10 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Timeline from "./Timeline";
+import { useEffect, useContext } from "react";
+import { ContractContext } from "../Context/ContractContext";
+import { AuthContext } from "../Context/AuthContext";
+import CONSTANTS from "../Utils/Constants";
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -27,7 +31,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const CompletedBatches = () => {
-  const [batches, setBatches] = useState(CompletebatchData);
+
+  const { batches, Services, medicines } = useContext(ContractContext);
+  let { account } = useContext(AuthContext);
+
+  const [CompletedBatches, setCompletedBatches] = useState(CompletebatchData);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedBatch, setSelectedBatch] = useState(null); // Track selected batch
   const [searchValue, setSearchValue] = useState("");
@@ -36,15 +44,48 @@ const CompletedBatches = () => {
   const [selectedWholesaler, setSelectedWholesaler] = useState(null);
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState('md');
+
+  useEffect(() => {
+    setData();
+  }, []);
+
+  const setData = async () => {
+    // if (!batches || !account) return;
+
+    // const updatedBatches = batches
+    //   .filter((item) => item.manufacturerId === account && item.stage !== "Delivered" && item.InspectionStage !== "STAGE_3")
+    //   .map((item) => {
+    //     const updatedMedicines = item.medicines.map((medicine) => {
+    //       const matchedMedicine = medicines.find((m) => m.medicineId === medicine.medicineId);
+    //       if (matchedMedicine) {
+    //         return {
+    //           ...matchedMedicine,
+    //           quantity: medicine.quantity,
+    //         };
+    //       } else {
+    //         return medicine;
+    //       }
+    //     });
+
+    //     return {
+    //       ...item,
+    //       medicines: updatedMedicines,
+    //     };
+    //   });
+
+    // setCompletedBatches(updatedBatches);
+  };
+
+
   const handleOpenDialog = (batch) => {
     setSelectedBatch(batch);
-    setSelectedTransporter(null); // Reset selected transporter
+    setSelectedTransporter(null);
     setSelectedInspector(null);
     setSelectedWholesaler(null);
     setOpenDialog(true);
   };
   const handleCloseDialog = () => {
-    setSelectedBatch(null); // Reset selected batch when closing dialog
+    setSelectedBatch(null);
     setOpenDialog(false);
   };
 
@@ -53,7 +94,6 @@ const CompletedBatches = () => {
   };
   const handleMaxWidthChange = (event) => {
     setMaxWidth(
-      // @ts-expect-error autofill of arbitrary value is not handled.
       event.target.value,
     );
   };
@@ -219,26 +259,35 @@ const CompletedBatches = () => {
 
         <DialogContent>
           {selectedBatch && (
+
             <Card sx={{ marginBottom: "16px", width: "100%" }}>
               <CardActionArea>
                 <CardMedia
                   component="img"
                   height="140"
                   image={selectedBatch.batchpic}
+                  // image={`${CONSTANTS.IPFSURL}/${selectedBatch.ipfs_hash}`}
                   alt="material"
                 />
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
                     Grade : {selectedBatch.grade}
+                    {/* Grade : {selectedBatch.stage} */}
+                    {/* // to be integrated, fetch from batch report */}
                   </Typography>
 
-                  <Typography variant="body2" color="text.secondary">
-                    {selectedBatch.materialname.map((e, materialIndex) => (
-                      <div key={materialIndex}>
-                        {e} : {selectedBatch.materialquantity[materialIndex]} Kg
+                  {/* {selectedBatch.medicines.map((item, materialIndex) => (
+                      <div key={item.medicineId}>
+                        {item} : {item.quantity} Kg
                       </div>
-                    ))}
+                    ))} */}
+                  <Typography variant="body2" color="text.secondary">
+                    <div >
+                      A : 3 Kg
+                    </div>
+
                   </Typography>
+
                   <Divider sx={{ marginTop: "10px", marginBottom: "24px" }} />
                   <div>
                     {selectedBatch &&
@@ -277,6 +326,11 @@ const CompletedBatches = () => {
               </CardActionArea>
             </Card>
           )}
+          <Divider />
+          <div>
+            <Timeline />
+          </div>
+          <Divider />
           <Divider />
           <div>
             <Timeline />

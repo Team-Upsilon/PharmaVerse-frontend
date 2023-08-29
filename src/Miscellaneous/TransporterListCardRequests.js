@@ -227,11 +227,11 @@ export default function TransporterListCardRequests({ data }) {
           <DialogContent>
             <div>
               <Typography variant="body2" color="text.secondary">
-                <div className="card-container" style={{ marginTop: "8px" }}>
+                <div className="dialog-container" style={{ marginTop: "8px" }}>
                 {/* {PackageRawMaterials.map((chemical, index) => ( */}
                   {data.chemicals.map((chemical, index) => (
                     <Card sx={{ maxWidth: 700, marginBottom: "16px" }}>
-                      <CardActionArea>
+                
                         <CardMedia
                           component="img"
                           height="140"
@@ -247,7 +247,7 @@ export default function TransporterListCardRequests({ data }) {
                             {chemical.description}
                           </Typography>
                         </CardContent>
-                      </CardActionArea>
+            
                     </Card>
                   ))}
                 </div>

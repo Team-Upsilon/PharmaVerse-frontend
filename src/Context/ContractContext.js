@@ -193,25 +193,25 @@ function ContractContextProvider(props) {
 
                     for (let j = 0; j < medicineIds.length; j++) {
                         medicines.push({
-                            medicineId: medicineIds[j].toNumber(),
+                            materialId: medicineIds[j].toNumber(),
                             quantity: medicineQuantities[j].toNumber(),
                         });
                     }
 
                     batchList.push({
                         batchId: batchInfo[0].toNumber(),
-                        medicines: medicines.toNumber(),
+                        medicines:medicines.toNumber(),
                         manufacturerId: batchInfo[3],
                         transporterId: batchInfo[4],
                         wholesalerId: batchInfo[5],
                         manufacturingDate: new Date(batchInfo[6].toNumber() * 1000), // Convert timestamp to JavaScript Date
-                        stage: batchInfo[7],
+                        stage: batchInfo[7].toNumber(),
                         score: batchInfo[8].toNumber(),
                         idealstage1conditions: batchInfo[9].map((value) => value.toNumber()),
                         idealstage2conditions: batchInfo[10].map((value) => value.toNumber()),
                         idealpackagingconditions: batchInfo[11].map((value) => value.toNumber()),
                         inspectorId: batchInfo[12],
-                        InspectionStage: batchInfo[13],
+                        InspectionStage: batchInfo[13].toNumber(),
                     });
                 }
 
@@ -742,7 +742,7 @@ function ContractContextProvider(props) {
             } catch (error) {
                 console.error("Error in requesting raw material package: ", error);
                 return { success: false, message: error.message };
-            }
+            }   
         },
 
         create_batch: async (_medicineIds, _medicineQuantities, estimatedCost, productionRatePerDay, _idealstage1conditions, _idealstage2conditions, _idealpackagingconditions, _inspectorId, _transporterId, _wholesalerId) => {

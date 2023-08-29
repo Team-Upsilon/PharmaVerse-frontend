@@ -86,7 +86,7 @@ export default function InspectorListCardRequests({ data }) {
     setExpanded(!expanded);
   };
   const handleOpenDialog = () => {
-    setSelectedTransporter(null); // Reset selected transporter
+    setSelectedTransporter(null);
     setSelectedInspector(null);
     setOpenDialog(true);
   };
@@ -117,7 +117,6 @@ export default function InspectorListCardRequests({ data }) {
           image="/static/images/cards/paella.jpg"
           alt="Manufacturer"
         />
-
         {!data["send-package"] && (
           <CardActions>
             <Stack spacing={0.2}>
@@ -175,10 +174,10 @@ export default function InspectorListCardRequests({ data }) {
           <DialogContent>
             <div>
               <Typography variant="body2" color="text.secondary">
-                <div className="card-container" style={{ marginTop: "8px" }}>
+                <div className="dialog-container" style={{ marginTop: "8px" }}>
                   {data.chemicals.map((chemical, index) => (
                     <Card sx={{ maxWidth: 700, marginBottom: "16px" }}>
-                      <CardActionArea>
+            
                         <CardMedia
                           component="img"
                           height="140"
@@ -238,25 +237,25 @@ export default function InspectorListCardRequests({ data }) {
                             </Button>
                           </Stack>
                         </CardContent>
-                      </CardActionArea>
+                  
                     </Card>
                   ))}
                 </div>
-                <Stack direction="row" sx={{justifyContent:"space-around"}}>
-                <TextField
-                  label="Remarks"
-                  multiline
-                  variant="filled"
-                  sx={{ width:"100%",maxWidth: "1000px" , marginTop: "24px",alignContent:"center" }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  value={remarks}
-                  onChange={(e) => {
-                    setRemarks(e.target.value);
-                  }}
-                  color="success"
-                />
+                <Stack direction="row" sx={{ justifyContent: "space-around" }}>
+                  <TextField
+                    label="Remarks"
+                    multiline
+                    variant="filled"
+                    sx={{ width: "100%", maxWidth: "1000px", marginTop: "24px", alignContent: "center" }}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    value={remarks}
+                    onChange={(e) => {
+                      setRemarks(e.target.value);
+                    }}
+                    color="success"
+                  />
                 </Stack>
               </Typography>
               <Divider sx={{ marginTop: "24px" }} />

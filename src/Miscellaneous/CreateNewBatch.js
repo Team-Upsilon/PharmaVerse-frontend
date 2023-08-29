@@ -27,7 +27,6 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import Timeline from "./Timeline";
 import clsx from "clsx";
 import { FormControl, useFormControlContext } from "@mui/base/FormControl";
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -146,7 +145,18 @@ const CreateNewBatch = ({ jsonData }) => {
   const [selectedTransporter, setSelectedTransporter] = useState(null);
   const [selectedInspector, setSelectedInspector] = useState(null);
   const [selectedWholesaler, setSelectedWholesaler] = useState(null);
-
+  const [concentrationStageOne, setConcentrationStageOne] = useState("");
+  const [pressureStageOne, setPressureStageOne] = useState("");
+  const [densityStageOne, setDensityStageOne] = useState("");
+  const [volumeStageOne, setVolumeStageOne] = useState("");
+  const [concentrationStageTwo, setConcentrationStageTwo] = useState("");
+  const [pressureStageTwo, setPressureStageTwo] = useState("");
+  const [densityStageTwo, setDensityStageTwo] = useState("");
+  const [volumeStageTwo, setVolumeStageTwo] = useState("");
+  const [concentrationStageThree, setConcentrationStageThree] = useState("");
+  const [pressureStageThree, setPressureStageThree] = useState("");
+  const [densityStageThree, setDensityStageThree] = useState("");
+  const [volumeStageThree, setVolumeStageThree] = useState("");
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
@@ -187,8 +197,6 @@ const CreateNewBatch = ({ jsonData }) => {
 
   const handleSendBatch = () => {
     setOpenDialog(false);
-
-    //Rest of the logic
   };
   return (
     <div>
@@ -360,33 +368,162 @@ const CreateNewBatch = ({ jsonData }) => {
                     </Typography>
                     <Stack
                       direction="row"
-                      gap={1}
+                      gap={2}
                       sx={{ justifyContent: "flex-start", flexWrap: "wrap" }}
                     >
                       <FormControl defaultValue="" required>
                         <Label>Concentration:</Label>
-                        <StyledInput placeholder="Write the concentration here" />
+                        <StyledInput
+                          placeholder="Write the concentration here"
+                          value={concentrationStageOne}
+                          onChange={(e) =>
+                            setConcentrationStageOne(e.target.value)
+                          }
+                        />
                         <HelperText />
                       </FormControl>
 
                       <FormControl defaultValue="" required>
                         <Label>Pressure:</Label>
-                        <StyledInput placeholder="Write the pressure here" />
+                        <StyledInput
+                          placeholder="Write the pressure here"
+                          value={pressureStageOne}
+                          onChange={(e) => setPressureStageOne(e.target.value)}
+                        />
                         <HelperText />
                       </FormControl>
 
                       <FormControl defaultValue="" required>
                         <Label>Density:</Label>
-                        <StyledInput placeholder="Write the density here" />
+                        <StyledInput
+                          placeholder="Write the density here"
+                          value={densityStageOne}
+                          onChange={(e) => setDensityStageOne(e.target.value)}
+                        />
                         <HelperText />
                       </FormControl>
 
                       <FormControl defaultValue="" required>
                         <Label>Volume:</Label>
-                        <StyledInput placeholder="Write the volume here" />
+                        <StyledInput
+                          placeholder="Write the volume here"
+                          value={volumeStageOne}
+                          onChange={(e) => setVolumeStageOne(e.target.value)}
+                        />
                         <HelperText />
                       </FormControl>
                     </Stack>
+
+                    <Typography
+                      variant="subtitle1"
+                      sx={{ marginTop: "24px", marginBottom: "8px" }}
+                    >
+                      Ideal Conditions for the Stage-2:
+                    </Typography>
+                    <Stack
+                      direction="row"
+                      gap={2}
+                      sx={{ justifyContent: "flex-start", flexWrap: "wrap" }}
+                    >
+                      <FormControl defaultValue="" required>
+                        <Label>Concentration:</Label>
+                        <StyledInput
+                          placeholder="Write the concentration here"
+                          value={concentrationStageTwo}
+                          onChange={(e) =>
+                            setConcentrationStageTwo(e.target.value)
+                          }
+                        />
+                        <HelperText />
+                      </FormControl>
+
+                      <FormControl defaultValue="" required>
+                        <Label>Pressure:</Label>
+                        <StyledInput
+                          placeholder="Write the pressure here"
+                          value={pressureStageTwo}
+                          onChange={(e) => setPressureStageTwo(e.target.value)}
+                        />
+                        <HelperText />
+                      </FormControl>
+
+                      <FormControl defaultValue="" required>
+                        <Label>Density:</Label>
+                        <StyledInput
+                          placeholder="Write the density here"
+                          value={densityStageTwo}
+                          onChange={(e) => setDensityStageTwo(e.target.value)}
+                        />
+                        <HelperText />
+                      </FormControl>
+
+                      <FormControl defaultValue="" required>
+                        <Label>Volume:</Label>
+                        <StyledInput
+                          placeholder="Write the volume here"
+                          value={volumeStageTwo}
+                          onChange={(e) => setVolumeStageTwo(e.target.value)}
+                        />
+                        <HelperText />
+                      </FormControl>
+                    </Stack>
+
+                    <Typography
+                      variant="subtitle1"
+                      sx={{ marginTop: "24px", marginBottom: "8px" }}
+                    >
+                      Ideal Conditions for the Packing and Labeling:
+                    </Typography>
+                    <Stack
+                      direction="row"
+                      gap={2}
+                      sx={{ justifyContent: "flex-start", flexWrap: "wrap" }}
+                    >
+                      <FormControl defaultValue="" required>
+                        <Label>Concentration:</Label>
+                        <StyledInput
+                          placeholder="Write the concentration here"
+                          value={concentrationStageThree}
+                          onChange={(e) =>
+                            setConcentrationStageThree(e.target.value)
+                          }
+                        />
+                        <HelperText />
+                      </FormControl>
+
+                      <FormControl defaultValue="" required>
+                        <Label>Pressure:</Label>
+                        <StyledInput
+                          placeholder="Write the pressure here"
+                          value={pressureStageThree}
+                          onChange={(e) =>
+                            setPressureStageThree(e.target.value)
+                          }
+                        />
+                        <HelperText />
+                      </FormControl>
+
+                      <FormControl defaultValue="" required>
+                        <Label>Density:</Label>
+                        <StyledInput
+                          placeholder="Write the density here"
+                          value={densityStageThree}
+                          onChange={(e) => setDensityStageThree(e.target.value)}
+                        />
+                        <HelperText />
+                      </FormControl>
+
+                      <FormControl defaultValue="" required>
+                        <Label>Volume:</Label>
+                        <StyledInput
+                          placeholder="Write the volume here"
+                          value={volumeStageThree}
+                          onChange={(e) => setVolumeStageThree(e.target.value)}
+                        />
+                        <HelperText />
+                      </FormControl>
+                    </Stack>
+
                     <Divider sx={{ marginTop: "20px", marginBottom: "24px" }} />
                     <Typography variant="subtitle1" sx={{ marginTop: "24px" }}>
                       Choose a Transporter :{" "}
@@ -478,55 +615,30 @@ const CreateNewBatch = ({ jsonData }) => {
           <Button onClick={handleCloseDialog} color="primary">
             Cancel
           </Button>
-          {selectedTransporter && selectedInspector && selectedWholesaler && (
-            <Button color="primary" autoFocus onClick={handleSendBatch}>
-              Send
-            </Button>
-          )}
+          {selectedTransporter &&
+            selectedInspector &&
+            selectedWholesaler &&
+            concentrationStageOne &&
+            concentrationStageTwo &&
+            concentrationStageThree &&
+            densityStageOne &&
+            densityStageTwo &&
+            densityStageThree &&
+            volumeStageOne &&
+            volumeStageTwo &&
+            volumeStageThree &&
+            pressureStageOne &&
+            pressureStageTwo &&
+            pressureStageThree && (
+              <Button color="primary" autoFocus onClick={handleSendBatch}>
+                Send
+              </Button>
+            )}
         </DialogActions>
       </Dialog>
     </div>
   );
 };
 
-// export default CreateNewBatch
-
-// import React, { useState } from 'react';
-// import { DataGrid } from '@mui/x-data-grid';
-
-// const CreateNewBatch = () => {
-//   const [selectedRows, setSelectedRows] = useState([]);
-
-//   const handleRowSelection = (newSelection) => {
-//     setSelectedRows(newSelection);
-//   };
-//   const columns = [
-//     { field: 'medname', headerName: 'Medicine Name', width: 230 },
-//     { field: 'meddesc', headerName: 'Description', width: 500 },
-//   ];
-
-//   const rows = [
-//     { id: 1, medname: 'a', meddesc: 'lorem ipsum1' },
-//     { id: 2, medname: 'b', meddesc: 'lorem ipsum2' },
-//     { id: 3, medname: 'c', meddesc: 'lorem ipsum3' },
-//     { id: 4, medname: 'd', meddesc: 'lorem ipsum4' },
-//   ];
-
-//   const submitHandler = () => {
-//     console.log("Selected Rows:", selectedRows);
-//   };
-//   return (
-//     <div>
-//       <DataGrid
-//         rows={rows}
-//         columns={columns}
-//         selectionModel={selectedRows}
-//         onSelectionModelChange={handleRowSelection}
-//         checkboxSelection
-//       />
-//       <button onClick={submitHandler}>Submit</button>
-//     </div>
-//   );
-// }
 
 export default CreateNewBatch;

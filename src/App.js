@@ -2,6 +2,7 @@ import './App.css';
 import Admin_Page from './Component/Admin-Page';
 import Supplier from './Component/Supplier';
 import Inventory from './Component/Inventory';
+import WholeSaler from './Component/Wholesaler';
 import { Route, Routes } from 'react-router-dom'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -58,7 +59,7 @@ function App() {
             }
           />
           <Route path='/manufacturer' element={<Manufacturer />} />
-          <Route path='/timeline' element={<Timeline />} />
+          <Route path='/wholesaler' element={<WholeSaler />} />
           {/* <Route path='/contactus' element={<><ContactUs /></>} /> */}
           <Route path='/homepage' element={<HomePage />} />
         </Routes>
