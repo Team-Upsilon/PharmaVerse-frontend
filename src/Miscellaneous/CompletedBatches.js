@@ -30,7 +30,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const CompletedBatches = () => {
+const CompletedBatches = ({ isAdmin = false, isWholesaler = false }) => {
 
   const { batches, Services, medicines } = useContext(ContractContext);
   let { account } = useContext(AuthContext);
@@ -50,30 +50,80 @@ const CompletedBatches = () => {
   }, []);
 
   const setData = async () => {
-    // if (!batches || !account) return;
+    if (!batches || !account) return;
 
-    // const updatedBatches = batches
-    //   .filter((item) => item.manufacturerId === account && item.stage !== "Delivered" && item.InspectionStage !== "STAGE_3")
-    //   .map((item) => {
-    //     const updatedMedicines = item.medicines.map((medicine) => {
-    //       const matchedMedicine = medicines.find((m) => m.medicineId === medicine.medicineId);
-    //       if (matchedMedicine) {
-    //         return {
-    //           ...matchedMedicine,
-    //           quantity: medicine.quantity,
-    //         };
-    //       } else {
-    //         return medicine;
-    //       }
-    //     });
+    let updatedBatches;
 
-    //     return {
-    //       ...item,
-    //       medicines: updatedMedicines,
-    //     };
-    //   });
+    if (isAdmin) {
+      updatedBatches = batches
+        .filter((item) => item.stage !== "Delivered" && item.InspectionStage !== "STAGE_3")
+        .map((item) => {
+          const updatedMedicines = item.medicines.map((medicine) => {
+            const matchedMedicine = medicines.find((m) => m.medicineId === medicine.medicineId);
+            if (matchedMedicine) {
+              return {
+                ...matchedMedicine,
+                quantity: medicine.quantity,
+              };
+            } else {
+              return medicine;
+            }
+          });
 
-    // setCompletedBatches(updatedBatches);
+          return {
+            ...item,
+            medicines: updatedMedicines,
+          };
+        });
+    }
+    else if (isWholesaler) {
+      updatedBatches = batches
+        .filter((item) => item.wholesalerId === account && item.stage !== "Delivered" && item.InspectionStage !== "STAGE_3")
+        .map((item) => {
+          const updatedMedicines = item.medicines.map((medicine) => {
+            const matchedMedicine = medicines.find((m) => m.medicineId === medicine.medicineId);
+            if (matchedMedicine) {
+              return {
+                ...matchedMedicine,
+                quantity: medicine.quantity,
+              };
+            } else {
+              return medicine;
+            }
+          });
+
+          return {
+            ...item,
+            medicines: updatedMedicines,
+          };
+        });
+    }
+    else {
+      updatedBatches = batches
+        .filter((item) => item.manufacturerId === account && item.stage !== "Delivered" && item.InspectionStage !== "STAGE_3")
+        .map((item) => {
+          const updatedMedicines = item.medicines.map((medicine) => {
+            const matchedMedicine = medicines.find((m) => m.medicineId === medicine.medicineId);
+            if (matchedMedicine) {
+              return {
+                ...matchedMedicine,
+                quantity: medicine.quantity,
+              };
+            } else {
+              return medicine;
+            }
+          });
+
+          return {
+            ...item,
+            medicines: updatedMedicines,
+          };
+        });
+    }
+
+
+
+    setCompletedBatches(updatedBatches);
   };
 
 

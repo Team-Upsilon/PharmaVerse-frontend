@@ -190,7 +190,7 @@ function ResponsiveDrawer(props) {
 
           <TabPanel value={value} index={0}>
 
-            <CompletedBatches />
+            <CompletedBatches isWholesaler={true} />
 
           </TabPanel>
 

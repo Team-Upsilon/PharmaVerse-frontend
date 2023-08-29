@@ -104,7 +104,7 @@ function ResponsiveDrawer(props) {
                 color: "green",
               },
             }}
-            label="List of Medicines"
+            label="Assign & Deaasign Roles"
             {...a11yProps(0)}
           />
           <Tab
@@ -113,7 +113,7 @@ function ResponsiveDrawer(props) {
                 color: "green",
               },
             }}
-            label="List of Raw Materials"
+            label="List of Medicines"
             {...a11yProps(1)}
           />
           <Tab
@@ -122,7 +122,7 @@ function ResponsiveDrawer(props) {
                 color: "green",
               },
             }}
-            label="Chemical Graph"
+            label="List of Raw Materials"
             {...a11yProps(2)}
           />
           <Tab
@@ -131,7 +131,7 @@ function ResponsiveDrawer(props) {
                 color: "green",
               },
             }}
-            label="Completed Batches"
+            label="Chemical Graph"
             {...a11yProps(3)}
           />
           <Tab
@@ -140,7 +140,7 @@ function ResponsiveDrawer(props) {
                 color: "green",
               },
             }}
-            label="Sent Request (Supplier)"
+            label="Completed Batches"
             {...a11yProps(4)}
           />
           <Tab
@@ -149,9 +149,10 @@ function ResponsiveDrawer(props) {
                 color: "green",
               },
             }}
-            label="Assign & Deaasign Roles"
+            label="Sent Request (Supplier)"
             {...a11yProps(5)}
           />
+          
          
         </Tabs>
       </List>
@@ -189,14 +190,13 @@ function ResponsiveDrawer(props) {
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
         aria-label="mailbox folders"
       >
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Drawer
           container={container}
           variant="temporary"
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true, 
           }}
           sx={{
             display: { xs: "block", sm: "none" },
@@ -232,21 +232,24 @@ function ResponsiveDrawer(props) {
       >
         <Toolbar />
         <Typography paragraph>
-          <TabPanel value={value} index={0}>
-            <MedicineList />
+        <TabPanel value={value} index={0}>
+            <RolesChanged />
           </TabPanel>
           <TabPanel value={value} index={1}>
-            <ChemicalList />
+            <MedicineList />
           </TabPanel>
           <TabPanel value={value} index={2}>
-            <ChemicalListChart />
+            <ChemicalList />
           </TabPanel>
           <TabPanel value={value} index={3}>
-            <div className="card-container">
-              <CompletedBatches />
-            </div>
+            <ChemicalListChart />
           </TabPanel>
           <TabPanel value={value} index={4}>
+            <div className="card-container">
+              <CompletedBatches isAdmin = {true} />
+            </div>
+          </TabPanel>
+          <TabPanel value={value} index={5}>
             <div className="card-container">
               {manufacturerData
                 .filter((data) => data["send-package"])
@@ -258,12 +261,7 @@ function ResponsiveDrawer(props) {
                 ))} */}
             </div>
           </TabPanel>
-          <TabPanel value={value} index={4}>
-            <ChemicalList />
-          </TabPanel>
-          <TabPanel value={value} index={5}>
-            <RolesChanged />
-          </TabPanel>
+          
         </Typography>
       </Box>
     </Box>
@@ -271,10 +269,6 @@ function ResponsiveDrawer(props) {
 }
 
 ResponsiveDrawer.propTypes = {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
   window: PropTypes.func,
 };
 
