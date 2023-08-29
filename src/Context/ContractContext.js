@@ -409,6 +409,30 @@ function ContractContextProvider(props) {
                 return { success: false, message: error.message };
             }
         },
+        update_batch_inspection_state: async (batchId, newStage) => {
+            try {
+                if (!ManufacturerContract) {
+                    console.error("ManufacturerContract not initialized");
+                    return { success: false, message: "ManufacturerContract not initialized" };
+                }
+
+                const response = await ManufacturerContract.updateInspectionStage(batchId, newStage, {
+                    from: account,
+                });
+
+                if (response.status) {
+                    console.log(`Batch with ID ${batchId} Inspection stage updated successfully to ${newStage}`);
+                    return { success: true, message: `Batch Inspection stage updated successfully to ${newStage}` };
+                } else {
+                    console.error("Transaction failed");
+                    return { success: false, message: "Transaction failed" };
+                }
+            }
+            catch (error) {
+                console.error("Error updating batch Inspection stage: ", error);
+                return { success: false, message: error.message };
+            }
+        },
         record_package_delivery: async (packageId) => {
             try {
 

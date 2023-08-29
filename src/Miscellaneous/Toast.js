@@ -1,7 +1,7 @@
 import React from 'react';
 import { message } from 'antd';
 
-const ToastComponent = ({ type, title, description, duration }) => {
+const ToastComponent = ({ type, title, description }) => {
   React.useEffect(() => {
     const key = message[type]({
       content: (
@@ -10,13 +10,13 @@ const ToastComponent = ({ type, title, description, duration }) => {
           <p>{description}</p>
         </div>
       ),
-      duration: duration / 1000, // Convert to seconds
+      duration: 3000, 
     });
 
     return () => {
       message.destroy(key);
     };
-  }, [type, title, description, duration]);
+  }, [type, title, description]);
 
   return null;
 };

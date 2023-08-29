@@ -331,11 +331,6 @@ const CompletedBatches = () => {
             <Timeline />
           </div>
           <Divider />
-          <Divider />
-          <div>
-            <Timeline />
-          </div>
-          <Divider />
         </DialogContent>
       </Dialog>
     </div>
