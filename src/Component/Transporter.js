@@ -34,6 +34,10 @@ import TransportBatchListRequests from "../Miscellaneous/TransportBatchListReque
 import { useEffect, useContext } from "react";
 import { ContractContext } from "../Context/ContractContext";
 import { AuthContext } from "../Context/AuthContext";
+
+
+
+
 const drawerWidth = 240;
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -289,9 +293,7 @@ function ResponsiveDrawer(props) {
         <Typography paragraph>
           <TabPanel value={value} index={0}>
             <div className="card-container">
-              {/* {ReceivedPackageRequestData.map((data, index) => (
-                  <TransporterListCardRequests key={index} data={data} />
-                ))} */}
+            ReceivedPackageRequestData
               {transporterPage
                 .filter((data) => !data["send-package"])
                 .map((data, index) => (

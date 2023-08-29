@@ -16,6 +16,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import AirplayRoundedIcon from "@mui/icons-material/AirplayRounded";
 import CloseIcon from "@mui/icons-material/Close";
+
 import {
   AppBar,
   Button,
@@ -68,6 +69,10 @@ export default function InspectorListCardRequests({ data }) {
     concentration: "",
     remarks: "",
   }));
+
+  const {packages, Services} = useContext(ContractContext);
+  let { account } = useContext(AuthContext);
+
   const [remarks, setRemarks] = useState("");
   const [cardStates, setCardStates] = useState(initialCardStates);
   const [expanded, setExpanded] = useState(false);
@@ -80,6 +85,16 @@ export default function InspectorListCardRequests({ data }) {
   const [cardDisabled, setCardDisabled] = useState(
     new Array(data.chemicals.length).fill(false)
   );
+
+  useEffect(() => {
+    setData();
+  }, []);
+
+  const setData = async () => {
+    if(!packages||!account) return;
+
+    
+  }
 
   const [value, setValue] = React.useState();
   const [loading, setLoading] = useState(false);
