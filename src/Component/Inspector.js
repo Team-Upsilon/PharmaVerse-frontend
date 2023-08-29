@@ -57,7 +57,7 @@ function a11yProps(index) {
 }
 function ResponsiveDrawer(props) {
 
-  const { packages, Services, rawMaterials, batches, medicines } = useContext(ContractContext);
+  const { packages, Services, rawMaterials, batches, medicines, batchreports } = useContext(ContractContext);
   let { account } = useContext(AuthContext);
 
   const { window } = props;
@@ -96,7 +96,7 @@ function ResponsiveDrawer(props) {
     setSentPackageRequestData(sentRequestsPackage);
 
     const sentRequestsBatch = batches
-      .filter((item) => item.inspectorId === account && item.stage === "Packaging" && item.InspectionStage !== "STAGE_0")
+      .filter((item) => item.inspectorId === account && item.InspectionStage !== "STAGE_3")
       .map((item) => {
         const medicineId = item.medicines[0]?.materialId; // Get the materialId from the first object
         const medicine = medicines.find((rm) => rm.id === medicineId); // Find the medicine with matching id
@@ -105,10 +105,19 @@ function ResponsiveDrawer(props) {
         return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the batch data
       });
 
-    setReceivedBatchRequestData(sentRequestsBatch);
+    // setting the grade of batch as well
+    const updatedSentBatchRequestData = sentRequestsBatch.map((batchData) => {
+      const matchingReport = batchreports.find((report) =>
+        report.batchId === batchData.batchId && report.stage === "STAGE_3"
+      );
+      const grade = matchingReport ? matchingReport.batchReportResult : null;
+      return { ...batchData, grade };
+    });
+
+    setSentBatchRequestData(updatedSentBatchRequestData);
 
     const receivedRequestsBatch = batches
-      .filter((item) => item.inspectorId === account && item.InspectionStage === "STAGE_3")
+      .filter((item) => item.inspectorId === account && item.InspectionStage !== "STAGE_3")
       .map((item) => {
         const medicineId = item.medicines[0]?.materialId; // Get the materialId from the first object
         const medicine = medicines.find((rm) => rm.id === medicineId); // Find the medicine with matching id
@@ -116,9 +125,9 @@ function ResponsiveDrawer(props) {
 
         return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the batch data
       });
+    setReceivedBatchRequestData(receivedRequestsBatch);
 
   }
-
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -302,7 +311,7 @@ function ResponsiveDrawer(props) {
           </TabPanel>
           <TabPanel value={value} index={3}>
             <div className="card-container">
-              <InspectorBatchCardSent data = {SentBatchRequestData} />
+              <InspectorBatchCardSent data={SentBatchRequestData} />
             </div>
           </TabPanel>
         </Typography>
