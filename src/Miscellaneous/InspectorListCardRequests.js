@@ -64,11 +64,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 export default function InspectorListCardRequests({ data }) {
 
-  const { packages, Services, medicines } = useContext(ContractContext);
-  let { account } = useContext(AuthContext);
-
-  const [BatchMedicines, setBatchMedicines] = useState([]);
-
   const initialCardStates = data.chemicals.map(() => ({
     concentration: "",
     remarks: "",
@@ -92,30 +87,7 @@ export default function InspectorListCardRequests({ data }) {
   const [selectedTransporter, setSelectedTransporter] = useState(null);
   const [selectedInspector, setSelectedInspector] = useState(null);
 
-  useEffect(() => {
-    setData();
-  }, []);
 
-  const setData = async () => {
-    if (!medicines || !account) return;
-
-    const updatedBatchMedicines = data.medicines.map(item => {
-      const Medicine = medicines.find(item1 => item1.medicineId === item.medicineId);
-      if (Medicine) {
-        return {
-          ...Medicine,
-          quantity: item.quantity,
-        };
-      } else {
-        return null;
-      }
-    });
-
-    setBatchMedicines(updatedBatchMedicines.filter(item => item !== null));
-
-  };
-
-  
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -151,7 +123,6 @@ export default function InspectorListCardRequests({ data }) {
           image="/static/images/cards/paella.jpg"
           alt="Manufacturer"
         />
-        {!data["send-package"] && (
           <CardActions>
             <Stack spacing={0.2}>
               <Grid item xs={12} sm={6}>
@@ -172,7 +143,7 @@ export default function InspectorListCardRequests({ data }) {
               </Grid>
             </Stack>
           </CardActions>
-        )}
+   
         <Dialog
           TransitionComponent={Transition}
           fullScreen
@@ -236,7 +207,7 @@ export default function InspectorListCardRequests({ data }) {
                           >
                             <TextField
                               required
-                              id={`concentration-${index}`} // Use a unique identifier for each concentration field
+                              id={`concentration-${index}`} 
                               label="Concentration"
                               value={cardStates[index].concentration}
                               onChange={(e) => {
