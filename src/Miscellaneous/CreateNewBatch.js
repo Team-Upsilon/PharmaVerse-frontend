@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import wholeSalerData from "../wholesaler.json";
 import transporterData from "../transporterData.json";
 import inspectorData from "../inspectorData.json";
@@ -29,6 +29,11 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import clsx from "clsx";
 import { FormControl, useFormControlContext } from "@mui/base/FormControl";
+import {useContext} from "react";
+import {ContractContext} from "../Context/ContractContext";
+import { AuthContext } from "../Context/AuthContext";
+
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -157,6 +162,30 @@ const CreateNewBatch = ({ jsonData }) => {
   const [pressureStageThree, setPressureStageThree] = useState("");
   const [densityStageThree, setDensityStageThree] = useState("");
   const [volumeStageThree, setVolumeStageThree] = useState("");
+
+
+  const [meds,setmeds]=useState([]);
+
+  let { account } = useContext(AuthContext);
+  let { Services  } = useContext(ContractContext);
+
+  useEffect(() => {
+    //get medicine data from blockchain
+    async function getMedicineData() {
+      try{
+        const response = await Services.get_all_medicines();
+        console.log(response);
+        setmeds(response.data);
+      }
+      catch(error){
+        console.log(error);
+      }
+    }
+    getMedicineData();
+  }, []);
+
+
+
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
@@ -195,7 +224,52 @@ const CreateNewBatch = ({ jsonData }) => {
     console.log("Selected data:", selectedData);
   };
 
-  const handleSendBatch = () => {
+  const handleSendBatch = async() => {
+    // Send batch to blockchain
+
+    if(!selectedTransporter || !selectedInspector || !selectedWholesaler || !concentrationStageOne || !concentrationStageTwo || !concentrationStageThree || !densityStageOne || !densityStageTwo || !densityStageThree || !volumeStageOne || !volumeStageTwo || !volumeStageThree || !pressureStageOne || !pressureStageTwo || !pressureStageThree){
+      alert("Please fill in all fields correctly.");
+      return; 
+    }
+    if(!account){
+      return
+    }
+
+    const idealstage1conditions = [concentrationStageOne, pressureStageOne, densityStageOne, volumeStageOne];
+    const idealstage2conditions = [concentrationStageTwo, pressureStageTwo, densityStageTwo, volumeStageTwo];
+    const idealstage3conditions = [concentrationStageThree, pressureStageThree, densityStageThree, volumeStageThree];
+
+    try{
+      const response = await Services.create_batch(
+        selectedRows.medicienIDs,
+        selectedRows.medicineQuantities,
+        //estimatedcost, // take from constants
+        //productionRatePerDay, // take from constants
+        idealstage1conditions,
+        idealstage2conditions,
+        idealstage3conditions,
+        selectedInspector.id,
+        selectedTransporter.id,
+        selectedWholesaler.id,      
+
+      );
+      console.log(response);
+
+      if(response.status){
+        alert("Batch created successfully.");
+      }
+      else{
+        alert("Error creating batch.");
+      }
+    }
+    catch(error){
+      console.log(error);
+    }
+
+
+
+    
+
     setOpenDialog(false);
   };
   return (

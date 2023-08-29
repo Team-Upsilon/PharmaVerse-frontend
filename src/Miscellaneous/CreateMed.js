@@ -5,7 +5,7 @@ import { useContext } from "react";
 import { UploadToIPFS } from "../Utils/UploadToIpfs";
 
 const CreateMed = () => {
-  const { services } = useContext(ContractContext); // Access the create_medicine function from the context
+  const { Services } = useContext(ContractContext); // Access the create_medicine function from the context
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -59,12 +59,15 @@ const CreateMed = () => {
         const ipfsHash = ipfsResponse.data.hash;
         setImg(ipfsHash);
 
+        console.log(ipfsHash)
+
         // Call create_medicine function with form data and IPFS hash
-        const response = await services.create_medicine(
+        const response = await Services.create_medicine(
           name,
           description,
           ipfsHash
         );
+        console.log(response)
 
         if (response.success) {
           // Medicine created successfully, you can navigate to a success page or perform any other actions

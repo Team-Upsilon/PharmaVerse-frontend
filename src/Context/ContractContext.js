@@ -761,6 +761,9 @@ function ContractContextProvider(props) {
                 console.error("Error in creating batch: ", error);
                 return { success: false, message: error.message };
             }
+        },
+        get_role_address: async (key) => {
+
         }
     };
 
