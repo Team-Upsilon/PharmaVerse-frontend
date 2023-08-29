@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import CompletebatchData from "../completedBatch.json";
+import batchData from "../scheduled.json";
+import wholeSalerData from "../wholesaler.json";
 import "../Miscellaneous/OngoingBatches.css";
 import {
   AppBar,
@@ -15,93 +16,42 @@ import {
   Divider,
   IconButton,
   Slide,
+  Stack,
   Toolbar,
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import transporterData from "../transporterData.json";
+import inspectorData from "../inspectorData.json";
 import Timeline from "./Timeline";
-import { useEffect, useContext } from "react";
-import { ContractContext } from "../Context/ContractContext";
-import { AuthContext } from "../Context/AuthContext";
-import CONSTANTS from "../Utils/Constants";
-
-
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-
-const CompletedBatches = () => {
-
-  const { batches, Services, medicines } = useContext(ContractContext);
-  let { account } = useContext(AuthContext);
-
-  const [CompletedBatches, setCompletedBatches] = useState(CompletebatchData);
+const ScheduledBatches = () => {
+  const [batches, setBatches] = useState(batchData);
+  const [fullWidth, setFullWidth] = React.useState(true);
+  const [maxWidth, setMaxWidth] = React.useState("md");
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedBatch, setSelectedBatch] = useState(null); // Track selected batch
   const [searchValue, setSearchValue] = useState("");
+  const [selectedBatch, setSelectedBatch] = useState(null); // Track selected batch
   const [selectedTransporter, setSelectedTransporter] = useState(null);
   const [selectedInspector, setSelectedInspector] = useState(null);
   const [selectedWholesaler, setSelectedWholesaler] = useState(null);
-  const [fullWidth, setFullWidth] = React.useState(true);
-  const [maxWidth, setMaxWidth] = React.useState('md');
-
-  useEffect(() => {
-    setData();
-  }, []);
-
-  const setData = async () => {
-    // if (!batches || !account) return;
-
-    // const updatedBatches = batches
-    //   .filter((item) => item.manufacturerId === account && item.stage !== "Delivered" && item.InspectionStage !== "STAGE_3")
-    //   .map((item) => {
-    //     const updatedMedicines = item.medicines.map((medicine) => {
-    //       const matchedMedicine = medicines.find((m) => m.medicineId === medicine.medicineId);
-    //       if (matchedMedicine) {
-    //         return {
-    //           ...matchedMedicine,
-    //           quantity: medicine.quantity,
-    //         };
-    //       } else {
-    //         return medicine;
-    //       }
-    //     });
-
-    //     return {
-    //       ...item,
-    //       medicines: updatedMedicines,
-    //     };
-    //   });
-
-    // setCompletedBatches(updatedBatches);
-  };
-
-
   const handleOpenDialog = (batch) => {
     setSelectedBatch(batch);
-    setSelectedTransporter(null);
+    setSelectedTransporter(null); // Reset selected transporter
     setSelectedInspector(null);
     setSelectedWholesaler(null);
     setOpenDialog(true);
   };
+
   const handleCloseDialog = () => {
-    setSelectedBatch(null);
+    setSelectedBatch(null); // Reset selected batch when closing dialog
     setOpenDialog(false);
   };
-
   const handleSendPackage = () => {
     setOpenDialog(false);
   };
-  const handleMaxWidthChange = (event) => {
-    setMaxWidth(
-      event.target.value,
-    );
-  };
-
-  const handleFullWidthChange = (event) => {
-    setFullWidth(event.target.checked);
-  };
-
   return (
     <div>
       <div class="searchBox">
@@ -109,7 +59,7 @@ const CompletedBatches = () => {
           class="searchInput"
           type="text"
           name=""
-          placeholder="Search Grade..."
+          placeholder="Search Score..."
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
         />
@@ -187,7 +137,7 @@ const CompletedBatches = () => {
 
       <div className="allcards">
         {searchValue === ""
-          ? CompletedBatches.map((batch, index) => (
+          ? batches.map((batch, index) => (
             <div
               className="card"
               key={index}
@@ -198,7 +148,7 @@ const CompletedBatches = () => {
                 <img src={batch.batchpic} alt="pic" />
               </div>
               <div className="details">
-                <p>Grade: {batch.grade}</p>
+                <p>Score: {batch.score}</p>
                 <div style={{ display: "flex" }}>
                   {batch.materialname.map((e, materialIndex) => (
                     <div key={materialIndex}>
@@ -209,8 +159,8 @@ const CompletedBatches = () => {
               </div>
             </div>
           ))
-          : CompletedBatches
-            .filter((item) => item.grade === parseInt(searchValue))
+          : batches
+            .filter((item) => item.score === parseInt(searchValue))
             .map((batch, index) => (
               <div
                 className="card"
@@ -222,7 +172,7 @@ const CompletedBatches = () => {
                   <img src={batch.batchpic} alt="pic" />
                 </div>
                 <div className="details">
-                  <p>Grade: {batch.grade}</p>
+                  <p>Score: {batch.score}</p>
                   <div style={{ display: "flex" }}>
                     {batch.materialname.map((e, materialIndex) => (
                       <div key={materialIndex}>
@@ -259,40 +209,34 @@ const CompletedBatches = () => {
 
         <DialogContent>
           {selectedBatch && (
-
             <Card sx={{ marginBottom: "16px", width: "100%" }}>
               <CardActionArea>
                 <CardMedia
                   component="img"
                   height="140"
                   image={selectedBatch.batchpic}
-                  // image={`${CONSTANTS.IPFSURL}/${selectedBatch.ipfs_hash}`}
                   alt="material"
                 />
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
-                    Grade : {selectedBatch.grade}
-                    {/* Grade : {selectedBatch.stage} */}
-                    {/* // to be integrated, fetch from batch report */}
+                    Score : {selectedBatch.score}
                   </Typography>
 
-                  {/* {selectedBatch.medicines.map((item, materialIndex) => (
-                      <div key={item.medicineId}>
-                        {item} : {item.quantity} Kg
-                      </div>
-                    ))} */}
                   <Typography variant="body2" color="text.secondary">
-                    <div >
-                      A : 3 Kg
-                    </div>
-
+                    {selectedBatch.materialname.map((e, materialIndex) => (
+                      <div key={materialIndex}>
+                        {e} : {selectedBatch.materialquantity[materialIndex]} Kg
+                      </div>
+                    ))}
                   </Typography>
-
                   <Divider sx={{ marginTop: "10px", marginBottom: "24px" }} />
                   <div>
                     {selectedBatch &&
                       selectedBatch.transporter.map((transporter) => (
-                        <Card key={transporter.id} sx={{ marginBottom: "16px" }}>
+                        <Card
+                          key={transporter.id}
+                          sx={{ marginBottom: "16px" }}
+                        >
                           <CardHeader
                             title={transporter.name}
                             subheader={transporter.address}
@@ -331,15 +275,11 @@ const CompletedBatches = () => {
             <Timeline />
           </div>
           <Divider />
-          <Divider />
-          <div>
-            <Timeline />
-          </div>
-          <Divider />
         </DialogContent>
       </Dialog>
     </div>
   );
 };
 
-export default CompletedBatches;
+export default ScheduledBatches;
+

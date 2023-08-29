@@ -42,6 +42,7 @@ const OngoingBatches = () => {
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState("md");
   const [openDialog, setOpenDialog] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
   const [selectedBatch, setSelectedBatch] = useState(null); // Track selected batch
   const [selectedTransporter, setSelectedTransporter] = useState(null);
   const [selectedInspector, setSelectedInspector] = useState(null);
@@ -100,9 +101,10 @@ const OngoingBatches = () => {
       <div class="searchBox">
         <input
           class="searchInput"
-          type="text"
           name=""
-          placeholder="Search something"
+          placeholder="Search Stage..."
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
         />
         <button class="searchButton" href="#">
           <svg
@@ -177,51 +179,53 @@ const OngoingBatches = () => {
       </div>
 
       <div className="allcards">
-        {/* {OngoingBatches.map((batch, index) => (
-          <div
-            className="card"
-            key={index}
-            onClick={() => handleOpenDialog(batch)}
-            style={{ cursor: "pointer" }}
-          >
-            <div className="remove-when-use">
-              <img src={`${CONSTANTS.IPFSURL}/${batch.ipfs_hash}`} alt="pic" />
-            </div>
-            <div className="details">
-              <p>Stage: {batch.stage}</p>
-              <div style={{ display: "flex" }}>
-                {batch.medicines.map((item, materialIndex) => (
-                  <div key={item.medicineId}>
-                    {item.name}:{item.quantity}
-                  </div>
-                ))}
+        {searchValue === ""
+          ? OngoingBatches.map((batch, index) => (
+            <div
+              className="card"
+              key={index}
+              onClick={() => handleOpenDialog(batch)}
+              style={{ cursor: "pointer" }}
+            >
+              <div className="remove-when-use">
+                <img src={batch.batchpic} alt="pic" />
+              </div>
+              <div className="details">
+                <p>Stage: {batch.currentstage}</p>
+                <div style={{ display: "flex" }}>
+                  {batch.materialname.map((e, materialIndex) => (
+                    <div key={materialIndex}>
+                      {materialIndex + 1}:{e}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        ))} */}
-
-        {OngoingBatches.map((batch, index) => (
-          <div
-            className="card"
-            key={index}
-            onClick={() => handleOpenDialog(batch)}
-            style={{ cursor: "pointer" }}
-          >
-            <div className="remove-when-use">
-              <img src={batch.batchpic} alt="pic" />
-            </div>
-            <div className="details">
-              <p>Stage: {batch.currentstage}</p>
-              <div style={{ display: "flex" }}>
-                {batch.materialname.map((e, materialIndex) => (
-                  <div key={materialIndex}>
-                    {materialIndex + 1}:{e}
+          ))
+          : OngoingBatches
+            .filter((item) => item.currentstage === parseInt(searchValue))
+            .map((batch, index) => (
+              <div
+                className="card"
+                key={index}
+                onClick={() => handleOpenDialog(batch)}
+                style={{ cursor: "pointer" }}
+              >
+                <div className="remove-when-use">
+                  <img src={batch.batchpic} alt="pic" />
+                </div>
+                <div className="details">
+                  <p>Stage: {batch.currentstage}</p>
+                  <div style={{ display: "flex" }}>
+                    {batch.materialname.map((e, materialIndex) => (
+                      <div key={materialIndex}>
+                        {materialIndex + 1}:{e}
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
+            ))}
       </div>
 
       <Dialog
@@ -277,37 +281,40 @@ const OngoingBatches = () => {
                   </Typography>
                   <Divider sx={{ marginTop: "10px", marginBottom: "24px" }} />
                   <div>
-
-                    <Card
-                      sx={{ marginBottom: "16px" }}
-                    >
-                      <CardHeader
-                        title= "Transporter"
-                        subheader="0x511F0e5A8495d7c7709f905186A01751D8b3f7C8"
-                        // subheader={selectedBatch.transporterId}
-                      />
-                    </Card>
-
-                  </div>
-                  <div>
-                        <Card sx={{ marginBottom: "16px" }}>
+                    {selectedBatch &&
+                      selectedBatch.transporter.map((transporter) => (
+                        <Card
+                          key={transporter.id}
+                          sx={{ marginBottom: "16px" }}
+                        >
                           <CardHeader
-                            title= "Inspector"
-                            subheader= "0x511F0e5A8495d7c7709f905186A01751D8b3f7C8"
-                            // subheader={selectedBatch.inspectorId}
+                            title={transporter.name}
+                            subheader={transporter.address}
                           />
                         </Card>
-                    
+                      ))}
                   </div>
                   <div>
-                        <Card sx={{ marginBottom: "16px" }}>
+                    {selectedBatch &&
+                      selectedBatch.inspector.map((inspector) => (
+                        <Card key={inspector.id} sx={{ marginBottom: "16px" }}>
                           <CardHeader
-                            title= "Wholesaler"
-                            subheader= "0x511F0e5A8495d7c7709f905186A01751D8b3f7C8"
-                            // subheader= {selectedBatch.wholesalerId}
+                            title={inspector.name}
+                            subheader={inspector.address}
                           />
                         </Card>
-                   
+                      ))}
+                  </div>
+                  <div>
+                    {selectedBatch &&
+                      selectedBatch.wholesaler.map((wholesaler) => (
+                        <Card key={wholesaler.id} sx={{ marginBottom: "16px" }}>
+                          <CardHeader
+                            title={wholesaler.name}
+                            subheader={wholesaler.address}
+                          />
+                        </Card>
+                      ))}
                   </div>
                 </CardContent>
               </CardActionArea>
