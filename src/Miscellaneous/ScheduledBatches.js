@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import CompletebatchData from "../completedBatch.json";
+import batchData from "../scheduled.json";
+import wholeSalerData from "../wholesaler.json";
 import "../Miscellaneous/OngoingBatches.css";
 import {
   AppBar,
@@ -15,27 +16,27 @@ import {
   Divider,
   IconButton,
   Slide,
+  Stack,
   Toolbar,
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import transporterData from "../transporterData.json";
+import inspectorData from "../inspectorData.json";
 import Timeline from "./Timeline";
-
-
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-
-const CompletedBatches = () => {
-  const [batches, setBatches] = useState(CompletebatchData);
+const ScheduledBatches = () => {
+  const [batches, setBatches] = useState(batchData);
+  const [fullWidth, setFullWidth] = React.useState(true);
+  const [maxWidth, setMaxWidth] = React.useState("md");
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedBatch, setSelectedBatch] = useState(null); // Track selected batch
   const [searchValue, setSearchValue] = useState("");
+  const [selectedBatch, setSelectedBatch] = useState(null); // Track selected batch
   const [selectedTransporter, setSelectedTransporter] = useState(null);
   const [selectedInspector, setSelectedInspector] = useState(null);
   const [selectedWholesaler, setSelectedWholesaler] = useState(null);
-  const [fullWidth, setFullWidth] = React.useState(true);
-  const [maxWidth, setMaxWidth] = React.useState('md');
   const handleOpenDialog = (batch) => {
     setSelectedBatch(batch);
     setSelectedTransporter(null); // Reset selected transporter
@@ -43,25 +44,14 @@ const CompletedBatches = () => {
     setSelectedWholesaler(null);
     setOpenDialog(true);
   };
+
   const handleCloseDialog = () => {
     setSelectedBatch(null); // Reset selected batch when closing dialog
     setOpenDialog(false);
   };
-
   const handleSendPackage = () => {
     setOpenDialog(false);
   };
-  const handleMaxWidthChange = (event) => {
-    setMaxWidth(
-      // @ts-expect-error autofill of arbitrary value is not handled.
-      event.target.value,
-    );
-  };
-
-  const handleFullWidthChange = (event) => {
-    setFullWidth(event.target.checked);
-  };
-
   return (
     <div>
       <div class="searchBox">
@@ -69,7 +59,7 @@ const CompletedBatches = () => {
           class="searchInput"
           type="text"
           name=""
-          placeholder="Search Grade..."
+          placeholder="Search Score..."
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
         />
@@ -158,7 +148,7 @@ const CompletedBatches = () => {
                 <img src={batch.batchpic} alt="pic" />
               </div>
               <div className="details">
-                <p>Grade: {batch.grade}</p>
+                <p>Score: {batch.score}</p>
                 <div style={{ display: "flex" }}>
                   {batch.materialname.map((e, materialIndex) => (
                     <div key={materialIndex}>
@@ -170,7 +160,7 @@ const CompletedBatches = () => {
             </div>
           ))
           : batches
-            .filter((item) => item.grade === parseInt(searchValue))
+            .filter((item) => item.score === parseInt(searchValue))
             .map((batch, index) => (
               <div
                 className="card"
@@ -182,7 +172,7 @@ const CompletedBatches = () => {
                   <img src={batch.batchpic} alt="pic" />
                 </div>
                 <div className="details">
-                  <p>Grade: {batch.grade}</p>
+                  <p>Score: {batch.score}</p>
                   <div style={{ display: "flex" }}>
                     {batch.materialname.map((e, materialIndex) => (
                       <div key={materialIndex}>
@@ -229,7 +219,7 @@ const CompletedBatches = () => {
                 />
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
-                    Grade : {selectedBatch.grade}
+                    Score : {selectedBatch.score}
                   </Typography>
 
                   <Typography variant="body2" color="text.secondary">
@@ -243,7 +233,10 @@ const CompletedBatches = () => {
                   <div>
                     {selectedBatch &&
                       selectedBatch.transporter.map((transporter) => (
-                        <Card key={transporter.id} sx={{ marginBottom: "16px" }}>
+                        <Card
+                          key={transporter.id}
+                          sx={{ marginBottom: "16px" }}
+                        >
                           <CardHeader
                             title={transporter.name}
                             subheader={transporter.address}
@@ -288,4 +281,5 @@ const CompletedBatches = () => {
   );
 };
 
-export default CompletedBatches;
+export default ScheduledBatches;
+

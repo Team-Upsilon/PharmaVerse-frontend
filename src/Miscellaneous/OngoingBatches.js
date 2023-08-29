@@ -32,6 +32,7 @@ const OngoingBatches = () => {
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState("md");
   const [openDialog, setOpenDialog] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
   const [selectedBatch, setSelectedBatch] = useState(null); // Track selected batch
   const [selectedTransporter, setSelectedTransporter] = useState(null);
   const [selectedInspector, setSelectedInspector] = useState(null);
@@ -56,9 +57,10 @@ const OngoingBatches = () => {
       <div class="searchBox">
         <input
           class="searchInput"
-          type="text"
           name=""
-          placeholder="Search something"
+          placeholder="Search Stage..."
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
         />
         <button class="searchButton" href="#">
           <svg
@@ -133,28 +135,53 @@ const OngoingBatches = () => {
       </div>
 
       <div className="allcards">
-        {batches.map((batch, index) => (
-          <div
-            className="card"
-            key={index}
-            onClick={() => handleOpenDialog(batch)}
-            style={{ cursor: "pointer" }}
-          >
-            <div className="remove-when-use">
-              <img src={batch.batchpic} alt="pic" />
-            </div>
-            <div className="details">
-              <p>Stage: {batch.currentstage}</p>
-              <div style={{ display: "flex" }}>
-                {batch.materialname.map((e, materialIndex) => (
-                  <div key={materialIndex}>
-                    {materialIndex + 1}:{e}
-                  </div>
-                ))}
+        {searchValue === ""
+          ? batches.map((batch, index) => (
+            <div
+              className="card"
+              key={index}
+              onClick={() => handleOpenDialog(batch)}
+              style={{ cursor: "pointer" }}
+            >
+              <div className="remove-when-use">
+                <img src={batch.batchpic} alt="pic" />
+              </div>
+              <div className="details">
+                <p>Stage: {batch.currentstage}</p>
+                <div style={{ display: "flex" }}>
+                  {batch.materialname.map((e, materialIndex) => (
+                    <div key={materialIndex}>
+                      {materialIndex + 1}:{e}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+          : batches
+            .filter((item) => item.currentstage === parseInt(searchValue))
+            .map((batch, index) => (
+              <div
+                className="card"
+                key={index}
+                onClick={() => handleOpenDialog(batch)}
+                style={{ cursor: "pointer" }}
+              >
+                <div className="remove-when-use">
+                  <img src={batch.batchpic} alt="pic" />
+                </div>
+                <div className="details">
+                  <p>Stage: {batch.currentstage}</p>
+                  <div style={{ display: "flex" }}>
+                    {batch.materialname.map((e, materialIndex) => (
+                      <div key={materialIndex}>
+                        {materialIndex + 1}:{e}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
       </div>
 
       <Dialog
