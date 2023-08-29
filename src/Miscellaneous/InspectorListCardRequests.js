@@ -87,7 +87,6 @@ export default function InspectorListCardRequests({ data }) {
   const [selectedTransporter, setSelectedTransporter] = useState(null);
   const [selectedInspector, setSelectedInspector] = useState(null);
 
-
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
