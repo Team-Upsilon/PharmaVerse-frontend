@@ -70,7 +70,7 @@ export default function InspectorListCardRequests({ data }) {
     remarks: "",
   }));
 
-  const {packages, Services} = useContext(ContractContext);
+  const {packages, Services, rawMaterials} = useContext(ContractContext);
   let { account } = useContext(AuthContext);
 
   const [remarks, setRemarks] = useState("");
@@ -90,10 +90,27 @@ export default function InspectorListCardRequests({ data }) {
     setData();
   }, []);
 
+  const [PackageRawMaterials, setPackageRawMaterials] = useState([]);
+
+
   const setData = async () => {
     if(!packages||!account) return;
 
-    
+    const updatedPackageRawMaterials = data.rawMaterials.map(item => {
+      const rawMaterial = rawMaterials.find(item1 => item1.materialId === item.materialId);
+      if (rawMaterial) {
+        return {
+          ...rawMaterial,
+          quantity: item.quantity,
+        };
+      } else {
+        return null;
+      }
+    });
+
+    setPackageRawMaterials(updatedPackageRawMaterials.filter(item => item !== null));
+
+
   }
 
   const [value, setValue] = React.useState();
@@ -116,9 +133,33 @@ export default function InspectorListCardRequests({ data }) {
   const handleSendPackage = () => {
     handleCloseDialog();
   };
-  const handleSaveClick = (cardIndex) => {
+  const handleSaveClick = async (cardIndex) => {
+
+  //   const chemicalquantity = PackageRawMaterials[cardIndex].quantity;
+   
+  //  const response = await Services.check_quality_of_package(data.packageID,remarks,chemicalquantity,cardStates[cardIndex].concentration);
+
+
+   
+    // if (response.success) {
+    //   handleCloseDialog();
+    // }
+    // else{
+    //   console.log("Error" + response.message);
+    //   handleCloseDialog();
+    // }
+
+
+
+
+
+
+
     const updatedCardSaveClicks = [...cardSaveClicks];
     updatedCardSaveClicks[cardIndex] = true;
+
+    const response = await Services.
+
     setCardSaveClicks(updatedCardSaveClicks);
     const updatedCardDisabled = [...cardDisabled];
     updatedCardDisabled[cardIndex] = true;
@@ -194,6 +235,7 @@ export default function InspectorListCardRequests({ data }) {
             <div>
               <Typography variant="body2" color="text.secondary">
                 <div className="dialog-container" style={{ marginTop: "8px" }}>
+                  {/* {PackageRawMaterials.map((chemical, index) => (*/}
                   {data.chemicals.map((chemical, index) => (
                     <Card sx={{ maxWidth: 700, marginBottom: "16px" }}>
             
