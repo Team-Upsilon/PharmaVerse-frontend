@@ -187,7 +187,7 @@ const CompletedBatches = () => {
 
       <div className="allcards">
         {searchValue === ""
-          ? batches.map((batch, index) => (
+          ? CompletedBatches.map((batch, index) => (
             <div
               className="card"
               key={index}
@@ -209,7 +209,7 @@ const CompletedBatches = () => {
               </div>
             </div>
           ))
-          : batches
+          : CompletedBatches
             .filter((item) => item.grade === parseInt(searchValue))
             .map((batch, index) => (
               <div
