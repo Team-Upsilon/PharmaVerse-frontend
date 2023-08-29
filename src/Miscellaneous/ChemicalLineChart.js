@@ -1,40 +1,44 @@
 import React,{useState, useEffect} from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-// import jsonData from '../data.json';
-import { useContext } from 'react';
-import { ContractContext } from '../Context/ContractContext';
+import jsonData from '../data.json';
+
+
+
+import {useContext} from "react";
+import {ContractContext} from "../Context/ContractContext";
+import { AuthContext } from "../Context/AuthContext";
 
 
 const ChemicalListChart = () => {
-  const [chartData, setChartData] = useState([]);
+  // const [chartData, setChartData] = useState([]);
   const { services, rawMaterials } = useContext(ContractContext);
 
-  useEffect(() => {
-    const fetchRawMaterials = async () => {
-      await services.get_all_raw_materials();
-      console.log(rawMaterials);
-      const processedChartData = rawMaterials.map(rawMaterial => ({
-        x: rawMaterial.name,
-        y: rawMaterial.quantity, // Use the appropriate property for y-axis data
-      }));
+  // useEffect(() => {
+  //   const fetchRawMaterials = async () => {
+  //     await services.get_all_raw_materials();
+  //     console.log(rawMaterials);
+  //     const processedChartData = rawMaterials.map(rawMaterial => ({
+  //       x: rawMaterial.name,
+  //       y: rawMaterial.quantity, // Use the appropriate property for y-axis data
+  //     }));
       
-      setChartData(processedChartData);
-    };
+  //     setChartData(processedChartData);
+  //   };
 
-    fetchRawMaterials();
-  }, [services, rawMaterials]);
+  //   fetchRawMaterials();
+  // }, [services, rawMaterials]);
 
 
-  // if (!jsonData || jsonData.length === 0) {
-  //   return <div>No data available.</div>;
-  // }
+  if (!jsonData || jsonData.length === 0) {
+    return <div>No data available.</div>;
+  }
 
-  // const { xaxis, quantity } = jsonData[0];
+  const { xaxis, quantity } = jsonData[0];
 
-  // const chartData = xaxis.map((xValue, index) => ({
-  //   x: xValue,
-  //   y: quantity[index],
-  // }));
+  const chartData = xaxis.map((xValue, index) => ({
+    x: xValue,
+    y: quantity[index],
+  }));
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

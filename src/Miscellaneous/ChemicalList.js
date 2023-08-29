@@ -171,37 +171,66 @@ const ChemicalList = () => {
   const [selectedChemical, setSelectedChemical] = useState(null);
   const [incrementValue, setIncrementValue] = useState(0);
   const {services, rawMaterials} = useContext(ContractContext);
-  const [xAxisData, setxaxisdata] = useState([]);
+  const [rawmat,setRawmat] = useState([]);
 
-  useEffect(() => {
-    const fetchRawMaterials = async () => {
-      await services.get_all_raw_materials();
-      console.log(rawMaterials);
-      const processedChartData = rawMaterials.map(rawMaterial => ({
-        x: rawMaterial.name,
-        y: rawMaterial.quantity, // Use the appropriate property for y-axis data
-      }));
-      setxaxisdata(processedChartData);
-    };
 
-    fetchRawMaterials();
-  }, [services, rawMaterials]);
+
+  // const [xAxisData, setxaxisdata] = useState([]);
+
+  // useEffect(() => {
+  //   const fetchRawMaterials = async () => {
+  //     await services.get_all_raw_materials();
+  //     console.log(rawMaterials);
+  //     setRawmat(rawMaterials)
+  //     const processedChartData = rawMaterials.map(rawMaterial => ({
+  //       x: rawMaterial.name,
+  //       y: rawMaterial.quantity, // Use the appropriate property for y-axis data
+  //     }));
+  //     setxaxisdata(processedChartData);
+  //   };
+  //   fetchRawMaterials();
+  // }, [services, rawMaterials]);
+
+
+
+
 
   // Creating an array of objects with x-axis and quantity
-  // const xAxisData = data.xaxis.map((x, index) => ({
-  //   x,
-  //   quantity: data.quantity[index],
+  // const xAxisData = rawMaterials.map((item, index) => ({
+  //   x:item.name,
+  //   quantity: item.quantity,
   // }));
 
+
+
+  const xAxisData = data.xaxis.map((x, index) => ({
+    x,
+    quantity: data.quantity[index],
+  }));
+
   // need to check
+  // const [d, setD] = useState(rawmat);
   const [d, setD] = useState(jsonData);
   const [searchValue, setSearchValue] = useState("");
   const [enableUpdate, setEnableUpdate] = useState(false);
+
+
+  // const increaseQuantity = (index, increment) => {
+  //   const newData = [...d];
+  //   newData[index].quantity += increment;
+  //   setD(newData);
+  // };
+
   const increaseQuantity = (index, increment) => {
     const newData = [...d];
     newData[0].quantity[index] += increment;
     setD(newData);
   };
+
+
+
+
+
   const handleCardClick = (chemical) => {
     setSelectedChemical(chemical);
     setDialogOpen(true);
