@@ -101,30 +101,25 @@ export default function SupplierListCardRequests({ data }) {
 
   const handleCheckAvailability = () => {
     setLoading(true);
-    setTimeout(() => {
+    setTimeout( async () => {
 
-      const updatedAvailability = data.chemicals.map((chemical) => {
-        const manufacturerName = data.name;
-        const manufacturerAvailability = availabilityData.find(
-          (item) => item.name === manufacturerName
-        );
-
-        if (manufacturerAvailability) {
-          const availableQuantity =
-            manufacturerAvailability.chemicals.find(
-              (availabilityItem) => availabilityItem.name === chemical.name
-            )?.quantity || 0;
-          return chemical.quantity <= availableQuantity;
-        } else {
-          return false;
-        }
-      });
-
+      // const availabilityResults = PackageRawMaterials.map(async (rawMaterial) => {
+      //   const response = await Services.check_availibity(
+      //     rawMaterial.materialId,
+      //     rawMaterial.quantity
+      //   );
+      //   return response.success;
+      // });
+  
+      // // Check if all raw materials are available
+      // const allMaterialsAvailable = availabilityResults.every((available) => available);
+  
+      // // Update the availability state
+      // setAvailability(availabilityResults);
+      // setAllChemicalsAvailable(allMaterialsAvailable);
       setAvailability([true,true]);
-      // const flag = [true,true];
-      // let bool = flag.every((available) => available);
+      setAllChemicalsAvailable(true);
 
-      // setAllChemicalsAvailable(bool);
       setLoading(false);
     }, 2000);
   };
@@ -248,7 +243,7 @@ export default function SupplierListCardRequests({ data }) {
                 fullWidth
                 variant="contained"
                 endIcon={<SendIcon />}
-                // disabled={!allChemicalsAvailable}
+                disabled={!allChemicalsAvailable}
                 onClick={handleOpenDialog}
                 sx={{ borderRadius: "50px" }}
                 color="success"
@@ -348,7 +343,7 @@ export default function SupplierListCardRequests({ data }) {
                 variant="outlined"
                 endIcon={<SendIcon />}
                 onClick={handleOpenDialog}
-                //  disabled={!allChemicalsAvailable}
+                 disabled={!allChemicalsAvailable}
                 sx={{ borderRadius: "50px" }}
                 color="success"
               >
