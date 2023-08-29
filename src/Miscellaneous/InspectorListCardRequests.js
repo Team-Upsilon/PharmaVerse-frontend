@@ -44,6 +44,9 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import RuleIcon from "@mui/icons-material/Rule";
 import Slide from "@mui/material/Slide";
 import { Fade } from "react-reveal";
+import { useEffect, useContext } from "react";
+import { ContractContext } from "../Context/ContractContext";
+import { AuthContext } from "../Context/AuthContext";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -60,6 +63,12 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 export default function InspectorListCardRequests({ data }) {
+
+  const { packages, Services, medicines } = useContext(ContractContext);
+  let { account } = useContext(AuthContext);
+
+  const [BatchMedicines, setBatchMedicines] = useState([]);
+
   const initialCardStates = data.chemicals.map(() => ({
     concentration: "",
     remarks: "",
@@ -82,6 +91,31 @@ export default function InspectorListCardRequests({ data }) {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedTransporter, setSelectedTransporter] = useState(null);
   const [selectedInspector, setSelectedInspector] = useState(null);
+
+  useEffect(() => {
+    setData();
+  }, []);
+
+  const setData = async () => {
+    if (!medicines || !account) return;
+
+    const updatedBatchMedicines = data.medicines.map(item => {
+      const Medicine = medicines.find(item1 => item1.medicineId === item.medicineId);
+      if (Medicine) {
+        return {
+          ...Medicine,
+          quantity: item.quantity,
+        };
+      } else {
+        return null;
+      }
+    });
+
+    setBatchMedicines(updatedBatchMedicines.filter(item => item !== null));
+
+  };
+
+  
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };

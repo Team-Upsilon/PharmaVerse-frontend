@@ -106,8 +106,8 @@ function ResponsiveDrawer(props) {
             label="Completed Batches"
             {...a11yProps(0)}
           />
-        
-    
+
+
         </Tabs>
       </List>
 
@@ -187,15 +187,15 @@ function ResponsiveDrawer(props) {
       >
         <Toolbar />
         <Typography paragraph>
-       
+
           <TabPanel value={value} index={0}>
-            <div className="card-container">
+
             <CompletedBatches />
-            </div>
+
           </TabPanel>
-         
+
         </Typography>
-        
+
       </Box>
     </Box>
   );

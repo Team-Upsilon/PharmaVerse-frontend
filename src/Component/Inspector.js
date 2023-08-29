@@ -18,6 +18,10 @@ import InspectorListCardSent from "../Miscellaneous/InspectorListCardSent";
 import Logo from "../Images/logoPharma.png";
 import InspectorBatchCardRequests from "../Miscellaneous/InspectorBatchCardRequests";
 import InspectorBatchCardSent from "../Miscellaneous/InspectorBatchCardSent";
+import { useEffect, useContext } from "react";
+import { ContractContext } from "../Context/ContractContext";
+import { AuthContext } from "../Context/AuthContext";
+
 const drawerWidth = 240;
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -52,9 +56,69 @@ function a11yProps(index) {
   };
 }
 function ResponsiveDrawer(props) {
+
+  const { packages, Services, rawMaterials, batches, medicines } = useContext(ContractContext);
+  let { account } = useContext(AuthContext);
+
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [value, setValue] = React.useState(0);
+  const [ReceivedPackageRequestData, setReceivedPackageRequestData] = React.useState([]);
+  const [SentPackageRequestData, setSentPackageRequestData] = React.useState([]);
+  const [ReceivedBatchRequestData, setReceivedBatchRequestData] = React.useState([]);
+  const [SentBatchRequestData, setSentBatchRequestData] = React.useState([]);
+
+  const setData = async () => {
+    if (!packages || !account || !batches) return;
+
+    const receivedRequestsPackage = packages
+      .filter((item) => item.inspectorId === account && item.stage === "Delivered")
+      .map((item) => {
+        const materialId = item.rawMaterials[0]?.materialId; // Get the materialId from the first object
+        const rawMaterial = rawMaterials.find((rm) => rm.id === materialId); // Find the raw material with matching id
+        const ipfsHash = rawMaterial ? rawMaterial.ipfs_hash : ""; // Get the ipfs_hash if rawMaterial exists
+
+        return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the package data
+      });
+
+    setReceivedPackageRequestData(receivedRequestsPackage);
+
+    const sentRequestsPackage = packages
+      .filter((item) => item.inspectorId === account && item.stage === "Inspected")
+      .map((item) => {
+        const materialId = item.rawMaterials[0]?.materialId; // Get the materialId from the first object
+        const rawMaterial = rawMaterials.find((rm) => rm.id === materialId); // Find the raw material with matching id
+        const ipfsHash = rawMaterial ? rawMaterial.ipfs_hash : ""; // Get the ipfs_hash if rawMaterial exists
+
+        return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the package data
+      });
+
+    setSentPackageRequestData(sentRequestsPackage);
+
+    const sentRequestsBatch = batches
+      .filter((item) => item.inspectorId === account && item.stage === "Packaging" && item.InspectionStage !== "STAGE_0")
+      .map((item) => {
+        const medicineId = item.medicines[0]?.materialId; // Get the materialId from the first object
+        const medicine = medicines.find((rm) => rm.id === medicineId); // Find the medicine with matching id
+        const ipfsHash = medicine ? medicine.ipfs_hash : ""; // Get the ipfs_hash if medicine exists
+
+        return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the batch data
+      });
+
+    setReceivedBatchRequestData(sentRequestsBatch);
+
+    const receivedRequestsBatch = batches
+      .filter((item) => item.inspectorId === account && item.InspectionStage === "STAGE_3")
+      .map((item) => {
+        const medicineId = item.medicines[0]?.materialId; // Get the materialId from the first object
+        const medicine = medicines.find((rm) => rm.id === medicineId); // Find the medicine with matching id
+        const ipfsHash = medicine ? medicine.ipfs_hash : ""; // Get the ipfs_hash if medicine exists
+
+        return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the batch data
+      });
+
+  }
+
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -109,7 +173,7 @@ function ResponsiveDrawer(props) {
             label="Inspected Packages"
             {...a11yProps(1)}
           />
-           <Tab
+          <Tab
             sx={{
               "&.Mui-selected": {
                 color: "green",
@@ -118,7 +182,7 @@ function ResponsiveDrawer(props) {
             label="Batch Requests"
             {...a11yProps(2)}
           />
-           <Tab
+          <Tab
             sx={{
               "&.Mui-selected": {
                 color: "green",
@@ -127,7 +191,7 @@ function ResponsiveDrawer(props) {
             label="Inspected Batches"
             {...a11yProps(3)}
           />
-    
+
         </Tabs>
       </List>
       <Divider />
@@ -227,12 +291,12 @@ function ResponsiveDrawer(props) {
           </TabPanel>
           <TabPanel value={value} index={2}>
             <div className="card-container">
-              <InspectorBatchCardRequests />
+              <InspectorBatchCardRequests data={ReceivedBatchRequestData} />
             </div>
           </TabPanel>
           <TabPanel value={value} index={3}>
             <div className="card-container">
-              <InspectorBatchCardSent />
+              <InspectorBatchCardSent data = {SentBatchRequestData} />
             </div>
           </TabPanel>
         </Typography>
