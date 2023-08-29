@@ -30,6 +30,8 @@ import CompletedBatches from "../Miscellaneous/CompletedBatches";
 import CreateMed from "../Miscellaneous/CreateMed";
 import batchData from "../medicine.json";
 import SendRequestToSupplier from "../Miscellaneous/SendRequestToSupplier";
+import ScheduledBatch from "../Miscellaneous/ScheduledBatches";
+import ScheduledBatches from "../Miscellaneous/ScheduledBatches";
 const drawerWidth = 240;
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -128,7 +130,7 @@ function ResponsiveDrawer(props) {
             }}
           />
           <Tab
-            label="Completed Batches"
+            label="Scheduled Batches"
             {...a11yProps(3)}
             sx={{
               "&.Mui-selected": {
@@ -137,7 +139,7 @@ function ResponsiveDrawer(props) {
             }}
           />
           <Tab
-            label="Create Medicine"
+            label="Completed Batches"
             {...a11yProps(4)}
             sx={{
               "&.Mui-selected": {
@@ -146,8 +148,17 @@ function ResponsiveDrawer(props) {
             }}
           />
           <Tab
-            label="Send Request to Supplier"
+            label="Create Medicine"
             {...a11yProps(5)}
+            sx={{
+              "&.Mui-selected": {
+                color: "green",
+              },
+            }}
+          />
+          <Tab
+            label="Send Request to Supplier"
+            {...a11yProps(6)}
             sx={{
               "&.Mui-selected": {
                 color: "green",
@@ -242,15 +253,18 @@ function ResponsiveDrawer(props) {
             <OngoingBatches />
           </TabPanel>
           <TabPanel value={value} index={3}>
-            <CompletedBatches />
+            <ScheduledBatches />
           </TabPanel>
           <TabPanel value={value} index={4}>
-            <CreateMed />
+            <CompletedBatches />
           </TabPanel>
           <TabPanel value={value} index={5}>
-            <SendRequestToSupplier jsonData={batchData} />
+            <CreateMed />
           </TabPanel>
           <TabPanel value={value} index={6}>
+            <SendRequestToSupplier jsonData={batchData} />
+          </TabPanel>
+          <TabPanel value={value} index={7}>
             6th
           </TabPanel>
         </Typography>

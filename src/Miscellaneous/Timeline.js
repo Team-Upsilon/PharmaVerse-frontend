@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   VerticalTimeline,
   VerticalTimelineElement,
@@ -39,6 +39,12 @@ import clsx from "clsx";
 import { FormControl, useFormControlContext } from "@mui/base/FormControl";
 import { Input, inputClasses } from "@mui/base/Input";
 import { styled } from "@mui/system";
+import { useEffect, useContext } from "react";
+import { ContractContext } from "../Context/ContractContext";
+import { AuthContext } from "../Context/AuthContext";
+import CONSTANTS from "../Utils/Constants";
+
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -63,9 +69,8 @@ const StyledInput = styled(Input)(
     }
 
     &:focus {
-      outline: 3px solid ${
-        theme.palette.mode === "dark" ? blue[600] : blue[100]
-      };
+      outline: 3px solid ${theme.palette.mode === "dark" ? blue[600] : blue[100]
+    };
     }
   }
 `
@@ -147,7 +152,8 @@ const grey = {
   900: "#1A2027",
 };
 
-const Timeline = () => {
+
+const Timeline = ({ batch, role }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [stageOne, setStageOne] = useState(false);
   const [stageTwo, setStageTwo] = useState(false);
@@ -160,6 +166,44 @@ const Timeline = () => {
   const [isStageOneContentFilled, setIsStageOneContentFilled] = useState(false);
   const [isStageTwoContentFilled, setIsStageTwoContentFilled] = useState(false);
   const [isPackingContentFilled, setIsPackingContentFilled] = useState(false);
+
+  useEffect(() => {
+    setData();
+  }, []);
+
+  const setData = async () => {
+    if (!batch || !role) return;
+
+    if (batch.stage == "Stage1") {
+      setStageOne(true);
+    }
+    else if (batch.stage == "Stage2") {
+      setStageOne(true);
+      setStageTwo(true);
+
+    }
+    else if (batch.stage == "Packaging") {
+      setStageOne(true);
+      setStageTwo(true);
+      setStageThree(true);
+    }
+
+    if (batch.InspectionStage == "STAGE_1") {
+      setStageOneInspection(true);
+
+    }
+    else if (batch.InspectionStage == "STAGE_2") {
+      setStageOneInspection(true);
+      setStageTwoInspection(true);
+
+    }
+    else if (batch.InspectionStage == "STAGE_3") {
+      setStageOneInspection(true);
+      setStageTwoInspection(true);
+      setStageThreeInspection(true);
+    }
+
+  };
 
   const Stage1DialogContent = () => {
     const [concentration, setConcentration] = useState("");
@@ -475,7 +519,7 @@ const Timeline = () => {
     setSelectedStage(null);
     setStageThreeInspection(true);
   };
-  
+
   return (
     <>
       <VerticalTimeline>
@@ -484,12 +528,14 @@ const Timeline = () => {
           contentStyle={{ background: "rgb(16, 204, 82)", color: "#fff" }}
           contentArrowStyle={{ borderRight: "10px solid  rgb(16, 204, 82)" }}
           date="Date"
+          // date={batch.manufacturingDate.toString()}
           iconStyle={{ background: "rgb(16, 204, 82)", color: "#fff" }}
           icon={<BatchPredictionIcon />}
         >
           <h3 className="vertical-timeline-element-title">Creation of Batch</h3>
           <h4 className="vertical-timeline-element-subtitle">
             Manufacturer ID : 0x122341241213dbm
+            {/* Manufacturer ID : {batch.manufacturerId} */}
           </h4>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -512,6 +558,7 @@ const Timeline = () => {
           <h3 className="vertical-timeline-element-title">Stage-1</h3>
           <h4 className="vertical-timeline-element-subtitle">
             Manufacturer ID : 0x122341241213dbm
+            {/* Manufacturer ID : {batch.manufacturerId} */}
           </h4>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
