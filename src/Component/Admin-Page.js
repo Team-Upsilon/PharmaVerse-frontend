@@ -149,18 +149,10 @@ function ResponsiveDrawer(props) {
                 color: "green",
               },
             }}
-            label="Assign Role"
+            label="Assign & Deaasign Roles"
             {...a11yProps(5)}
           />
-          <Tab
-            sx={{
-              "&.Mui-selected": {
-                color: "green",
-              },
-            }}
-            label="Deassign Role"
-            {...a11yProps(6)}
-          />
+         
         </Tabs>
       </List>
       <Divider />

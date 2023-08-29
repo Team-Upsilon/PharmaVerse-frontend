@@ -161,66 +161,109 @@ const StyledCard = styled(Card)`
 const RolesChanged = () => {
   const [role, setRole] = React.useState("");
   const [accountId, setAccountId] = useState("");
-
+  const [deassignId, setDeassignId] = useState("");
   const handleChange = (event) => {
     setRole(event.target.value);
   };
 
   return (
-    <Container>
-      <StyledCard>
-        <CardContent>
-          <Typography
-            variant="subtitle1"
-            sx={{
-              marginTop: "8px",
-              marginBottom: "24px",
-              fontWeight: "700",
-            }}
-          >
-            Assign Role
-          </Typography>
-          <Stack
-            direction={{ xs: "column", sm: "row" }} // Adjust direction for responsiveness
-            gap={4}
-            sx={{ justifyContent: "center", alignItems: "center" }}
-          >
-            <FormControl fullWidth required>
-              <Label>Account ID :</Label>
-              <StyledInput
-                placeholder="Enter the Account ID..."
-                value={accountId}
-                onChange={(e) => {
-                  setAccountId(e.target.value);
-                }}
-              />
-              <HelperText />
-            </FormControl>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Assign Role</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={role}
-                label="Assign Role"
-                onChange={handleChange}
-              >
-                <MenuItem value="Inspector">Inspector</MenuItem>
-                <MenuItem value="Manufacturer">Manufacturer</MenuItem>
-                <MenuItem value="Supplier">Supplier</MenuItem>
-                <MenuItem value="Transporter">Transporter</MenuItem>
-                <MenuItem value="Wholesaler">Wholesaler</MenuItem>
-              </Select>
-            </FormControl>
-          </Stack>
-        </CardContent>
-        <DialogActions>
-          <Button color="primary" autoFocus>
-            Send
-          </Button>
-        </DialogActions>
-      </StyledCard>
-    </Container>
+    <>
+      <Container>
+        <StyledCard>
+          <CardContent>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                marginTop: "8px",
+                marginBottom: "24px",
+                fontWeight: "700",
+              }}
+            >
+              Assign Role
+            </Typography>
+            <Stack
+              direction={{ xs: "column", sm: "row" }} // Adjust direction for responsiveness
+              gap={4}
+              sx={{ justifyContent: "center", alignItems: "center" }}
+            >
+              <FormControl fullWidth required>
+                <Label>Account ID :</Label>
+                <StyledInput
+                  placeholder="Enter the Account ID..."
+                  value={accountId}
+                  onChange={(e) => {
+                    setAccountId(e.target.value);
+                  }}
+                />
+                <HelperText />
+              </FormControl>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">
+                  Assign Role
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={role}
+                  label="Assign Role"
+                  onChange={handleChange}
+                >
+                  <MenuItem value="Inspector">Inspector</MenuItem>
+                  <MenuItem value="Manufacturer">Manufacturer</MenuItem>
+                  <MenuItem value="Supplier">Supplier</MenuItem>
+                  <MenuItem value="Transporter">Transporter</MenuItem>
+                  <MenuItem value="Wholesaler">Wholesaler</MenuItem>
+                </Select>
+              </FormControl>
+            </Stack>
+          </CardContent>
+          <DialogActions>
+            <Button color="primary" autoFocus>
+              Send
+            </Button>
+          </DialogActions>
+        </StyledCard>
+      </Container>
+
+      <Container>
+        <StyledCard>
+          <CardContent>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                marginTop: "8px",
+                marginBottom: "24px",
+                fontWeight: "700",
+              }}
+            >
+              Deassign Role
+            </Typography>
+            <Stack
+              direction={{ xs: "column", sm: "row" }} // Adjust direction for responsiveness
+              gap={4}
+              sx={{ justifyContent: "center", alignItems: "center" }}
+            >
+              <FormControl fullWidth required>
+                <Label>Account ID :</Label>
+                <StyledInput
+                  placeholder="Enter the Account ID..."
+                  value={deassignId}
+                  onChange={(e) => {
+                    setDeassignId(e.target.value);
+                  }}
+                />
+                <HelperText />
+              </FormControl>
+            </Stack>
+          </CardContent>
+          <DialogActions>
+            <Button color="primary" autoFocus>
+              Send
+            </Button>
+          </DialogActions>
+        </StyledCard>
+      </Container>
+    </>
   );
 };
 
