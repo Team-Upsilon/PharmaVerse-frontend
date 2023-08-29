@@ -53,6 +53,7 @@ const ExpandMore = styled((props) => {
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+
 export default function SupplierListCardRequests({ data }) {
   const { rawMaterials, Services } = useContext(ContractContext);
   let { account } = useContext(AuthContext);
@@ -67,6 +68,7 @@ export default function SupplierListCardRequests({ data }) {
   const [openDialogDetalis, setOpenDialogDetalis] = useState(false);
   const [selectedTransporter, setSelectedTransporter] = useState(null);
   const [selectedInspector, setSelectedInspector] = useState(null);
+  const [allChemicalsAvailable, setAllChemicalsAvailable] = useState(false);
 
 
   useEffect(() => {
@@ -96,9 +98,11 @@ export default function SupplierListCardRequests({ data }) {
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+
   const handleCheckAvailability = () => {
     setLoading(true);
     setTimeout(() => {
+
       const updatedAvailability = data.chemicals.map((chemical) => {
         const manufacturerName = data.name;
         const manufacturerAvailability = availabilityData.find(
@@ -115,7 +119,12 @@ export default function SupplierListCardRequests({ data }) {
           return false;
         }
       });
-      setAvailability(updatedAvailability);
+
+      setAvailability([true,true]);
+      // const flag = [true,true];
+      // let bool = flag.every((available) => available);
+
+      // setAllChemicalsAvailable(bool);
       setLoading(false);
     }, 2000);
   };
@@ -153,8 +162,6 @@ export default function SupplierListCardRequests({ data }) {
     handleCloseDialog();
 
   };
-
-  const allChemicalsAvailable = availability.every((available) => available);
 
   return (
     <Fade bottom>
