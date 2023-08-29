@@ -59,6 +59,7 @@ function App() {
           />
           <Route path='/manufacturer' element={<Manufacturer />} />
           <Route path='/wholesaler' element={<WholeSaler />} />
+
           {/* <Route path='/contactus' element={<><ContactUs /></>} /> */}
           {/* <Route path='/homepage' element{} /> */}
         </Routes>
