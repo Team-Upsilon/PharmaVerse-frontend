@@ -180,7 +180,7 @@ const OngoingBatches = () => {
 
       <div className="allcards">
         {searchValue === ""
-          ? batches.map((batch, index) => (
+          ? OngoingBatches.map((batch, index) => (
             <div
               className="card"
               key={index}
@@ -202,7 +202,7 @@ const OngoingBatches = () => {
               </div>
             </div>
           ))
-          : batches
+          : OngoingBatches
             .filter((item) => item.currentstage === parseInt(searchValue))
             .map((batch, index) => (
               <div
