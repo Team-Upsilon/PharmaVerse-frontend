@@ -99,6 +99,7 @@ const OngoingBatches = () => {
     setOpenDialog(false);
   };
   const handleSendPackage = () => {
+    
     setOpenDialog(false);
   };
   return (

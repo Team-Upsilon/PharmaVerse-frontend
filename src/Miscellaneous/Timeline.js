@@ -623,7 +623,7 @@ const Timeline = ({ batch, role }) => {
           <h3 className="vertical-timeline-element-title">Creation of Batch</h3>
           <h4 className="vertical-timeline-element-subtitle">
             {/* Manufacturer ID : 0x122341241213dbm */}
-            Manufacturer ID : {batch.manufacturerId}
+            Manufacturer ID : {batch && batch.manufacturerId}
           </h4>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
