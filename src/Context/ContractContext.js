@@ -83,6 +83,7 @@ function ContractContextProvider(props) {
         BatchScheduleContarct,
     ]);
 
+
     useEffect(() => {
         getContract();
     }, []);

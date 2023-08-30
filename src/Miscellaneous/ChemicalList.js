@@ -26,6 +26,7 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import { useContext } from "react";
 import { ContractContext } from "../Context/ContractContext";
+import CONSTANTS from "../Utils/Constants";
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -170,7 +171,7 @@ const ChemicalList = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedChemical, setSelectedChemical] = useState(null);
   const [incrementValue, setIncrementValue] = useState(0);
-  const {services, rawMaterials} = useContext(ContractContext);
+  const {Services, rawMaterials} = useContext(ContractContext);
   const [rawmat,setRawmat] = useState([]);
 
 
@@ -188,7 +189,7 @@ const ChemicalList = () => {
       setxaxisdata(processedChartData);
     };
     fetchRawMaterials();
-  }, [services, rawMaterials]);
+  }, [Services, rawMaterials]);
 
   // Creating an array of objects with x-axis and quantity
   // const xAxisData = rawMaterials.map((item, index) => ({
@@ -210,11 +211,41 @@ const ChemicalList = () => {
   const [enableUpdate, setEnableUpdate] = useState(false);
 
 
-  const increaseQuantity = (index, increment) => {
-    const newData = [...d];
-    newData[index].quantity += increment;
-    setD(newData);
+  // const increaseQuantity = async (index, increment) => {
+  //   // const newData = [...d];
+  //   // newData[index].quantity += increment;
+  //   // setD(newData);
+  //   // console.log("index is " +index, increment);
+
+  //   //index+1
+
+  // };
+
+  const increaseQuantity = async (index, increment) => {
+    try {
+      const materialId = rawMaterials[index].materialId; // Assuming you have an ID property in your rawMaterials data
+      
+      const response = await Services.increase_quantity(materialId, increment);
+      
+      if (response.success) {
+        // Update the local state with the new quantity
+        const updatedRawMaterials = [...rawmat];
+        updatedRawMaterials[index].quantity += increment;
+        setRawmat(updatedRawMaterials);
+        
+        console.log(`Quantity increased successfully for material with ID ${materialId}`);
+        setEnableUpdate(true); // Enable any update logic you need
+        
+      } else {
+        console.error("Transaction failed");
+        // Handle the error as needed
+      }
+    } catch (error) {
+      console.error("Error increasing quantity: ", error);
+      // Handle the error as needed
+    }
   };
+  
 
   // const increaseQuantity = (index, increment) => {
   //   const newData = [...d];
@@ -224,10 +255,12 @@ const ChemicalList = () => {
 
 
 
+  const [cardimg,setCardimg] = useState([]);
 
-
-  const handleCardClick = (chemical) => {
+  const handleCardClick = (chemical,index) => {
     setSelectedChemical(chemical);
+    // setCardimg(chemical);
+    setCardimg(`${CONSTANTS.IPFSURL}/${rawMaterials[index].ipfs_hash}`)
     setDialogOpen(true);
   };
 
@@ -235,6 +268,12 @@ const ChemicalList = () => {
 xAxisData.forEach((item) => {
   console.log(item.x, item.y); // Assuming x and y are properties of your objects
 });
+
+console.log("raw materials from chemical list: ", rawMaterials)
+console.log(CONSTANTS.IPFSURL+"/"+rawMaterials[0].ipfs_hash)
+
+
+
 
 
 
@@ -327,27 +366,25 @@ xAxisData.forEach((item) => {
         .filter((qd) =>
           qd.x.toLowerCase().includes(searchValue.toLowerCase())
         )
-        .map((qd) => (
+        .map((qd,index) => (
           <div
             className="card"
             key={qd.x}
             style={{
-              // backgroundImage: `url(${chemimg})`,
+              backgroundImage: `url(${CONSTANTS.IPFSURL}/${rawMaterials[index].ipfs_hash})`,
               backgroundRepeat: "no-repeat",
               backgroundSize: "cover",
             }}
-            onClick={() => handleCardClick(qd)}
+            onClick={() => handleCardClick(qd,index)}
           >
             <p className="card__title" style={{ color: "white", fontSize: "2rem", marginTop: "12rem" }}>{qd.x}</p>
-            {/* <img src={chemimg} alt="" height="200px" width="160px" /> */}
+            {/* <img src={`${CONSTANTS.IPFSURL}/${rawMaterials[index].ipfs_hash}`} alt="" height="200px" width="160px" /> */}
             <div className="card__content">
               <p className="card__title">
                 {qd.x}:{qd.quantity}
               </p>
               <p className="card__description">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco.
+                {rawMaterials[index].description}
               </p>
             </div>
           </div>
@@ -375,6 +412,7 @@ xAxisData.forEach((item) => {
           </AppBar>
 
           <DialogContent>
+            
             <div>
               <Typography variant="body2" color="text.secondary">
                 <div style={{ marginTop: "8px", width: "100%" }}>
@@ -382,30 +420,22 @@ xAxisData.forEach((item) => {
                     <CardMedia
                       component="img"
                       height="140"
-                      // image={selectedChemical.pic}
+                      image={cardimg}
                       alt="material"
                     />
                     <CardContent>
                       {selectedChemical && (
                         <>
                           <DialogTitle>
-                            {selectedChemical.x} ({selectedChemical.quantity})
+                            {console.log("selected chemical is: ", selectedChemical)}
+                            {selectedChemical.x} ({(selectedChemical.y)})
                           </DialogTitle>
                           <DialogContent>
                             <Typography
                               variant="subtitle1"
                               sx={{ marginTop: "8px", marginBottom: "24px" }}
                             >
-                              Lorem ipsum dolor sit amet, consectetur adipiscing
-                              elit, sed do eiusmod tempor incididunt ut labore
-                              et dolore magna aliqua. Ut enim ad minim veniam,
-                              quis nostrud exercitation ullamco laboris nisi ut
-                              aliquip ex ea commodo consequat. Duis aute irure
-                              dolor in reprehenderit in voluptate velit esse
-                              cillum dolore eu fugiat nulla pariatur. Excepteur
-                              sint occaecat cupidatat non proident, sunt in
-                              culpa qui officia deserunt mollit anim id est
-                              laborum.
+                              {rawMaterials.map((rawMaterial) => rawMaterial.name==selectedChemical.x?rawMaterial.description:"")}
                             </Typography>
                             <CustomNumberInput
                               value={incrementValue}
