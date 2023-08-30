@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import jsonData from "../data.json";
 import "./ChemicalList.css";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
+import CONSTANTS from "../Utils/Constants";
+
 import {
   AppBar,
   Button,
@@ -169,59 +171,63 @@ const TopChemicals = () => {
   const [incrementValue, setIncrementValue] = useState(0);
   const {services, rawMaterials} = useContext(ContractContext);
   const [rawmat,setRawmat] = useState([]);
+  const [cardimage,setCardimage] = useState([]);
 
-    // const [xAxisData, setxaxisdata] = useState([]);
+    const [xAxisData, setxaxisdata] = useState([]);
 
-  // useEffect(() => {
-  //   const fetchRawMaterials = async () => {
-  //     await services.get_all_raw_materials();
-  //     console.log(rawMaterials);
-  //     setRawmat(rawMaterials)
-  //     const processedChartData = rawMaterials.map(rawMaterial => ({
-  //       x: rawMaterial.name,
-  //       y: rawMaterial.quantity, // Use the appropriate property for y-axis data
-  //       description: rawMaterial.description,
-  //     }));
-  //     setxaxisdata(processedChartData);
-  //   };
-  //   fetchRawMaterials();
-  // }, [services, rawMaterials]);
+  useEffect(() => {
+    const fetchRawMaterials = async () => {
+      console.log(rawMaterials);
+      setRawmat(rawMaterials)
+      const processedChartData = rawMaterials.map(rawMaterial => ({
+        x: rawMaterial.name,
+        y: rawMaterial.quantity, // Use the appropriate property for y-axis data
+        description: rawMaterial.description,
+      }));
+      console.log("proccessed data is "+JSON.stringify(processedChartData))
+      setxaxisdata(processedChartData);
+    };
+    fetchRawMaterials();
+  }, [services, rawMaterials]);
 
 
-  const xAxisData = data.xaxis.map((x, index) => ({
-    x,
-    quantity: data.quantity[index],
-  }));
+  // const xAxisData = data.xaxis.map((x, index) => ({
+  //   x,
+  //   quantity: data.quantity[index],
+  // }));
 
     // need to check
-  // const [d, setD] = useState(rawmat);
-  const [d, setD] = useState(jsonData);
+  const [d, setD] = useState(rawmat);
+  // const [d, setD] = useState(jsonData);
   const [searchValue, setSearchValue] = useState("");
   const [enableUpdate, setEnableUpdate] = useState(false);
   if (!jsonData || jsonData.length === 0) {
     return <div>No data available.</div>;
   }
   // Sorting the array by quantity in descending order
-  xAxisData.sort((a, b) => b.quantity - a.quantity);
-
-  // const increaseQuantity = (index, increment) => {
-  //   const newData = [...d];
-  //   newData[index].quantity += increment;
-  //   setD(newData);
-  // };
+  xAxisData.sort((a, b) => b.y - a.y);
 
   const increaseQuantity = (index, increment) => {
-    console.log("increaseQuantity called with index:", index, "increment:", increment);
     const newData = [...d];
-    newData[0].quantity[index] += increment;
+    newData[index].quantity += increment;
     setD(newData);
   };
+
+  // const increaseQuantity = (index, increment) => {
+  //   console.log("increaseQuantity called with index:", index, "increment:", increment);
+  //   const newData = [...d];
+  //   newData[0].quantity[index] += increment;
+  //   setD(newData);
+  // };
   const handleCardClick = (chemical) => {
     setSelectedChemical(chemical);
+    {rawMaterials.map((it)=>it.name==chemical.x?setCardimage(`${CONSTANTS.IPFSURL}/${it.ipfs_hash}`):"")}
     setDialogOpen(true);
   };
   // Taking the top 3 values
   const topXAxisData = xAxisData.slice(0, 3);
+  console.log("topaxis is :"+ JSON.stringify(topXAxisData))
+  
   return (
     <>
       <div style={{ marginTop: "20px", display: "flex", gap: "2rem", display:"flex",justifyContent:"center" }}>
@@ -231,18 +237,15 @@ const TopChemicals = () => {
               className="card"
               style={{ cursor: "pointer", height: "300px", width:"300px" }}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M20 5H4V19L13.2923 9.70649C13.6828 9.31595 14.3159 9.31591 14.7065 9.70641L20 15.0104V5ZM2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z"></path>
-              </svg>
+              {console.log(`Image is : ${CONSTANTS.IPFSURL}/${rawMaterials[0].ipfs_hash}`)}
+              {rawMaterials.map((it)=>it.name==item.x?<img src={`${CONSTANTS.IPFSURL}/${it.ipfs_hash}`} style={{height:"200px",width:"200px"}}/>:"")}
               <div className="card__content">
                 <p className="card__title">
                   {item.x}:{item.quantity}
                 </p>
                 <p className="card__description">
                   {/* {item.description} */}
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco.
+                  {item.description}
                 </p>
               </div>
             </div>
@@ -275,30 +278,22 @@ const TopChemicals = () => {
                     <CardMedia
                       component="img"
                       height="140"
-                      // image={selectedChemical.pic}
+                      image={cardimage}
                       alt="material"
                     />
                     <CardContent>
+                      {console.log("selected chemical is :"+JSON.stringify(selectedChemical))}
                       {selectedChemical && (
                         <>
                           <DialogTitle>
-                            {selectedChemical.x} ({selectedChemical.quantity})
+                            {selectedChemical.x} ({Number(selectedChemical.y)})
                           </DialogTitle>
                           <DialogContent>
                             <Typography
                               variant="subtitle1"
                               sx={{ marginTop: "8px", marginBottom: "24px" }}
                             >
-                              Lorem ipsum dolor sit amet, consectetur adipiscing
-                              elit, sed do eiusmod tempor incididunt ut labore
-                              et dolore magna aliqua. Ut enim ad minim veniam,
-                              quis nostrud exercitation ullamco laboris nisi ut
-                              aliquip ex ea commodo consequat. Duis aute irure
-                              dolor in reprehenderit in voluptate velit esse
-                              cillum dolore eu fugiat nulla pariatur. Excepteur
-                              sint occaecat cupidatat non proident, sunt in
-                              culpa qui officia deserunt mollit anim id est
-                              laborum.
+                              {selectedChemical.description}
                             </Typography>
                             <CustomNumberInput
                               value={incrementValue}

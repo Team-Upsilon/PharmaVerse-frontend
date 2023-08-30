@@ -378,8 +378,10 @@ function ContractContextProvider(props) {
           };
         }
 
+        let a = BigInt(materialId)
+        let b= BigInt(additionalQuantity)
         const response = await InventoryContract.methods
-          .increaseQuantity(materialId, additionalQuantity)
+          .increaseQuantity(a, b)
           .send({
             from: account,
           });
