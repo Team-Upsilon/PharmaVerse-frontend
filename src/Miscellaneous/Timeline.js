@@ -159,9 +159,9 @@ const Timeline = ({ batch, role }) => {
   let { account } = useContext(AuthContext);
 
   const [openDialog, setOpenDialog] = useState(false);
-  const [stageOneGrade, setStageOneGrade] = useState("");
-  const [stageTwoGrade, setStageTwoGrade] = useState("");
-  const [stageThreeGrade, setStageThreeGrade] = useState("");
+  const [stageOneGrade, setStageOneGrade] = useState(null);
+  const [stageTwoGrade, setStageTwoGrade] = useState(null);
+  const [stageThreeGrade, setStageThreeGrade] = useState(null);
   const [stageOne, setStageOne] = useState(false);
   const [stageTwo, setStageTwo] = useState(false);
   const [stageThree, setStageThree] = useState(false);

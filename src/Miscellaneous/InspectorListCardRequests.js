@@ -16,6 +16,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import AirplayRoundedIcon from "@mui/icons-material/AirplayRounded";
 import CloseIcon from "@mui/icons-material/Close";
+
 import {
   AppBar,
   Button,
@@ -64,15 +65,14 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 export default function InspectorListCardRequests({ data }) {
 
-  const { packages, Services, medicines } = useContext(ContractContext);
-  let { account } = useContext(AuthContext);
-
-  const [BatchMedicines, setBatchMedicines] = useState([]);
-
   const initialCardStates = data.chemicals.map(() => ({
     concentration: "",
     remarks: "",
   }));
+
+  const {packages, Services, rawMaterials} = useContext(ContractContext);
+  let { account } = useContext(AuthContext);
+
   const [remarks, setRemarks] = useState("");
   const [cardStates, setCardStates] = useState(initialCardStates);
   const [expanded, setExpanded] = useState(false);
@@ -86,24 +86,21 @@ export default function InspectorListCardRequests({ data }) {
     new Array(data.chemicals.length).fill(false)
   );
 
-  const [value, setValue] = React.useState();
-  const [loading, setLoading] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [selectedTransporter, setSelectedTransporter] = useState(null);
-  const [selectedInspector, setSelectedInspector] = useState(null);
-
   useEffect(() => {
     setData();
   }, []);
 
-  const setData = async () => {
-    if (!medicines || !account) return;
+  const [PackageRawMaterials, setPackageRawMaterials] = useState([]);
 
-    const updatedBatchMedicines = data.medicines.map(item => {
-      const Medicine = medicines.find(item1 => item1.medicineId === item.medicineId);
-      if (Medicine) {
+
+  const setData = async () => {
+    if(!packages||!account) return;
+
+    const updatedPackageRawMaterials = data.rawMaterials.map(item => {
+      const rawMaterial = rawMaterials.find(item1 => item1.materialId === item.materialId);
+      if (rawMaterial) {
         return {
-          ...Medicine,
+          ...rawMaterial,
           quantity: item.quantity,
         };
       } else {
@@ -111,11 +108,17 @@ export default function InspectorListCardRequests({ data }) {
       }
     });
 
-    setBatchMedicines(updatedBatchMedicines.filter(item => item !== null));
+    setPackageRawMaterials(updatedPackageRawMaterials.filter(item => item !== null));
 
-  };
 
-  
+  }
+
+  const [value, setValue] = React.useState();
+  const [loading, setLoading] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedTransporter, setSelectedTransporter] = useState(null);
+  const [selectedInspector, setSelectedInspector] = useState(null);
+
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -130,9 +133,33 @@ export default function InspectorListCardRequests({ data }) {
   const handleSendPackage = () => {
     handleCloseDialog();
   };
-  const handleSaveClick = (cardIndex) => {
+  const handleSaveClick = async (cardIndex) => {
+
+  //   const chemicalquantity = PackageRawMaterials[cardIndex].quantity;
+   
+  //  const response = await Services.check_quality_of_package(data.packageID,remarks,chemicalquantity,cardStates[cardIndex].concentration);
+
+
+   
+    // if (response.success) {
+    //   handleCloseDialog();
+    // }
+    // else{
+    //   console.log("Error" + response.message);
+    //   handleCloseDialog();
+    // }
+
+
+
+
+
+
+
     const updatedCardSaveClicks = [...cardSaveClicks];
     updatedCardSaveClicks[cardIndex] = true;
+
+    const response = await Services.
+
     setCardSaveClicks(updatedCardSaveClicks);
     const updatedCardDisabled = [...cardDisabled];
     updatedCardDisabled[cardIndex] = true;
@@ -151,7 +178,6 @@ export default function InspectorListCardRequests({ data }) {
           image="/static/images/cards/paella.jpg"
           alt="Manufacturer"
         />
-        {!data["send-package"] && (
           <CardActions>
             <Stack spacing={0.2}>
               <Grid item xs={12} sm={6}>
@@ -172,7 +198,7 @@ export default function InspectorListCardRequests({ data }) {
               </Grid>
             </Stack>
           </CardActions>
-        )}
+   
         <Dialog
           TransitionComponent={Transition}
           fullScreen
@@ -209,6 +235,7 @@ export default function InspectorListCardRequests({ data }) {
             <div>
               <Typography variant="body2" color="text.secondary">
                 <div className="dialog-container" style={{ marginTop: "8px" }}>
+                  {/* {PackageRawMaterials.map((chemical, index) => (*/}
                   {data.chemicals.map((chemical, index) => (
                     <Card sx={{ maxWidth: 700, marginBottom: "16px" }}>
             
@@ -236,7 +263,7 @@ export default function InspectorListCardRequests({ data }) {
                           >
                             <TextField
                               required
-                              id={`concentration-${index}`} // Use a unique identifier for each concentration field
+                              id={`concentration-${index}`} 
                               label="Concentration"
                               value={cardStates[index].concentration}
                               onChange={(e) => {

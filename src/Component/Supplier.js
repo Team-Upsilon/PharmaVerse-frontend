@@ -11,6 +11,7 @@ import IconButton from "@mui/material/IconButton";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
@@ -29,6 +30,7 @@ import Logo from '../Images/logoPharma.png';
 import { useEffect, useContext } from "react";
 import { ContractContext } from "../Context/ContractContext";
 import { AuthContext } from "../Context/AuthContext";
+import { useAccount } from "wagmi";
 
 const drawerWidth = 240;
 function TabPanel(props) {
@@ -65,12 +67,29 @@ function a11yProps(index) {
 }
 function ResponsiveDrawer(props) {
   const { packages, Services, rawMaterials } = useContext(ContractContext);
-  let { account } = useContext(AuthContext);
+  const { authenticate, deauthenticate, account, role } = React.useContext(AuthContext);
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [value, setValue] = React.useState(0);
   const [ReceivedRequestData, setReceivedRequestData] = React.useState([]);
   const [SentRequestData, setSentRequestData] = React.useState([]);
+
+  useAccount({
+    onConnect: async (accounts) => {
+      console.log(accounts.address);
+
+      const res = await Services.get_role(accounts.address);
+      if(res.success){
+        authenticate(accounts.address,res.data);
+      }
+      else{
+        authenticate(accounts.address, '');
+      }
+    },
+    onDisconnect: () => {
+      deauthenticate();
+    },
+  });
 
   useEffect(() => {
     setData();
@@ -171,16 +190,22 @@ function ResponsiveDrawer(props) {
           ml: { sm: `${drawerWidth}px` },
         }}
       >
-        <Toolbar>
+        <Toolbar
+          sx={{
+            display: "flex",
+            justifyContent: { xs: "space-between", sm: "flex-end" },
+          }}
+        >
           <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" }, backgroundColor: "#121212" }}
+            sx={{ mr: 2, display: { sm: "none" } }}
           >
             <MenuIcon />
           </IconButton>
+          <ConnectButton />
         </Toolbar>
       </AppBar>
       <Box
