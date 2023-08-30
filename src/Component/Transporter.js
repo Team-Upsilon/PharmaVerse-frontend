@@ -107,8 +107,9 @@ function ResponsiveDrawer(props) {
 
   const setData = async () => {
     if (!packages || !account || !batches) return;
+    console.log("called");
 
-    console.log("packages: ",packages);
+    console.log("batches: ",batches);
 
     const receivedRequestsPackage = packages
       .filter((item) => item.transporterId === account && item.stage === 1)
@@ -121,12 +122,11 @@ function ResponsiveDrawer(props) {
       });
 
     setReceivedPackageRequestData(receivedRequestsPackage);
-    console.log(receivedRequestsPackage);
 
     const sentRequestsPackage = packages
       .filter((item) => item.transporterId === account && item.stage === 2)
       .map((item) => {
-        const materialId = item.rawMaterials[0]?.materialId; // Get the materialId from the first object
+        const materialId = item.rawMaterials[0].materialId; // Get the materialId from the first object
         const rawMaterial = rawMaterials.find((rm) => rm.materialId === materialId); // Find the raw material with matching id
         const ipfsHash = rawMaterial ? rawMaterial.ipfs_hash : ""; // Get the ipfs_hash if rawMaterial exists
 
@@ -134,31 +134,32 @@ function ResponsiveDrawer(props) {
       });
 
       setSentPackageRequestData(sentRequestsPackage);
-      console.log(sentRequestsPackage);
 
     const sentRequestsBatch = batches
-      .filter((item) => item.transporterId === account && item.stage === "Packaging" && item.InspectionStage === "STAGE_3")
+      .filter((item) => item.transporterId === account && item.stage === 4 && item.InspectionStage === 4 ) //  
       .map((item) => {
-        const medicineId = item.medicines[0]?.materialId; // Get the materialId from the first object
-        const medicine = medicines.find((rm) => rm.id === medicineId); // Find the medicine with matching id
+        const medicineId = item.medicines[0].materialId; // Get the materialId from the first object
+        const medicine = medicines.find((rm) => rm.medicineId === medicineId); // Find the medicine with matching id
         const ipfsHash = medicine ? medicine.ipfs_hash : ""; // Get the ipfs_hash if medicine exists
 
         return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the batch data
       });
 
     setReceivedBatchRequestData(sentRequestsBatch);
+    console.log("sentRequestsBatch: ",sentRequestsBatch);
 
     const receivedRequestsBatch = batches
-      .filter((item) => item.transporterId === account && item.stage === "Delivered" && item.InspectionStage === "STAGE_3")
+      .filter((item) => item.transporterId === account ) //  && item.stage === 5 && item.InspectionStage === 4
       .map((item) => {
-        const medicineId = item.medicines[0]?.materialId; // Get the materialId from the first object
-        const medicine = medicines.find((rm) => rm.id === medicineId); // Find the medicine with matching id
+        const medicineId = item.medicines[0].materialId; // Get the materialId from the first object
+        const medicine = medicines.find((rm) => rm.medicineId === medicineId); // Find the medicine with matching id
         const ipfsHash = medicine ? medicine.ipfs_hash : ""; // Get the ipfs_hash if medicine exists
 
         return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the batch data
       });
 
     setSentBatchRequestData(receivedRequestsBatch);
+    console.log("receivedRequestsBatch: ",receivedRequestsBatch);
   };
 
   const handleChange = (event, newValue) => {
@@ -322,11 +323,6 @@ function ResponsiveDrawer(props) {
                {ReceivedPackageRequestData.map((data, index) => (
                   <TransporterListCardRequests key={index} data={data} />
                 ))}
-              {/* {transporterPage
-                .filter((data) => !data["send-package"])
-                .map((data, index) => (
-                  <TransporterListCardRequests key={index} data={data} />
-                ))} */}
             </div>
           </TabPanel>
           <TabPanel value={value} index={1}>
@@ -334,11 +330,6 @@ function ResponsiveDrawer(props) {
               {SentPackageRequestData.map((data, index) => (
                   <TransporterListCardSent key={index} data={data} />
                 ))}
-              {/* {transporterPage
-                .filter((data) => data["send-package"])
-                .map((data, index) => (
-                  <TransporterListCardSent key={index} data={data} />
-                ))} */}
             </div>
           </TabPanel>
           <TabPanel value={value} index={2}>
