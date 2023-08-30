@@ -11,10 +11,9 @@ import Manufacturer from "./Component/Manufacturer";
 import Transporter from "./Component/Transporter";
 import Inspector from "./Component/Inspector";
 // import ContactUs from './Component/ContactUs';
-import Timeline from './Miscellaneous/Timeline';
-import HomePage from './Component/HomePage';
 import ContractContextProvider from './Context/ContractContext';
 import NotFound from "./Component/NotFound";
+import HomePage from "./Component/HomePage";
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
