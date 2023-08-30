@@ -32,6 +32,7 @@ import { FormControl, useFormControlContext } from "@mui/base/FormControl";
 import {useContext} from "react";
 import {ContractContext} from "../Context/ContractContext";
 import { AuthContext } from "../Context/AuthContext";
+import CONSTANTS from "../Utils/Constants";
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -162,45 +163,39 @@ const CreateNewBatch = ({ jsonData }) => {
   const [pressureStageThree, setPressureStageThree] = useState("");
   const [densityStageThree, setDensityStageThree] = useState("");
   const [volumeStageThree, setVolumeStageThree] = useState("");
+  const [selectedData,setselectedData]=useState([])
+
+  // console.log("quantity inputs"+JSON.stringify(quantityInputs))
+  console.log("selected data"+JSON.stringify(selectedData))
+
 
 
   const [meds,setmeds]=useState([]);
 
   let { account } = useContext(AuthContext);
-  let { Services  } = useContext(ContractContext);
+  let { Services , medicines } = useContext(ContractContext);
 
-  useEffect(() => {
-    //get medicine data from blockchain
-    async function getMedicineData() {
-      try{
-        const response = await Services.get_all_medicines();
-        console.log(response);
-        setmeds(response.data);
-      }
-      catch(error){
-        console.log(error);
-      }
-    }
-    getMedicineData();
-  }, []);
+
+  console.log(medicines)
+  
 
 
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
-  const handleRowSelect = (medname) => {
-    if (selectedRows.includes(medname)) {
-      setSelectedRows(selectedRows.filter((row) => row !== medname));
-      setQuantityInputs({ ...quantityInputs, [medname]: undefined });
+  const handleRowSelect = (name) => {
+    if (selectedRows.includes(name)) {
+      setSelectedRows(selectedRows.filter((row) => row !== name));
+      setQuantityInputs({ ...quantityInputs, [name]: undefined });
     } else {
-      setSelectedRows([...selectedRows, medname]);
-      setQuantityInputs({ ...quantityInputs, [medname]: 1 }); // Initialize quantity to 1
+      setSelectedRows([...selectedRows, name]);
+      setQuantityInputs({ ...quantityInputs, [name]: 1 }); // Initialize quantity to 1
     }
   };
 
-  const handleQuantityChange = (medname, value) => {
-    setQuantityInputs({ ...quantityInputs, [medname]: value });
+  const handleQuantityChange = (name, value) => {
+    setQuantityInputs({ ...quantityInputs, [name]: value });
   };
 
   const handleCreateButtonClick = () => {
@@ -209,11 +204,13 @@ const CreateNewBatch = ({ jsonData }) => {
     setSelectedWholesaler(null);
     setOpenDialog(true);
     // Check if entered quantity exceeds given quantity
-    const selectedData = jsonData.filter((item) =>
-      selectedRows.includes(item.medname)
+    const selectedData = medicines.filter((item) =>
+      selectedRows.includes(item.name)
     );
+    setselectedData(selectedData)
+
     const hasExceededQuantity = selectedData.some(
-      (item) => quantityInputs[item.medname] > item.medquantity
+      (item) => quantityInputs[item.name] > item.totalQuantity
     );
 
     if (hasExceededQuantity) {
@@ -221,7 +218,9 @@ const CreateNewBatch = ({ jsonData }) => {
       return;
     }
 
-    console.log("Selected data:", selectedData);
+    // console.log("selected row "+ selectedRows)
+
+    
   };
 
   const handleSendBatch = async() => {
@@ -239,16 +238,20 @@ const CreateNewBatch = ({ jsonData }) => {
     const idealstage2conditions = [concentrationStageTwo, pressureStageTwo, densityStageTwo, volumeStageTwo];
     const idealstage3conditions = [concentrationStageThree, pressureStageThree, densityStageThree, volumeStageThree];
 
+    const medids = selectedData.map((item) => item.medicienID);
+    const quantityarray = selectedData.map((item) => quantityInputs[item.name]);
+    
+
     try{
       const response = await Services.create_batch(
-        selectedRows.medicienIDs,
-        selectedRows.medicineQuantities,
+        medids,
+        quantityarray,
         //estimatedcost, // take from constants
         //productionRatePerDay, // take from constants
         idealstage1conditions,
         idealstage2conditions,
         idealstage3conditions,
-        selectedInspector.id,
+        selectedInspector.id,  
         selectedTransporter.id,
         selectedWholesaler.id,      
 
@@ -366,34 +369,34 @@ const CreateNewBatch = ({ jsonData }) => {
           </tr>
         </thead>
         <tbody>
-          {jsonData
+          {medicines
             .filter((item) =>
-              item.medname.toLowerCase().includes(searchValue.toLowerCase())
+              item.name.toLowerCase().includes(searchValue.toLowerCase())
             )
             .map((item) => (
-              <tr key={item.medname}>
+              <tr key={item.name}>
                 <td>
                   <input
                     type="checkbox"
-                    checked={selectedRows.includes(item.medname)}
-                    onChange={() => handleRowSelect(item.medname)}
+                    checked={selectedRows.includes(item.name)}
+                    onChange={() => handleRowSelect(item.name)}
                   />
                 </td>
-                <td>{item.medname}</td>
-                <td>{item.medpic}</td>
-                <td>{item.meddesc}</td>
-                <td>{item.medquantity}</td>
+                <td>{item.name}</td>
+                <td><img src={`${CONSTANTS.IPFSURL}/${item.ipfs_hash}`}  height={100} width={100} /></td>
+                <td>{item.description}</td>
+                <td>{item.totalQuantity}</td>
                 <td>
                   <input
                     type="number"
-                    value={quantityInputs[item.medname] || ""}
+                    value={quantityInputs[item.name] || ""}
                     onChange={(e) =>
                       handleQuantityChange(
-                        item.medname,
+                        item.name,
                         parseInt(e.target.value)
                       )
                     }
-                    disabled={!selectedRows.includes(item.medname)}
+                    disabled={!selectedRows.includes(item.name)}
                   />
                 </td>
               </tr>
