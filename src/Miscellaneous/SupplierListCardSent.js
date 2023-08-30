@@ -14,6 +14,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useContext } from "react";
 import { ContractContext } from "../Context/ContractContext";
 import { AuthContext } from "../Context/AuthContext";
+import CONSTANTS from "../Utils/Constants";
 import {
   AppBar,
   Button,
@@ -100,13 +101,13 @@ export default function SupplierListCardSent({ data }) {
   return (
     <Fade bottom>
     <Card sx={{ maxWidth: 370, borderRadius: "24px", borderColor: "white" }}>
-        {/* <CardHeader title={data.description} subheader={data.manufacturerId} /> */}
-      <CardHeader title={data.name} subheader={data.manufacturer_id} />
+        <CardHeader title={data.packageId} subheader={`Manufacturer: ${data.manufacturerId.slice(0,20)}...`} />
+      {/* <CardHeader title={data.name} subheader={data.manufacturer_id} /> */}
       <CardMedia
         component="img"
         height="194"
-        image="/static/images/cards/paella.jpg"
-        //  image={`${CONSTANTS.IPFSURL}/${data.ipfs_hash}`}
+        // image="/static/images/cards/paella.jpg"
+         image={`${CONSTANTS.IPFSURL}/${data.ipfs_hash}`}
         alt="Manufacturer"
       />
 
@@ -158,8 +159,8 @@ export default function SupplierListCardSent({ data }) {
                 <Card sx={{ marginBottom: "16px" }}>
                   <CardHeader
                     title="Transporter"
-                    subheader="0xAB6bDA0a4e847Af362d54f88cC3663C219688c27"
-                    // subheader={data.transporterId}
+                    // subheader="0xAB6bDA0a4e847Af362d54f88cC3663C219688c27"
+                    subheader={data.transporterId}
                   />
                 </Card>
               </>
@@ -171,8 +172,8 @@ export default function SupplierListCardSent({ data }) {
               <Card sx={{ marginBottom: "16px" }}>
                 <CardHeader
                   title= "Inspector"
-                  subheader= "0xE8Dc9F3cecc1E7DD7737001f1987cc2813246A93"
-                  // subheader={data.inspectorId}
+                  // subheader= "0xE8Dc9F3cecc1E7DD7737001f1987cc2813246A93"
+                  subheader={data.inspectorId}
                 />
               </Card>
          
@@ -212,14 +213,13 @@ export default function SupplierListCardSent({ data }) {
           <div>
             <Typography variant="body2" color="text.secondary">
               <div className="dialog-container" style={{ marginTop: "8px" }}>
-              {/* {PackageRawMaterials.map((chemical, index) => ( */}
-                {data.chemicals.map((chemical, index) => (
+              {PackageRawMaterials.map((chemical, index) => (
                   <Card sx={{ maxWidth: 700, marginBottom: "16px" }}>
                
                       <CardMedia
                         component="img"
                         height="140"
-                        image={chemical.image} // {`${CONSTANTS.IPFSURL}/${chemical.ipfs_hash}`}
+                        image={`${CONSTANTS.IPFSURL}/${chemical.ipfs_hash}`} // 
                         alt={chemical.name}
                       />
                       <CardContent>

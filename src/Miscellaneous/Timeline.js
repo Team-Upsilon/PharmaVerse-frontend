@@ -181,24 +181,28 @@ const Timeline = ({ batch, role }) => {
   const setData = async () => {
     if (!batch || !role) return;
 
-    if (batch.stage === "Stage1") {
+    if (batch.stage === 1) {
       setStageOne(true);
 
-    } else if (batch.stage === "Stage2") {
+    } else if (batch.stage === 2) {
+
       setStageOne(true);
       setStageTwo(true);
 
-    } else if (batch.stage === "Packaging") {
+    } else if (batch.stage === 3) {
+      setStageOne(true);
+      setStageTwo(true);
+      setStageThree(true);
 
     }
 
-    if (batch.InspectionStage === "STAGE_1") {
+    if (batch.InspectionStage === 1) {
       setStageOneInspection(true);
       const stageOneReport = batchreports.find((report) => report.batchId === batch.batchId && report.stage === 1);
       if (stageOneReport) {
         setStageOneGrade(stageOneReport.batchReportResult);
       }
-    } else if (batch.InspectionStage === "STAGE_2") {
+    } else if (batch.InspectionStage === 2) {
       setStageOneInspection(true);
       setStageTwoInspection(true);
       const stageOneReport = batchreports.find((report) => report.batchId === batch.batchId && report.stage === 1);
@@ -209,7 +213,7 @@ const Timeline = ({ batch, role }) => {
       if (stageTwoReport) {
         setStageTwoGrade(stageTwoReport.batchReportResult);
       }
-    } else if (batch.InspectionStage === "STAGE_3") {
+    } else if (batch.InspectionStage === 3) {
       setStageOneInspection(true);
       setStageTwoInspection(true);
       setStageThreeInspection(true);
@@ -510,58 +514,58 @@ const Timeline = ({ batch, role }) => {
   };
 
   const StageOneCompleted = async () => {
-    // const response = await Services.update_batch_state(batch.batchId, 1);
+    const response = await Services.update_batch_state(batch.batchId, 1);
 
-    // if (response.success) {
-    //   console.log("Stage 1 completed");
-    // setStageOne(true);
-    // }
-    // else{
-    //   console.log("Error" + response.message);
-    // }
+    if (response.success) {
+      console.log("Stage 1 completed");
+    setStageOne(true);
+    }
+    else{
+      console.log("Error" + response.message);
+    }
 
     setStageOne(true);
   };
   const StageTwoCompleted = async () => {
-    // const response = await Services.update_batch_state(batch.batchId, 2);
+    const response = await Services.update_batch_state(batch.batchId, 2);
 
-    // if (response.success) {
-    //   console.log("Stage 2 completed");
-    // setStageTwo(true);
-    // }
-    // else{
-    //   console.log("Error" + response.message);
-    // }
+    if (response.success) {
+      console.log("Stage 2 completed");
+    setStageTwo(true);
+    }
+    else{
+      console.log("Error" + response.message);
+    }
 
     setStageTwo(true);
   };
   const StageThreeCompleted = async () => {
-    // const response = await Services.update_batch_state(batch.batchId, 3);
+    const response = await Services.update_batch_state(batch.batchId, 3);
 
-    // if (response.success) {
-    //   console.log("Stage 3 completed");
-    //  setStageThree(true);
-    // }
-    // else{
-    //   console.log("Error" + response.message);
-    // }
+    if (response.success) {
+      console.log("Stage 3 completed");
+     setStageThree(true);
+    }
+    else{
+      console.log("Error" + response.message);
+    }
 
     setStageThree(true);
   };
 
   const StageOneInspectionCompleted = async () => {
 
-    // const response = await Services.update_batch_inspection_state(batch.batchId,1);
+    const response = await Services.update_batch_inspection_state(batch.batchId,1);
 
-    // if (response.success) {
-    //       setStageOneInspection(true);
-    //       setOpenDialog(false);
-    //       setSelectedStage(null);
-    // }
-    // else{
-    //   console.log("Error" + response.message);
-    //   handleCloseDialog();
-    // }
+    if (response.success) {
+          setStageOneInspection(true);
+          setOpenDialog(false);
+          setSelectedStage(null);
+    }
+    else{
+      console.log("Error" + response.message);
+      handleCloseDialog();
+    }
 
     setStageOneInspection(true);
     setOpenDialog(false);
@@ -570,34 +574,34 @@ const Timeline = ({ batch, role }) => {
   };
 
   const StageTwoInspectionCompleted = async () => {
-    // const response = await Services.update_batch_inspection_state(batch.batchId,2);
+    const response = await Services.update_batch_inspection_state(batch.batchId,2);
 
-    // if (response.success) {
-    //       setStageTwoInspection(true);
-    //       setOpenDialog(false);
-    //       setSelectedStage(null);
-    // }
-    // else{
-    //   console.log("Error" + response.message);
-    //   handleCloseDialog();
-    // }
+    if (response.success) {
+          setStageTwoInspection(true);
+          setOpenDialog(false);
+          setSelectedStage(null);
+    }
+    else{
+      console.log("Error" + response.message);
+      handleCloseDialog();
+    }
 
     setStageTwoInspection(true);
     setOpenDialog(false);
     setSelectedStage(null);
   };
   const StageThreeInspectionCompleted = async () => {
-    // const response = await Services.update_batch_inspection_state(batch.batchId,3);
+    const response = await Services.update_batch_inspection_state(batch.batchId,3);
 
-    // if (response.success) {
-    //       setStageThreeInspection(true);
-    //       setOpenDialog(false);
-    //       setSelectedStage(null);
-    // }
-    // else{
-    //   console.log("Error" + response.message);
-    //   handleCloseDialog();
-    // }
+    if (response.success) {
+          setStageThreeInspection(true);
+          setOpenDialog(false);
+          setSelectedStage(null);
+    }
+    else{
+      console.log("Error" + response.message);
+      handleCloseDialog();
+    }
 
     setOpenDialog(false);
     setSelectedStage(null);
@@ -618,8 +622,8 @@ const Timeline = ({ batch, role }) => {
         >
           <h3 className="vertical-timeline-element-title">Creation of Batch</h3>
           <h4 className="vertical-timeline-element-subtitle">
-            Manufacturer ID : 0x122341241213dbm
-            {/* Manufacturer ID : {batch.manufacturerId} */}
+            {/* Manufacturer ID : 0x122341241213dbm */}
+            Manufacturer ID : {batch.manufacturerId}
           </h4>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -641,8 +645,8 @@ const Timeline = ({ batch, role }) => {
         >
           <h3 className="vertical-timeline-element-title">Stage-1</h3>
           <h4 className="vertical-timeline-element-subtitle">
-            Manufacturer ID : 0x122341241213dbm
-            {/* Manufacturer ID : {batch.manufacturerId} */}
+            {/* Manufacturer ID : 0x122341241213dbm */}
+            Manufacturer ID : {batch.manufacturerId}
           </h4>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -686,13 +690,13 @@ const Timeline = ({ batch, role }) => {
             Stage-1 (INSPECTION)
           </h3>
           <h4 className="vertical-timeline-element-subtitle">
-            Inspector ID : 0x122341241213dfgh
-            {/* Inspector ID : {batch.inspectorId} */}
+            {/* Inspector ID : 0x122341241213dfgh */}
+            Inspector ID : {batch.inspectorId}
 
           </h4>
           <h4 className="vertical-timeline-element-subtitle">
-            Grade : x (out of 10)
-            {/* {stageOneGrade ? `${stageOneGrade} (out of 10)` : "Yet to be Inspected"} */}
+            {/* Grade : x (out of 10) */}
+            {stageOneGrade ? `${stageOneGrade} (out of 10)` : "Yet to be Inspected"}
           </h4>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -734,8 +738,8 @@ const Timeline = ({ batch, role }) => {
         >
           <h3 className="vertical-timeline-element-title">Stage-2</h3>
           <h4 className="vertical-timeline-element-subtitle">
-            Manufacturer ID : 0x122341241213dbm
-            {/* Manufacturer ID : {batch.manufacturerId} */}
+            {/* Manufacturer ID : 0x122341241213dbm */}
+            Manufacturer ID : {batch.manufacturerId}
           </h4>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -777,13 +781,13 @@ const Timeline = ({ batch, role }) => {
             Stage-2 (INSPECTION)
           </h3>
           <h4 className="vertical-timeline-element-subtitle">
-            Inspector ID : 0x122341241213dfgh
-            {/* Inspector ID : {batch.inspectorId} */}
+            {/* Inspector ID : 0x122341241213dfgh */}
+            Inspector ID : {batch.inspectorId}
 
           </h4>
           <h4 className="vertical-timeline-element-subtitle">
-            Grade : x (out of 10)
-            {/* {stageTwoGrade ? `${stageTwoGrade} (out of 10)` : "Yet to be Inspected"} */}
+            {/* Grade : x (out of 10) */}
+            {stageTwoGrade ? `${stageTwoGrade} (out of 10)` : "Yet to be Inspected"}
 
           </h4>
           <p>
@@ -828,8 +832,8 @@ const Timeline = ({ batch, role }) => {
             Packing and Labeling
           </h3>
           <h4 className="vertical-timeline-element-subtitle">
-            Manufacturer ID : 0x122341241213dbm
-            {/* Manufacturer ID : {batch.manufacturerId} */}
+            {/* Manufacturer ID : 0x122341241213dbm */}
+            Manufacturer ID : {batch.manufacturerId}
           </h4>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -871,13 +875,13 @@ const Timeline = ({ batch, role }) => {
             Packing and Labeling (INSPECTION)
           </h3>
           <h4 className="vertical-timeline-element-subtitle">
-            Inspector ID : 0x122341241213dfgh
-            {/* Inspector ID : {batch.inspectorId} */}
+            {/* Inspector ID : 0x122341241213dfgh */}
+            Inspector ID : {batch.inspectorId}
 
           </h4>
           <h4 className="vertical-timeline-element-subtitle">
-            Grade : x (out of 10)
-            {/* {stageThreeGrade ? `${stageThreeGrade} (out of 10)` : "Yet to be Inspected"} */}
+            {/* Grade : x (out of 10) */}
+            {stageThreeGrade ? `${stageThreeGrade} (out of 10)` : "Yet to be Inspected"}
 
           </h4>
           <p>

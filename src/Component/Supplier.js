@@ -107,7 +107,7 @@ function ResponsiveDrawer(props) {
       .filter((item) => item.supplierId === account && item.stage === 3)
       .map((item) => {
         const materialId = item.rawMaterials[0]?.materialId; // Get the materialId from the first object
-        const rawMaterial = rawMaterials.find((rm) => rm.id === materialId); // Find the raw material with matching id
+        const rawMaterial = rawMaterials.find((rm) => rm.materialId === materialId); // Find the raw material with matching id
         const ipfsHash = rawMaterial ? rawMaterial.ipfs_hash : ""; // Get the ipfs_hash if rawMaterial exists
 
         return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the package data
@@ -120,9 +120,10 @@ function ResponsiveDrawer(props) {
     const sentRequests = packages
       .filter((item) => item.supplierId === account && item.stage === 0)
       .map((item) => {
-        const materialId = item.rawMaterials[0]?.materialId; // Get the materialId from the first object
-        const rawMaterial = rawMaterials.find((rm) => rm.id === materialId); // Find the raw material with matching id
+        const materialId = item.rawMaterials[0].materialId; // Get the materialId from the first object
+        const rawMaterial = rawMaterials.find((rm) => rm.materialId === materialId); // Find the raw material with matching id
         const ipfsHash = rawMaterial ? rawMaterial.ipfs_hash : ""; // Get the ipfs_hash if rawMaterial exists
+
 
         return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the package data
       });
