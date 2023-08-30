@@ -177,23 +177,18 @@ const ChemicalList = () => {
 
   // const [xAxisData, setxaxisdata] = useState([]);
 
-  // useEffect(() => {
-  //   const fetchRawMaterials = async () => {
-  //     await services.get_all_raw_materials();
-  //     console.log(rawMaterials);
-  //     setRawmat(rawMaterials)
-  //     const processedChartData = rawMaterials.map(rawMaterial => ({
-  //       x: rawMaterial.name,
-  //       y: rawMaterial.quantity, // Use the appropriate property for y-axis data
-  //     }));
-  //     setxaxisdata(processedChartData);
-  //   };
-  //   fetchRawMaterials();
-  // }, [services, rawMaterials]);
-
-
-
-
+  useEffect(() => {
+    const fetchRawMaterials = async () => {
+      console.log("Chemical list raw materials: ", rawMaterials);
+      setRawmat(rawMaterials)
+      // const processedChartData = rawMaterials.map(rawMaterial => ({
+      //   x: rawMaterial.name,
+      //   y: rawMaterial.quantity, // Use the appropriate property for y-axis data
+      // }));
+      // setxaxisdata(processedChartData);
+    };
+    fetchRawMaterials();
+  }, [services, rawMaterials]);
 
   // Creating an array of objects with x-axis and quantity
   // const xAxisData = rawMaterials.map((item, index) => ({
