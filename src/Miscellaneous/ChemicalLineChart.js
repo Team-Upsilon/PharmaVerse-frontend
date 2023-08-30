@@ -10,35 +10,35 @@ import { AuthContext } from "../Context/AuthContext";
 
 
 const ChemicalListChart = () => {
-  // const [chartData, setChartData] = useState([]);
+  const [chartData, setChartData] = useState([]);
   const { services, rawMaterials } = useContext(ContractContext);
 
-  // useEffect(() => {
-  //   const fetchRawMaterials = async () => {
-  //     await services.get_all_raw_materials();
-  //     console.log(rawMaterials);
-  //     const processedChartData = rawMaterials.map(rawMaterial => ({
-  //       x: rawMaterial.name,
-  //       y: rawMaterial.quantity, // Use the appropriate property for y-axis data
-  //     }));
+  useEffect(() => {
+    const fetchRawMaterials = async () => {
+      console.log("hiiiiiiiiiiii")
+      console.log("raw mat"+ rawMaterials);
+      const processedChartData = rawMaterials.map(rawMaterial => ({
+        x: rawMaterial.name,
+        y: Number(rawMaterial.quantity), // Use the appropriate property for y-axis data
+      }));
       
-  //     setChartData(processedChartData);
-  //   };
+      setChartData(processedChartData);
+    };
 
-  //   fetchRawMaterials();
-  // }, [services, rawMaterials]);
+    fetchRawMaterials();
+  }, [rawMaterials]);
 
 
-  if (!jsonData || jsonData.length === 0) {
-    return <div>No data available.</div>;
-  }
+  // if (!jsonData || jsonData.length === 0) {
+  //   return <div>No data available.</div>;
+  // }
 
-  const { xaxis, quantity } = jsonData[0];
+  // const { xaxis, quantity } = jsonData[0];
 
-  const chartData = xaxis.map((xValue, index) => ({
-    x: xValue,
-    y: quantity[index],
-  }));
+  // const chartData = xaxis.map((xValue, index) => ({
+  //   x: xValue,
+  //   y: quantity[index],
+  // }));
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

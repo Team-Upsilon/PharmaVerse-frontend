@@ -175,17 +175,17 @@ const ChemicalList = () => {
 
 
 
-  // const [xAxisData, setxaxisdata] = useState([]);
+  const [xAxisData, setxaxisdata] = useState([]);
 
   useEffect(() => {
     const fetchRawMaterials = async () => {
       console.log("Chemical list raw materials: ", rawMaterials);
       setRawmat(rawMaterials)
-      // const processedChartData = rawMaterials.map(rawMaterial => ({
-      //   x: rawMaterial.name,
-      //   y: rawMaterial.quantity, // Use the appropriate property for y-axis data
-      // }));
-      // setxaxisdata(processedChartData);
+      const processedChartData = rawMaterials.map(rawMaterial => ({
+        x: rawMaterial.name,
+        y: rawMaterial.quantity, // Use the appropriate property for y-axis data
+      }));
+      setxaxisdata(processedChartData);
     };
     fetchRawMaterials();
   }, [services, rawMaterials]);
@@ -198,29 +198,29 @@ const ChemicalList = () => {
 
 
 
-  const xAxisData = data.xaxis.map((x, index) => ({
-    x,
-    quantity: data.quantity[index],
-  }));
+  // const xAxisData = data.xaxis.map((x, index) => ({
+  //   x,
+  //   quantity: data.quantity[index],
+  // }));
 
   // need to check
-  // const [d, setD] = useState(rawmat);
-  const [d, setD] = useState(jsonData);
+  const [d, setD] = useState(rawmat);
+  // const [d, setD] = useState(jsonData);
   const [searchValue, setSearchValue] = useState("");
   const [enableUpdate, setEnableUpdate] = useState(false);
 
 
-  // const increaseQuantity = (index, increment) => {
-  //   const newData = [...d];
-  //   newData[index].quantity += increment;
-  //   setD(newData);
-  // };
-
   const increaseQuantity = (index, increment) => {
     const newData = [...d];
-    newData[0].quantity[index] += increment;
+    newData[index].quantity += increment;
     setD(newData);
   };
+
+  // const increaseQuantity = (index, increment) => {
+  //   const newData = [...d];
+  //   newData[0].quantity[index] += increment;
+  //   setD(newData);
+  // };
 
 
 
@@ -231,6 +231,10 @@ const ChemicalList = () => {
     setDialogOpen(true);
   };
 
+  console.log("xaxis data is:");
+xAxisData.forEach((item) => {
+  console.log(item.x, item.y); // Assuming x and y are properties of your objects
+});
 
 
 
@@ -318,6 +322,7 @@ const ChemicalList = () => {
       </button>
     </div>
     <div className="allcards" style={{ cursor: "pointer" }}>
+      
       {xAxisData
         .filter((qd) =>
           qd.x.toLowerCase().includes(searchValue.toLowerCase())
@@ -327,7 +332,7 @@ const ChemicalList = () => {
             className="card"
             key={qd.x}
             style={{
-              backgroundImage: `url(${chemimg})`,
+              // backgroundImage: `url(${chemimg})`,
               backgroundRepeat: "no-repeat",
               backgroundSize: "cover",
             }}
