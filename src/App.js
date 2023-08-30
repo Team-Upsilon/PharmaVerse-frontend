@@ -14,6 +14,7 @@ import Inspector from "./Component/Inspector";
 import Timeline from './Miscellaneous/Timeline';
 import HomePage from './Component/HomePage';
 import ContractContextProvider from './Context/ContractContext';
+import NotFound from "./Component/NotFound";
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
@@ -67,6 +68,7 @@ function App() {
 
           {/* <Route path='/contactus' element={<><ContactUs /></>} /> */}
           <Route path='/' element={<HomePage />} />
+          <Route path='/*' element={<NotFound />} />
         </Routes>
       </div>
     </ThemeProvider>

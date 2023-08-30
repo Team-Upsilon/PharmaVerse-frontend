@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./HomePage.css";
+// import "./HomePage.css";
 import logo from "../Images/logoPharma.png";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
@@ -85,7 +85,7 @@ const HomePage = () => {
     <div style={{ margin: "0" }}>
       <section class="hero">
         <div class="main-width">
-          <header>
+          <header className="homepage-header">
             <div class="logo">
               <img src={logo} alt="" width={"200rem"} height={"50rem"} />
             </div>

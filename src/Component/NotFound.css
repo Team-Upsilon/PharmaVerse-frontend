@@ -15,7 +15,7 @@ body {
     background-image: url('../Images/homeback.jpg');
     background-size: cover;
     background-position: center;
-    filter: blur(16px); /* Adjust the blur amount as needed */
+    filter: blur(20px); /* Adjust the blur amount as needed */
     z-index: -1;
   }
 .not-found-container {
