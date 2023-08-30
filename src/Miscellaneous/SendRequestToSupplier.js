@@ -2,64 +2,82 @@ import React, { useState,useEffect } from 'react'
 import {useContext} from "react";
 import {ContractContext} from "../Context/ContractContext";
 import { AuthContext } from "../Context/AuthContext";
+import CONSTANTS from '../Utils/Constants';
 
 
-const SendRequestToSupplier = ({ jsonData }) => {
+const SendRequestToSupplier = ({  }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [quantityInputs, setQuantityInputs] = useState({});
   const [searchValue, setSearchValue] = useState("");
 
-  const {Services} = useContext(ContractContext);
+  const {Services,rawMaterials} = useContext(ContractContext);
   const {account} = useContext(AuthContext);
-  const [meds,setmeds]=useState([]);
 
-  useEffect(() => {
-    //get medicine data from blockchain
-    async function getMedicineData() {
-      try{
-        const response = await Services.get_all_medicines();
-        console.log(response);
-        setmeds(response.data);
-      }
-      catch(error){
-        console.log(error);
-      }
-    }
-    getMedicineData();
-  }, []);
 
-  const handleRowSelect = (medname) => {
-    if (selectedRows.includes(medname)) {
-      setSelectedRows(selectedRows.filter(row => row !== medname));
-      setQuantityInputs({ ...quantityInputs, [medname]: undefined });
+  // useEffect(() => {
+  //   //get medicine data from blockchain
+  //   async function getMedicineData() {
+  //     try{
+  //       const response = await Services.get_all_rawMaterials();
+  //       console.log(response);
+  //       setmeds(response.data);
+  //     }
+  //     catch(error){
+  //       console.log(error);
+  //     }
+  //   }
+  //   getMedicineData();
+  // }, []);
+
+  const handleRowSelect = (name) => {
+    if (selectedRows.includes(name)) {
+      setSelectedRows(selectedRows.filter(row => row !== name));
+      setQuantityInputs({ ...quantityInputs, [name]: undefined });
     } else {
-      setSelectedRows([...selectedRows, medname]);
-      setQuantityInputs({ ...quantityInputs, [medname]: 1 }); // Initialize quantity to 1
+      setSelectedRows([...selectedRows, name]);
+      setQuantityInputs({ ...quantityInputs, [name]: 1 }); // Initialize quantity to 1
     }
   };
 
-  const handleQuantityChange = (medname, value) => {
-    setQuantityInputs({ ...quantityInputs, [medname]: value });
+  const handleQuantityChange = (name, value) => {
+    setQuantityInputs({ ...quantityInputs, [name]: value });
   };
 
-  const handleCreateButtonClick = () => {
+  const handleCreateButtonClick = async() => {
     // Check if entered quantity exceeds given quantity
-    // const selectedData = meds.filter(item => selectedRows.includes(item.medname));
+    // const selectedData = meds.filter(item => selectedRows.includes(item.name));
 
-    const selectedData = jsonData.filter(item => selectedRows.includes(item.medname));
+    const selectedData = rawMaterials.filter(item => selectedRows.includes(item.name));
+    // console.log("Selected data iisssssssssssssssss:", JSON.stringify(selectedData));
 
 
     const selectedMedicineDetails = selectedData.map(item => {
-      const enteredQuantity = quantityInputs[item.medname] || 0;
+      const enteredQuantity = quantityInputs[item.name] || 0;
       return {
-        medname: item.medname,
-        medpic: item.medpic,
-        meddesc: item.meddesc,
-        quantity: enteredQuantity
+        name: item.name,
+        medpic: item.ipfs_hash,
+        meddesc: item.description,
+        quantity: enteredQuantity,
+        materialId: item.materialId,
       };
     });
 
-    console.log("Selected data:", selectedMedicineDetails);
+    console.log("Selected data issssssssssss:", JSON.stringify(selectedMedicineDetails));
+    const matids = selectedMedicineDetails.map(item => item.materialId);
+    const quantities = selectedMedicineDetails.map(item => item.quantity);
+
+
+    const response = await Services.request_raw_material_package(matids,quantities,"desc hardcoded",
+    "transporterid",
+    "supplierid",
+    "inspectorid");
+
+    if(response.status){
+      alert("req sent")
+    }else{
+      alert("req failed")
+    }
+
   };
 
   return (
@@ -103,33 +121,33 @@ const SendRequestToSupplier = ({ jsonData }) => {
         <thead>
           <tr>
             <th>Select</th>
-            <th>Med Name</th>
-            <th>Med Pic</th>
-            <th>Med Desc</th>
+            <th>Rawmaterial Name</th>
+            <th>rawMaterial Pic</th>
+            <th>Rawmaterial Desc</th>
 
             <th>Enter Quantity</th>
           </tr>
         </thead>
         <tbody>
-        {/* {meds.filter((item) => item.medname.toLowerCase().includes(searchValue.toLowerCase())) */}
-          {jsonData.filter((item) => item.medname.toLowerCase().includes(searchValue.toLowerCase())).map(item => (
-            <tr key={item.medname}>
+        {/* {meds.filter((item) => item.name.toLowerCase().includes(searchValue.toLowerCase())) */}
+          {rawMaterials.filter((item) => item.name.toLowerCase().includes(searchValue.toLowerCase())).map(item => (
+            <tr key={item.name}>
               <td>
                 <input
                   type="checkbox"
-                  checked={selectedRows.includes(item.medname)}
-                  onChange={() => handleRowSelect(item.medname)}
+                  checked={selectedRows.includes(item.name)}
+                  onChange={() => handleRowSelect(item.name)}
                 />
               </td>
-              <td>{item.medname}</td>
-              <td>{item.medpic}</td>
-              <td>{item.meddesc}</td>
+              <td>{item.name}</td>
+              <td><img src={`${CONSTANTS.IPFSURL}/${item.ipfs_hash}`}  height={100} width={100} /></td>
+              <td>{item.description}</td>
               <td>
                 <input
                   type="number"
-                  value={quantityInputs[item.medname] || ''}
-                  onChange={(e) => handleQuantityChange(item.medname, parseInt(e.target.value))}
-                  disabled={!selectedRows.includes(item.medname)}
+                  value={quantityInputs[item.name] || ''}
+                  onChange={(e) => handleQuantityChange(item.name, parseInt(e.target.value))}
+                  disabled={!selectedRows.includes(item.name)}
                 />
               </td>
             </tr>
