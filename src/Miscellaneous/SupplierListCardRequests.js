@@ -61,8 +61,9 @@ export default function SupplierListCardRequests({ data }) {
   const [PackageRawMaterials, setPackageRawMaterials] = useState([]);
   const [expanded, setExpanded] = useState(false);
   const [availability, setAvailability] = useState(
-    new Array(data.chemicals.length).fill(null)
+    new Array(data.rawMaterials.length).fill(null)
   );
+
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [openDialogDetalis, setOpenDialogDetalis] = useState(false);
@@ -103,22 +104,24 @@ export default function SupplierListCardRequests({ data }) {
     setLoading(true);
     setTimeout( async () => {
 
-      // const availabilityResults = PackageRawMaterials.map(async (rawMaterial) => {
-      //   const response = await Services.check_availibity(
-      //     rawMaterial.materialId,
-      //     rawMaterial.quantity
-      //   );
-      //   return response.success;
-      // });
+      const availabilityResults = await Promise.all(PackageRawMaterials.map(async (rawMaterial) => {
+        const response = await Services.check_availibity(
+          rawMaterial.materialId,
+          rawMaterial.quantity
+        );
+        return response.success;
+      }));
+      
   
-      // // Check if all raw materials are available
-      // const allMaterialsAvailable = availabilityResults.every((available) => available);
+      // Check if all raw materials are available
+      const allMaterialsAvailable = availabilityResults.every((item) => item===true);
   
-      // // Update the availability state
-      // setAvailability(availabilityResults);
-      // setAllChemicalsAvailable(allMaterialsAvailable);
-      setAvailability([true,true]);
-      setAllChemicalsAvailable(true);
+      // Update the availability state
+      setAvailability(availabilityResults);
+      
+      console.log(availabilityResults);
+      setAllChemicalsAvailable(allMaterialsAvailable);
+      console.log(allMaterialsAvailable);
 
       setLoading(false);
     }, 2000);
@@ -140,19 +143,18 @@ export default function SupplierListCardRequests({ data }) {
   };
   const handleSendPackage = async () => {
 
-    // const response = await Services.update_package_state(data.packageId, 1);
+    const response = await Services.update_package_state(data.packageId, 1);
 
-    // if (response.success) {
-    //   console.log("Order placed with transporter:", selectedTransporter);
-    //   console.log("Order placed with inspector:", selectedInspector);
-    //   handleCloseDialog();
+    if (response.success) {
+      console.log("Package sent successfully");
+      handleCloseDialog();
 
 
-    // }
-    // else{
-    //   console.log("Error" + response.message);
-    //   handleCloseDialog();
-    // }
+    }
+    else{
+      console.log("Error" + response.message);
+      handleCloseDialog();
+    }
 
     handleCloseDialog();
 
@@ -161,19 +163,19 @@ export default function SupplierListCardRequests({ data }) {
   return (
     <Fade bottom>
       <Card sx={{ maxWidth: 363, borderRadius: "24px", borderColor: "white" }}>
-        <CardHeader title={data.name} subheader={data.manufacturer_id} />
-        {/* <CardHeader title={data.description} subheader={data.manufacturerId} /> */}
+        {/* <CardHeader title={data.name} subheader={data.manufacturer_id} /> */}
+        <CardHeader title={data.packageId} subheader={`Manufacturer: ${data.manufacturerId.slice(0,20)}...`} />
         <CardMedia
           component="img"
           height="194"
-          image="/static/images/cards/paella.jpg"
-          // image={`${CONSTANTS.IPFSURL}/${data.ipfs_hash}`}
+          // image="/static/images/cards/paella.jpg"
+          image={`${CONSTANTS.IPFSURL}/${data.ipfs_hash}`}
           alt="Manufacturer"
         />
         <CardContent>
           <Typography variant="body2" color="text.secondary">
-            {/* {PackageRawMaterials.map((chemical, index) => ( */}
-            {data.chemicals.map((chemical, index) => (
+            {PackageRawMaterials.map((chemical, index) => (
+            // {data.chemicals.map((chemical, index) => (
               <Typography
                 key={index}
                 variant="subtitle1"
@@ -356,14 +358,13 @@ export default function SupplierListCardRequests({ data }) {
             <div>
               <Typography variant="body2" color="text.secondary">
                 <div className="dialog-container" style={{ marginTop: "8px" }}>
-                  {/* {PackageRawMaterials.map((chemical, index) => ( */}
-                  {data.chemicals.map((chemical, index) => (
+                  {PackageRawMaterials.map((chemical, index) => (
                     <Card sx={{ maxWidth: 700, marginBottom: "16px" }}>
 
                         <CardMedia
                           component="img"
                           height="140"
-                          image={chemical.image}  // {`${CONSTANTS.IPFSURL}/${chemical.ipfs_hash}`}
+                          image={`${CONSTANTS.IPFSURL}/${chemical.ipfs_hash}`}
                           alt={chemical.name}
                         />
                         <CardContent>
