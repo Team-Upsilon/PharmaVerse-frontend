@@ -69,7 +69,7 @@ function ResponsiveDrawer(props) {
   const [SentPackageRequestData, setSentPackageRequestData] = React.useState([]);
   const [ReceivedBatchRequestData, setReceivedBatchRequestData] = React.useState([]);
   const [SentBatchRequestData, setSentBatchRequestData] = React.useState([]);
-
+  
   useAccount({
     onConnect: async (accounts) => {
       console.log(accounts.address);
@@ -106,7 +106,7 @@ function ResponsiveDrawer(props) {
     setReceivedPackageRequestData(receivedRequestsPackage);
 
     const sentRequestsPackage = packages
-      .filter((item) => item.inspectorId === account && item.stage === 4)
+      .filter((item) => item.inspectorId === account && item.stage === 3)
       .map((item) => {
         const materialId = item.rawMaterials[0].materialId; // Get the materialId from the first object
         const rawMaterial = rawMaterials.find((rm) => rm.id === materialId); // Find the raw material with matching id
@@ -114,6 +114,8 @@ function ResponsiveDrawer(props) {
 
         return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the package data
       });
+
+      console.log("aaaaaaaaaaaa"+sentRequestsPackage)
 
     setSentPackageRequestData(sentRequestsPackage);
 
@@ -157,6 +159,8 @@ function ResponsiveDrawer(props) {
     setReceivedBatchRequestData(receivedRequestsBatch);
     console.log("receivedRequestsBatch: ",receivedRequestsBatch);
   }
+
+  console.log("SentPackageRequestData"+SentPackageRequestData)
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -316,26 +320,26 @@ function ResponsiveDrawer(props) {
         <Typography paragraph>
           <TabPanel value={value} index={0}>
             <div className="card-container">
-              {/* {ReceivedPackageRequestData.map((data, index) => (
-                  <TransporterListCardRequests key={index} data={data} />
-                ))} */}
-              {transporterPage
+              {ReceivedPackageRequestData.map((data, index) => (
+                  <InspectorListCardRequests key={index} data={data} />
+                ))}
+              {/* {transporterPage
                 .filter((data) => !data["send-package"])
                 .map((data, index) => (
                   <InspectorListCardRequests key={index} data={data} />
-                ))}
+                ))} */}
             </div>
           </TabPanel>
           <TabPanel value={value} index={1}>
             <div className="card-container">
-              {/* {SentPackageRequestData.map((data, index) => (
-                  <TransporterListCardSent key={index} data={data} />
-                ))} */}
-              {transporterPage
+              {SentPackageRequestData.map((data, index) => (
+                  <InspectorListCardSent key={index} data={data} />
+                ))}
+              {/* {transporterPage
                 .filter((data) => data["send-package"])
                 .map((data, index) => (
                   <InspectorListCardSent key={index} data={data} />
-                ))}
+                ))} */}
             </div>
           </TabPanel>
           <TabPanel value={value} index={2}>

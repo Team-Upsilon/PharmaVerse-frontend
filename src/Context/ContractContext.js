@@ -47,9 +47,9 @@ function ContractContextProvider(props) {
         // console.log(rawMaterials);
         // console.log(packages);
         // console.log(medicines);
-        console.log(batches);
+        // console.log(batches);
         // console.log(packagereports);
-        // console.log("batchreports: ", batchreports);
+        console.log("batchreports: ", batchreports);
         // console.log(packagedeliverdetails);
         // console.log(batchdeliverdetails);
     }, [
@@ -242,7 +242,7 @@ function ContractContextProvider(props) {
 
                     for (let j = 0; j < medicineIds.length; j++) {
                         medicines.push({
-                            medicineId: Number(medicineIds[j]),
+                            materialId: Number(medicineIds[j]),
                             quantity: Number(medicineQuantities[j]),
                         });
                     }

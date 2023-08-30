@@ -16,7 +16,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import AirplayRoundedIcon from "@mui/icons-material/AirplayRounded";
 import CloseIcon from "@mui/icons-material/Close";
-
+import CONSTANTS from "../Utils/Constants";
 import {
   AppBar,
   Button,
@@ -65,7 +65,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 export default function InspectorListCardRequests({ data }) {
 
-  const initialCardStates = data.chemicals.map(() => ({
+  console.log("data issssssssss"+ JSON.stringify(data.rawMaterials))
+
+  const initialCardStates = data.rawMaterials.map(() => ({
     concentration: "",
     remarks: "",
   }));
@@ -77,13 +79,13 @@ export default function InspectorListCardRequests({ data }) {
   const [cardStates, setCardStates] = useState(initialCardStates);
   const [expanded, setExpanded] = useState(false);
   const [availability, setAvailability] = useState(
-    new Array(data.chemicals.length).fill(null)
+    new Array(data.rawMaterials.length).fill(null)
   );
   const [cardSaveClicks, setCardSaveClicks] = useState(
-    new Array(data.chemicals.length).fill(false)
+    new Array(data.rawMaterials.length).fill(false)
   );
   const [cardDisabled, setCardDisabled] = useState(
-    new Array(data.chemicals.length).fill(false)
+    new Array(data.rawMaterials.length).fill(false)
   );
 
   useEffect(() => {
@@ -133,6 +135,30 @@ export default function InspectorListCardRequests({ data }) {
   const handleSendPackage = () => {
     handleCloseDialog();
   };
+
+  console.log("cardstatssssssssssssssss"+JSON.stringify(cardStates))
+
+
+  const handleinspect = async (data)=>{
+    // console.log("dataaaaaaaaaaaaaaaaaaa"+JSON.stringify(data))
+    const chemicalquantity = data.rawMaterials.map((item) => item.quantity);
+    // console.log("cardstatessssssssssssssssssssssssssssssss"+JSON.stringify(cardStates))
+    // console.log("hhiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
+    const concentrationarray= cardStates.map((item) => item.concentration);
+
+    const response = await Services.check_quality_of_package(data.packageID,remarks,chemicalquantity,concentrationarray);
+
+
+   
+    if (response.success) {
+      handleCloseDialog();
+    }
+    else{
+      console.log("Error" + response.message);
+      handleCloseDialog();
+    }
+
+  }
   const handleSaveClick = async (cardIndex) => {
 
   //   const chemicalquantity = PackageRawMaterials[cardIndex].quantity;
@@ -148,19 +174,11 @@ export default function InspectorListCardRequests({ data }) {
     //   console.log("Error" + response.message);
     //   handleCloseDialog();
     // }
-
-
-
-
-
-
-
     const updatedCardSaveClicks = [...cardSaveClicks];
     updatedCardSaveClicks[cardIndex] = true;
 
-    const response = await Services.
-
     setCardSaveClicks(updatedCardSaveClicks);
+    console.log("cardStates"+JSON.stringify(updatedCardSaveClicks))
     const updatedCardDisabled = [...cardDisabled];
     updatedCardDisabled[cardIndex] = true;
     setCardDisabled(updatedCardDisabled);
@@ -171,11 +189,11 @@ export default function InspectorListCardRequests({ data }) {
   return (
     <Fade bottom>
       <Card sx={{ maxWidth: 363, borderRadius: "24px", borderColor: "white" }}>
-        <CardHeader title={data.name} subheader={data.manufacturer_id} />
+        <CardHeader title={data.packageId} subheader={data.manufacturer_id} />
         <CardMedia
           component="img"
           height="194"
-          image="/static/images/cards/paella.jpg"
+          image={`${CONSTANTS.IPFSURL}/${data.ipfs_hash}`}
           alt="Manufacturer"
         />
           <CardActions>
@@ -223,7 +241,7 @@ export default function InspectorListCardRequests({ data }) {
                 variant="outlined"
                 endIcon={<RuleIcon />}
                 disabled={!allCardsSaved}
-                onClick={handleCloseDialog}
+                onClick={()=>{handleCloseDialog();  handleinspect(data)}}
                 sx={{ borderRadius: "50px" }}
               >
                 Inspect Package
@@ -235,14 +253,15 @@ export default function InspectorListCardRequests({ data }) {
             <div>
               <Typography variant="body2" color="text.secondary">
                 <div className="dialog-container" style={{ marginTop: "8px" }}>
-                  {/* {PackageRawMaterials.map((chemical, index) => (*/}
-                  {data.chemicals.map((chemical, index) => (
+          {console.log("PackageRawMaterials"+JSON.stringify(PackageRawMaterials))}
+                  {PackageRawMaterials.map((chemical, index) => (
+                  // {data.rawMaterials.map((chemical, index) => (
                     <Card sx={{ maxWidth: 700, marginBottom: "16px" }}>
             
                         <CardMedia
                           component="img"
                           height="140"
-                          image={chemical.image}
+                          image={`${CONSTANTS.IPFSURL}/${chemical.ipfs_hash}`}
                           alt={chemical.name}
                         />
                         <CardContent>

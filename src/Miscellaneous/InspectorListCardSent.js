@@ -13,6 +13,7 @@ import AirplayRoundedIcon from "@mui/icons-material/AirplayRounded";
 import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CloseIcon from "@mui/icons-material/Close";
+import CONSTANTS from "../Utils/Constants";
 import {
   AppBar,
   Button,
@@ -43,6 +44,8 @@ export default function InspectorListCardSent({ data }) {
   let { account } = useContext(AuthContext);
   const [PackageRawMaterials, setPackageRawMaterials] = useState([]);
 
+  console.log("dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", data)
+
 
 
   useEffect(() => {
@@ -51,6 +54,8 @@ export default function InspectorListCardSent({ data }) {
 
   const setData = async () => {
     if (!rawMaterials || !account) return;
+
+    console.log("real data: ",data);
 
     const updatedPackageRawMaterials = data.rawMaterials.map(item => {
       const rawMaterial = rawMaterials.find(item1 => item1.materialId === item.materialId);
@@ -66,6 +71,8 @@ export default function InspectorListCardSent({ data }) {
     setPackageRawMaterials(updatedPackageRawMaterials.filter(item => item !== null));
 
   };
+
+  console.log("PackageRawMaterialsssssssssssssssssssssssssss", JSON.stringify(data))
 
 
 
@@ -83,12 +90,12 @@ export default function InspectorListCardSent({ data }) {
     <Fade bottom>
     <Card sx={{ maxWidth: 370, borderRadius: "24px", borderColor: "white" }}>
       {/* <CardHeader title={data.name} subheader={data.manufacturerId} /> */}
-      <CardHeader title={data.name} subheader={data.manufacturer_id} />
+      <CardHeader title={data.packageId} subheader={data.manufacturer_id} />
       <CardMedia
         component="img"
         height="194"
-        image="/static/images/cards/paella.jpg"
-        //  image={`${CONSTANTS.IPFSURL}/${data.ipfs_hash}`}
+        // image="/static/images/cards/paella.jpg"
+         image={`${CONSTANTS.IPFSURL}/${data.ipfs_hash}`}
         alt="Manufacturer"
       />
       <CardContent>
@@ -167,15 +174,15 @@ export default function InspectorListCardSent({ data }) {
           <div>
             <Typography variant="body2" color="text.secondary">
               <div className="dialog-container" style={{ marginTop: "8px" }}>
-               {/* {PackageRawMaterials.map((chemical, index) => ( */}
+               {PackageRawMaterials.map((chemical, index) => (
 
-                {data.chemicals.map((chemical, index) => (
+                // {data.chemicals.map((chemical, index) => (
                   <Card sx={{ maxWidth: 700, marginBottom: "16px" }}>
            
                       <CardMedia
                         component="img"
                         height="140"
-                        image={chemical.image}  // {`${CONSTANTS.IPFSURL}/${chemical.ipfs_hash}`}
+                        image={`${CONSTANTS.IPFSURL}/${chemical.ipfs_hash}`}
                         alt={chemical.name}
                       />
                       <CardContent>
