@@ -113,11 +113,11 @@ function ContractContextProvider(props) {
             .rawMaterials(i)
             .call();
           rawMaterials.push({
-            materialId: rawMaterial[0],
+            materialId: Number(rawMaterial[0]),
             name: rawMaterial[1],
             description: rawMaterial[2],
             ipfs_hash: rawMaterial[3],
-            quantity: rawMaterial[4],
+            quantity: Number(rawMaterial[4]),
           });
         }
 
@@ -156,20 +156,20 @@ function ContractContextProvider(props) {
 
           for (let j = 0; j < rawMaterialIds.length; j++) {
             rawMaterials.push({
-              materialId: rawMaterialIds[j],
-              quantity: rawMaterialQuantities[j],
+              materialId: Number(rawMaterialIds[j]),
+              quantity: Number(rawMaterialQuantities[j]),
             });
           }
 
           packageList.push({
-            packageId: packageInfo[0],
+            packageId: Number(packageInfo[0]),
             rawMaterials: rawMaterials,
             description: packageInfo[3],
             manufacturerId: packageInfo[4],
             transporterId: packageInfo[5],
             supplierId: packageInfo[6],
             inspectorId: packageInfo[7],
-            stage: packageInfo[8],
+            stage: Number(packageInfo[8]),
           });
         }
 

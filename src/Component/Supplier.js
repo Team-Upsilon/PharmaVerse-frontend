@@ -104,7 +104,7 @@ function ResponsiveDrawer(props) {
     console.log("packages: ",packages);
 
     const receivedRequests = packages
-      .filter((item) => item.supplierId === account && item.stage === "3")
+      .filter((item) => item.supplierId === account && item.stage === 3)
       .map((item) => {
         const materialId = item.rawMaterials[0]?.materialId; // Get the materialId from the first object
         const rawMaterial = rawMaterials.find((rm) => rm.id === materialId); // Find the raw material with matching id
@@ -118,7 +118,7 @@ function ResponsiveDrawer(props) {
     setReceivedRequestData(receivedRequests);
 
     const sentRequests = packages
-      .filter((item) => item.supplierId === account && item.stage === "Created")
+      .filter((item) => item.supplierId === account && item.stage === 0)
       .map((item) => {
         const materialId = item.rawMaterials[0]?.materialId; // Get the materialId from the first object
         const rawMaterial = rawMaterials.find((rm) => rm.id === materialId); // Find the raw material with matching id
@@ -266,27 +266,27 @@ function ResponsiveDrawer(props) {
         <Typography paragraph>
           <TabPanel value={value} index={0}>
             <div className="card-container">
-              {manufacturerData
+              {/* {manufacturerData
                 .filter((data) => !data["send-package"])
                 .map((data, index) => (
                   <SupplierListCardRequests key={index} data={data} />
-                ))}
-              {/* {ReceivedRequestData.map((data, index) => (
-                  <SupplierListCardRequests key={index} data={data} />
                 ))} */}
+              {ReceivedRequestData.map((data, index) => (
+                  <SupplierListCardRequests key={index} data={data} />
+                ))}
             </div>
           </TabPanel>
 
           <TabPanel value={value} index={1}>
             <div className="card-container">
-              {manufacturerData
+              {/* {manufacturerData
                 .filter((data) => data["send-package"])
                 .map((data, index) => (
                   <SupplierListCardSent key={index} data={data} />
-                ))}
-              {/* {SentRequestData.map((data, index) => (
-                  <SupplierListCardSent key={index} data={data} />
                 ))} */}
+              {SentRequestData.map((data, index) => (
+                  <SupplierListCardSent key={index} data={data} />
+                ))}
             </div>
           </TabPanel>
         </Typography>
