@@ -127,13 +127,12 @@ function ContractContextProvider(props) {
 
                 // Loop through the packages and fetch each one
                 for (let i = 1; i <= packageCount; i++) {
-                    const packageInfo = await SupplierContract.methods.rawMaterialPackages(i).call();
+                    const packageInfo = await SupplierContract.methods.getRawMaterialPackage(i).call();
 
-                    // const rawMaterialIds = packageInfo[1];
-                    // const rawMaterialQuantities = packageInfo[2];
+                    console.log(packageInfo);
 
-                    const rawMaterialIds = [1, 2];
-                    const rawMaterialQuantities = [2, 1];
+                    const rawMaterialIds = packageInfo[1];
+                    const rawMaterialQuantities = packageInfo[2];
 
                     const rawMaterials = [];
 
@@ -147,12 +146,12 @@ function ContractContextProvider(props) {
                     packageList.push({
                         packageId: packageInfo[0],
                         rawMaterials: rawMaterials,
-                        description: packageInfo[1],
-                        manufacturerId: packageInfo[2],
-                        transporterId: packageInfo[3],
-                        supplierId: packageInfo[4],
-                        inspectorId: packageInfo[5],
-                        stage: packageInfo[6],
+                        description: packageInfo[3],
+                        manufacturerId: packageInfo[4],
+                        transporterId: packageInfo[5],
+                        supplierId: packageInfo[6],
+                        inspectorId: packageInfo[7],
+                        stage: packageInfo[8],
                     });
                 }
 
@@ -205,14 +204,11 @@ function ContractContextProvider(props) {
                 // Call the contract's view function to get the total batch count
                 const batchCount = await ManufacturerContract.methods.batchCount().call();
 
-                console.log("Batch Count: ", batchCount);
-
                 const batchList = [];
 
                 // Loop through the batches and fetch each one
                 for (let i = 1; i <= batchCount; i++) {
                     const batchInfo = await ManufacturerContract.methods.getBatches(i).call();
-                    console.log("Batch Info: ", batchInfo);
 
                     const medicineIds = batchInfo[1];
                     const medicineQuantities = batchInfo[2];
@@ -242,11 +238,9 @@ function ContractContextProvider(props) {
                         InspectionStage: batchInfo[13],
                     });
                 }
-                console.log("Batch List: ", batchList);
 
                 setBatches(batchList);
 
-                console.log("Batches: ", batchList);
             } catch (error) {
                 console.error("Error fetching batches: ", error);
             }

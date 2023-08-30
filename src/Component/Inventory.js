@@ -85,12 +85,6 @@ function ResponsiveDrawer(props) {
       deauthenticate();
     },
   });
-  useEffect(() => {
-    if (account && role) {  
-      console.log(account);
-      console.log(role);
-    }
-  }, [account, role]);
 
 
 
