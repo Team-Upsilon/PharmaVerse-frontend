@@ -62,7 +62,8 @@ function a11yProps(index) {
   };
 }
 function ResponsiveDrawer(props) {
-  const { authenticate, deauthenticate, account, role } = React.useContext(AuthContext);
+  const { authenticate, deauthenticate, account, role } =
+    React.useContext(AuthContext);
   const { Services } = React.useContext(ContractContext);
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -73,11 +74,10 @@ function ResponsiveDrawer(props) {
       console.log(accounts.address);
 
       const res = await Services.get_role(accounts.address);
-      if(res.success){
-        authenticate(accounts.address,res.data);
-      }
-      else{
-        authenticate(accounts.address, '');
+      if (res.success) {
+        authenticate(accounts.address, res.data);
+      } else {
+        authenticate(accounts.address, "");
       }
     },
     onDisconnect: () => {
@@ -129,11 +129,8 @@ function ResponsiveDrawer(props) {
             label="Completed Batches"
             {...a11yProps(0)}
           />
-
-
         </Tabs>
       </List>
-
     </div>
   );
 
@@ -215,15 +212,10 @@ function ResponsiveDrawer(props) {
       >
         <Toolbar />
         <Typography paragraph>
-
           <TabPanel value={value} index={0}>
-
             <CompletedBatches isWholesaler={true} />
-
           </TabPanel>
-
         </Typography>
-
       </Box>
     </Box>
   );

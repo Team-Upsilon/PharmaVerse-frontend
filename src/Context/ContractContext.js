@@ -966,15 +966,13 @@ function ContractContextProvider(props) {
             from: account,
           });
 
-        return {
-          success: true,
-          message: "Raw material package requested successfully",
-        };
-      } catch (error) {
-        console.error("Error in requesting raw material package: ", error);
-        return { success: false, message: error.message };
-      }
-    },
+                return { success: true, message: "Raw material package requested successfully" };
+
+            } catch (error) {
+                console.error("Error in requesting raw material package: ", error);
+                return { success: false, message: error.message };
+            }
+        },
 
     create_batch: async (
       _medicineIds,
@@ -1014,83 +1012,72 @@ function ContractContextProvider(props) {
             from: account,
           });
 
-        return { success: true, message: "Batch Created successfully" };
-      } catch (error) {
-        console.error("Error in creating batch: ", error);
-        return { success: false, message: error.message };
-      }
-    },
-    get_role: async (_account) => {
-      try {
-        if (!AdminContract) {
-          console.error("AdminContract not initialized");
-          return { success: false, message: "AdminContract not initialized" };
-        }
+                return { success: true, message: "Batch Created successfully" };
 
-        const isSupplier = await AdminContract.methods
-          .suppliers(_account)
-          .call();
-        const isManufacturer = await AdminContract.methods
-          .manufacturers(_account)
-          .call();
-        const isInspector = await AdminContract.methods
-          .inspectors(_account)
-          .call();
-        const isTransporter = await AdminContract.methods
-          .transporters(_account)
-          .call();
-        const isWholesaler = await AdminContract.methods
-          .wholesalers(_account)
-          .call();
-
-        if (isSupplier) {
-          return { success: true, data: "Supplier" };
-        } else if (isManufacturer) {
-          return { success: true, data: "Manufacturer" };
-        } else if (isInspector) {
-          return { success: true, data: "Inspector" };
-        } else if (isTransporter) {
-          return { success: true, data: "Transporter" };
-        } else if (isWholesaler) {
-          return { success: true, data: "Wholesaler" };
-        } else {
-          return {
-            success: false,
-            message: "No role assigned to this address",
-          };
-        }
-      } catch (error) {
-        console.error("Error in getting role: ", error);
-        return { success: false, message: error.message };
-      }
-    },
-  };
-
-  const [state, setState] = useState({
-    AdminContract: null,
-  });
-
-  return (
-    <ContractContext.Provider
-      value={{
-        ...state,
-        ...{
-          updateContract,
-          Services,
-          rawMaterials,
-          packages,
-          medicines,
-          batches,
-          packagereports,
-          batchreports,
-          packagedeliverdetails,
-          batchdeliverdetails,
+            } catch (error) {
+                console.error("Error in creating batch: ", error);
+                return { success: false, message: error.message };
+            }
         },
-      }}
-    >
-      {props.children}
-    </ContractContext.Provider>
-  );
+        get_role: async (_account) => {
+            try {
+                if (!AdminContract) {
+                    console.error("AdminContract not initialized");
+                    return { success: false, message: "AdminContract not initialized" };
+                }
+
+                const isSupplier = await AdminContract.methods.suppliers(_account).call();
+                const isManufacturer = await AdminContract.methods.manufacturers(_account).call();
+                const isInspector = await AdminContract.methods.inspectors(_account).call();
+                const isTransporter = await AdminContract.methods.transporters(_account).call();
+                const isWholesaler = await AdminContract.methods.wholesalers(_account).call();
+
+                if (isSupplier) {
+                    return { success: true, data: "Supplier" };
+                } else if (isManufacturer) {
+                    return { success: true, data: "Manufacturer" };
+                } else if (isInspector) {
+                    return { success: true, data: "Inspector" };
+                } else if (isTransporter) {
+                    return { success: true, data: "Transporter" };
+                } else if (isWholesaler) {
+                    return { success: true, data: "Wholesaler" };
+                } else {
+                    return { success: false, message: "No role assigned to this address" };
+                }
+            } catch (error) {
+                console.error("Error in getting role: ", error);
+                return { success: false, message: error.message };
+            }
+        },
+
+    };
+
+    const [state, setState] = useState({
+        AdminContract: null,
+    });
+
+    return (
+        <ContractContext.Provider
+            value={{
+                ...state,
+                ...{
+                    updateContract,
+                    Services,
+                    rawMaterials,
+                    packages,
+                    medicines,
+                    batches,
+                    packagereports,
+                    batchreports,
+                    packagedeliverdetails,
+                    batchdeliverdetails
+                },
+            }}
+        >
+            {props.children}
+        </ContractContext.Provider>
+    );
 }
 
 export default ContractContextProvider;
