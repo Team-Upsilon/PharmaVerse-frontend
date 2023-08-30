@@ -106,11 +106,8 @@ function ResponsiveDrawer(props) {
             label="Completed Batches"
             {...a11yProps(0)}
           />
-
-
         </Tabs>
       </List>
-
     </div>
   );
 
@@ -187,15 +184,10 @@ function ResponsiveDrawer(props) {
       >
         <Toolbar />
         <Typography paragraph>
-
           <TabPanel value={value} index={0}>
-
             <CompletedBatches />
-
           </TabPanel>
-
         </Typography>
-
       </Box>
     </Box>
   );

@@ -1,18 +1,18 @@
-import './App.css';
-import Admin_Page from './Component/Admin-Page';
-import Supplier from './Component/Supplier';
-import Inventory from './Component/Inventory';
-import WholeSaler from './Component/Wholesaler';
-import { Route, Routes } from 'react-router-dom'
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import NavBar from './Miscellaneous/NavBar';
-import Manufacturer from './Component/Manufacturer';
-import Transporter from './Component/Transporter'
-import Inspector from './Component/Inspector'
+import "./App.css";
+import Admin_Page from "./Component/Admin-Page";
+import Supplier from "./Component/Supplier";
+import Inventory from "./Component/Inventory";
+import WholeSaler from "./Component/Wholesaler";
+import { Route, Routes, Switch } from "react-router-dom";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import NavBar from "./Miscellaneous/NavBar";
+import Manufacturer from "./Component/Manufacturer";
+import Transporter from "./Component/Transporter";
+import Inspector from "./Component/Inspector";
 // import ContactUs from './Component/ContactUs';
-import Timeline from './Miscellaneous/Timeline';
-import HomePage from './Component/HomePage';
+import Timeline from "./Miscellaneous/Timeline";
+import NotFound from "./Component/NotFound";
 
 const darkTheme = createTheme({
   palette: {
@@ -25,8 +25,9 @@ function App() {
       <CssBaseline />
       <div className="App">
         <Routes>
-          <Route path="/admin" element={<Admin_Page />} exact />
+          <Route exact path="/admin" element={<Admin_Page />} />
           <Route
+            exact
             path="/inventory"
             element={
               <>
@@ -35,6 +36,7 @@ function App() {
             }
           />
           <Route
+            exact
             path="/supplier"
             element={
               <>
@@ -43,6 +45,7 @@ function App() {
             }
           />
           <Route
+            exact
             path="/transporter"
             element={
               <>
@@ -51,6 +54,7 @@ function App() {
             }
           />
           <Route
+            exact
             path="/inspector"
             element={
               <>
@@ -58,13 +62,13 @@ function App() {
               </>
             }
           />
-          <Route path='/manufacturer' element={<Manufacturer />} />
-          <Route path='/wholesaler' element={<WholeSaler />} />
+          <Route exact path="/manufacturer" element={<Manufacturer />} />
+          <Route exact path="/wholesaler" element={<WholeSaler />} />
 
           {/* <Route path='/contactus' element={<><ContactUs /></>} /> */}
-          <Route path='/homepage' element={<HomePage />} />
-        </Routes>
 
+          <Route path="/*" element={<NotFound />} />
+        </Routes>
       </div>
     </ThemeProvider>
   );

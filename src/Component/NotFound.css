@@ -1,0 +1,54 @@
+.not-found-container {
+    text-align: center;
+    padding: 100px 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  .logo-container {
+    margin: 1rem;
+  }
+  
+  .logo-image {
+    width: 100%;
+    height: auto;
+    max-width: 400px;
+  }
+  
+  .not-found-title {
+    font-size: 72px;
+    margin-bottom: 16px;
+  }
+  
+  .not-found-subtitle {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+  
+  .not-found-message {
+    font-size: 18px;
+    margin-bottom: 24px;
+  }
+  
+  .not-found-button {
+    font-size: 18px;
+  }
+  
+  /* Media query for smaller screens */
+  @media (max-width: 768px) {
+    .not-found-title {
+      font-size: 48px;
+    }
+  
+    .not-found-subtitle {
+      font-size: 24px;
+    }
+  
+    .not-found-message {
+      font-size: 16px;
+    }
+  }
+  
