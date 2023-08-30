@@ -43,25 +43,25 @@ function ContractContextProvider(props) {
     setTransporterContract(data.TransporterContract.TransporterContract);
   };
 
-  useEffect(() => {
-    console.log(rawMaterials);
-    console.log(packages);
-    console.log(medicines);
-    console.log(batches);
-    console.log(packagereports);
-    console.log(batchreports);
-    console.log(packagedeliverdetails);
-    console.log(batchdeliverdetails);
-  }, [
-    rawMaterials,
-    packages,
-    medicines,
-    batches,
-    packagereports,
-    batchreports,
-    packagedeliverdetails,
-    batchdeliverdetails,
-  ]);
+//   useEffect(() => {
+//     console.log(rawMaterials);
+//     console.log(packages);
+//     console.log(medicines);
+//     console.log(batches);
+//     console.log(packagereports);
+//     console.log(batchreports);
+//     console.log(packagedeliverdetails);
+//     console.log(batchdeliverdetails);
+//   }, [
+//     rawMaterials,
+//     packages,
+//     medicines,
+//     batches,
+//     packagereports,
+//     batchreports,
+//     packagedeliverdetails,
+//     batchdeliverdetails,
+//   ]);
 
   useEffect(() => {
     Services.get_all_raw_materials();
@@ -89,7 +89,7 @@ function ContractContextProvider(props) {
 
   const getContract = async () => {
     const contractResult = await GetContract();
-    console.log("contractResult", contractResult.data);
+    // console.log("contractResult", contractResult.data);
     updateContract(contractResult.data);
   };
 
@@ -101,7 +101,6 @@ function ContractContextProvider(props) {
           return;
         }
 
-        console.log("function called");
 
         const rawMaterialCount = await InventoryContract.methods
           .materialCount()
@@ -121,11 +120,10 @@ function ContractContextProvider(props) {
             quantity: rawMaterial[4],
           });
         }
-        console.log(rawMaterials);
+
 
         setRawMaterials(rawMaterials);
 
-        console.log("Raw Materials: ", rawMaterials);
       } catch (error) {
         console.error("Error fetching raw materials: ", error);
       }
@@ -150,8 +148,6 @@ function ContractContextProvider(props) {
           const packageInfo = await SupplierContract.methods
             .getRawMaterialPackage(i)
             .call();
-
-          console.log(packageInfo);
 
           const rawMaterialIds = packageInfo[1];
           const rawMaterialQuantities = packageInfo[2];
@@ -212,7 +208,7 @@ function ContractContextProvider(props) {
 
         // Now you have the medicineList array containing all medicines
         setMedicines(medicineList);
-        console.log("Medicines: ", medicineList);
+
       } catch (error) {
         console.error("Error fetching medicines: ", error);
       }

@@ -65,6 +65,7 @@ function a11yProps(index) {
     "aria-controls": `vertical-tabpanel-${index}`,
   };
 }
+
 function ResponsiveDrawer(props) {
   const { packages, Services, rawMaterials } = useContext(ContractContext);
   const { authenticate, deauthenticate, account, role } = React.useContext(AuthContext);
@@ -93,13 +94,17 @@ function ResponsiveDrawer(props) {
 
   useEffect(() => {
     setData();
-  }, []);
+  }, [packages,account]);
 
   const setData = async () => {
     if (!packages || !account) return;
 
+    console.log("account: ",account);
+
+    console.log("packages: ",packages);
+
     const receivedRequests = packages
-      .filter((item) => item.supplierId === account && item.stage === "Requested")
+      .filter((item) => item.supplierId === account && item.stage === "3")
       .map((item) => {
         const materialId = item.rawMaterials[0]?.materialId; // Get the materialId from the first object
         const rawMaterial = rawMaterials.find((rm) => rm.id === materialId); // Find the raw material with matching id
@@ -107,6 +112,8 @@ function ResponsiveDrawer(props) {
 
         return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the package data
       });
+
+      console.log("receivedRequests: ", receivedRequests);
 
     setReceivedRequestData(receivedRequests);
 
@@ -119,6 +126,8 @@ function ResponsiveDrawer(props) {
 
         return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the package data
       });
+
+      console.log("sentRequests: ", sentRequests);
 
     setSentRequestData(sentRequests);
   };
@@ -287,10 +296,6 @@ function ResponsiveDrawer(props) {
 }
 
 ResponsiveDrawer.propTypes = {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
   window: PropTypes.func,
 };
 
