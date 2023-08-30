@@ -17,14 +17,14 @@ const NotFound = () => {
           className="logo-image"
         />
       </div>
-      <Typography variant="h2" className="not-found-title" color="white">
+      <Typography variant="h2" className="not-found-title" color="white" sx={{fontWeight:700}}>
         404
       </Typography>
       <Typography
         variant="h4"
         className="not-found-subtitle"
         color="white"
-        sx={{ marginBottom: '8px' }}
+        sx={{ marginBottom: '8px',fontWeight:700 }}
       >
         Oops! Page Not Found
       </Typography>
@@ -32,7 +32,7 @@ const NotFound = () => {
         variant="body1"
         className="not-found-message"
         color="white"
-        sx={{ marginBottom: '24px' }}
+        sx={{ marginBottom: '24px',fontWeight:700 }}
       >
         The page you are looking for might have been removed or is temporarily
         unavailable.
