@@ -17,6 +17,10 @@ import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import { AuthContext } from "../Context/AuthContext";
+import { ContractContext } from "../Context/ContractContext";
+import { useAccount } from "wagmi";
+import { useEffect } from "react";
 import Inventory from "../Component/Inventory";
 import { Button, Stack, Tab, Tabs } from "@mui/material";
 import ChemicalListChart from "../Miscellaneous/ChemicalLineChart";
@@ -58,9 +62,37 @@ function a11yProps(index) {
   };
 }
 function ResponsiveDrawer(props) {
+
+  const { authenticate, deauthenticate, account, role } = React.useContext(AuthContext);
+  const { Services } = React.useContext(ContractContext);
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [value, setValue] = React.useState(0);
+
+  useAccount({
+    onConnect: async (accounts) => {
+      console.log(accounts.address);
+
+      const res = await Services.get_role(accounts.address);
+      if(res.success){
+        authenticate(accounts.address,res.data);
+      }
+      else{
+        authenticate(accounts.address, '');
+      }
+    },
+    onDisconnect: () => {
+      deauthenticate();
+    },
+  });
+  useEffect(() => {
+    if (account && role) {  
+      console.log(account);
+      console.log(role);
+    }
+  }, [account, role]);
+
+
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

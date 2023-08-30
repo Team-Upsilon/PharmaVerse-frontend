@@ -132,8 +132,8 @@ function ContractContextProvider(props) {
                     // const rawMaterialIds = packageInfo[1];
                     // const rawMaterialQuantities = packageInfo[2];
 
-                    const rawMaterialIds = [1,2];
-                    const rawMaterialQuantities = [2,1];
+                    const rawMaterialIds = [1, 2];
+                    const rawMaterialQuantities = [2, 1];
 
                     const rawMaterials = [];
 
@@ -554,7 +554,7 @@ function ContractContextProvider(props) {
                     const flag = await SupplierContract.methods.rawMaterialPackages(index).call();
 
                     if (flag.stage == 3) {
-                        let packageReport = await InspectorContarct.methods.packageReports(index,0).call();
+                        let packageReport = await InspectorContarct.methods.packageReports(index, 0).call();
 
                         formattedPackageReports.push({
                             packageid: packageReport[0],
@@ -835,6 +835,37 @@ function ContractContextProvider(props) {
 
             } catch (error) {
                 console.error("Error in creating batch: ", error);
+                return { success: false, message: error.message };
+            }
+        },
+        get_role: async (_account) => {
+            try {
+                if (!AdminContract) {
+                    console.error("AdminContract not initialized");
+                    return { success: false, message: "AdminContract not initialized" };
+                }
+
+                const isSupplier = await AdminContract.methods.suppliers(_account).call();
+                const isManufacturer = await AdminContract.methods.manufacturers(_account).call();
+                const isInspector = await AdminContract.methods.inspectors(_account).call();
+                const isTransporter = await AdminContract.methods.transporters(_account).call();
+                const isWholesaler = await AdminContract.methods.wholesalers(_account).call();
+
+                if (isSupplier) {
+                    return { success: true, data: "Supplier" };
+                } else if (isManufacturer) {
+                    return { success: true, data: "Manufacturer" };
+                } else if (isInspector) {
+                    return { success: true, data: "Inspector" };
+                } else if (isTransporter) {
+                    return { success: true, data: "Transporter" };
+                } else if (isWholesaler) {
+                    return { success: true, data: "Wholesaler" };
+                } else {
+                    return { success: false, message: "No role assigned to this address" };
+                }
+            } catch (error) {
+                console.error("Error in getting role: ", error);
                 return { success: false, message: error.message };
             }
         },

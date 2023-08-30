@@ -11,6 +11,9 @@ import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { AuthContext } from "../Context/AuthContext";
+import { ContractContext } from "../Context/ContractContext";
+import { useAccount } from "wagmi";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -60,9 +63,28 @@ function a11yProps(index) {
   };
 }
 function ResponsiveDrawer(props) {
+  const { authenticate, deauthenticate, account, role } = React.useContext(AuthContext);
+  const { Services } = React.useContext(ContractContext);
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [value, setValue] = React.useState(0);
+
+  useAccount({
+    onConnect: async (accounts) => {
+      console.log(accounts.address);
+
+      const res = await Services.get_role(accounts.address);
+      if(res.success){
+        authenticate(accounts.address,res.data);
+      }
+      else{
+        authenticate(accounts.address, '');
+      }
+    },
+    onDisconnect: () => {
+      deauthenticate();
+    },
+  });
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

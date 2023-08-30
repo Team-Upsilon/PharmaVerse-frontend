@@ -22,6 +22,7 @@ import InspectorBatchCardSent from "../Miscellaneous/InspectorBatchCardSent";
 import { useEffect, useContext } from "react";
 import { ContractContext } from "../Context/ContractContext";
 import { AuthContext } from "../Context/AuthContext";
+import { useAccount } from "wagmi";
 
 const drawerWidth = 240;
 function TabPanel(props) {
@@ -59,7 +60,7 @@ function a11yProps(index) {
 function ResponsiveDrawer(props) {
 
   const { packages, Services, rawMaterials, batches, medicines, batchreports } = useContext(ContractContext);
-  let { account } = useContext(AuthContext);
+  const { authenticate, deauthenticate, account, role } = React.useContext(AuthContext);
 
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -68,6 +69,23 @@ function ResponsiveDrawer(props) {
   const [SentPackageRequestData, setSentPackageRequestData] = React.useState([]);
   const [ReceivedBatchRequestData, setReceivedBatchRequestData] = React.useState([]);
   const [SentBatchRequestData, setSentBatchRequestData] = React.useState([]);
+
+  useAccount({
+    onConnect: async (accounts) => {
+      console.log(accounts.address);
+
+      const res = await Services.get_role(accounts.address);
+      if(res.success){
+        authenticate(accounts.address,res.data);
+      }
+      else{
+        authenticate(accounts.address, '');
+      }
+    },
+    onDisconnect: () => {
+      deauthenticate();
+    },
+  });
 
   const setData = async () => {
     if (!packages || !account || !batches) return;

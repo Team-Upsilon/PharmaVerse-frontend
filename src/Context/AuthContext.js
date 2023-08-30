@@ -10,11 +10,12 @@ function AuthContextProvider(props) {
         role: ''
     })
 
-    const authenticate = (_account) => {
+    const authenticate = (_account, _role) => {
         setState({
             ...state, ...{
                 authenticated: true,
-                account: _account
+                account: _account,
+                role: _role
             }
         })
 
@@ -24,7 +25,8 @@ function AuthContextProvider(props) {
         setState({
             ...state, ...{
                 authenticated: false,
-                account: ''
+                account: '',
+                role: ''
             }
         })
     }
@@ -39,7 +41,8 @@ function AuthContextProvider(props) {
                 ...state, ...{
                     authenticate,
                     deauthenticate,
-                    updateAuth
+                    updateAuth,
+
                 }
             }}
         >
