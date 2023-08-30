@@ -223,23 +223,14 @@ const ChemicalList = () => {
 
   const increaseQuantity = async (index, increment) => {
     try {
+      console.log("materialId in filr: ");
       const materialId = rawMaterials[index].materialId; // Assuming you have an ID property in your rawMaterials data
+      console.log("materialId in filr: ",materialId);
       
-      const response = await Services.increase_quantity(materialId, increment);
+      await Services.increase_quantity(materialId, increment);
+      // Services.increase_quantity(materialId, increment);
+      // console.log(response);
       
-      if (response.success) {
-        // Update the local state with the new quantity
-        const updatedRawMaterials = [...rawmat];
-        updatedRawMaterials[index].quantity += increment;
-        setRawmat(updatedRawMaterials);
-        
-        console.log(`Quantity increased successfully for material with ID ${materialId}`);
-        setEnableUpdate(true); // Enable any update logic you need
-        
-      } else {
-        console.error("Transaction failed");
-        // Handle the error as needed
-      }
     } catch (error) {
       console.error("Error increasing quantity: ", error);
       // Handle the error as needed

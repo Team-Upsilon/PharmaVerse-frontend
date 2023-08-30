@@ -4,6 +4,10 @@ import { createContext, useState, useContext } from "react";
 import { AuthContext } from "./AuthContext";
 import GetContract from "../Utils/GetContract";
 import { ethers } from "ethers";
+import { Buffer } from 'buffer';
+var Tx = require('@ethereumjs/tx').Transaction;
+
+const web3 = new Web3(window.web3 && window.web3.currentProvider);
 
 export const ContractContext = createContext();
 
@@ -378,11 +382,66 @@ function ContractContextProvider(props) {
                     };
                 }
 
-                const response = await InventoryContract.methods
-                    .increaseQuantity(materialId, additionalQuantity)
-                    .send({
-                        from: account,
-                    });
+                // console.log("materialId: ", materialId);
+                // console.log("additionalQuantity: ", additionalQuantity);
+
+                // materialId = ethers.BigNumber.from(materialId);
+                // additionalQuantity = ethers.BigNumber.from(additionalQuantity);
+
+                console.log("materialId: ", materialId);
+                console.log("additionalQuantity: ", additionalQuantity);
+
+                // const materialId = ethers.parseUnits(materialId.toString(), 18);
+                // const additionalQuantity = ethers.parseUnits(additionalQuantity.toString(), 18);
+
+                // const rawData = await InventoryContract.methods
+                //     .increaseQuantity(materialId, additionalQuantity).encodeABI();
+                // const nonce = await web3.eth.getTransactionCount("0x85B6B5d0838569C23c3418D1dB5989242C911208");
+
+                // console.log("rawData: ", rawData);
+
+                // var gas = web3.eth.estimateGas({
+                //     to: "0x99117cE597a85EF7Dbb4943acb9870286f11419c",
+                //     data: rawData
+                // });
+
+                // var privateKey = Buffer.from('3315ea7d689fec2b2d9ce5b7247629b749f520b205e4071883f0342735b058f1', 'hex');
+
+                // var rawTx = {
+                //     nonce: nonce,
+                //     to: "0x99117cE597a85EF7Dbb4943acb9870286f11419c",
+                //     data: rawData,
+                //     gasLimit: 30000000,
+                //     gasPrice: await web3.eth.getGasPrice(),
+                //     gas: gas,
+                //     value: 0
+                // }
+
+                // console.log("Tx: ", Tx);
+
+                // var tx = new Tx(rawTx, { 'chain': 'sepolia' });
+                // tx.sign(privateKey);
+
+                // var serializedTx = tx.serialize();
+
+                // console.log(serializedTx.toString('hex'));
+
+
+                // // console.log("Tx: ", tx);
+
+                // web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
+                //     .on('receipt', console.log);
+
+                // await web3.eth.accounts.signTransaction(tx, "3315ea7d689fec2b2d9ce5b7247629b749f520b205e4071883f0342735b058f1").then(signed => {
+                //     web3.eth.sendSignedTransaction(signed.rawTransaction).on('receipt', console.log)
+                // });
+
+                    const response = await InventoryContract.methods
+                .increaseQuantity(materialId, additionalQuantity)
+                        .send({
+                            from: account,
+                            // gasLimit: 30000000
+                        }); 
 
                 if (response.status) {
                     console.log(
@@ -706,7 +765,7 @@ function ContractContextProvider(props) {
                 // Loop through each batch
                 for (let i = 1; i <= batchCount; i++) {
                     let batchReportsCount = await ManufacturerContract.methods.batches(i).call();
-                    
+
                     batchReportsCount = Number(batchReportsCount[8]) - 1;
 
                     let formattedReports = [];
@@ -723,7 +782,7 @@ function ContractContextProvider(props) {
                             batchReportResult: Number(report[2])
                         });
                     }
-                    
+
                     for (let j = 0; j < formattedReports.length; j++) {
                         formattedBatchReports.push(formattedReports[j]);
                     }
