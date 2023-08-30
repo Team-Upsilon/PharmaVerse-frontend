@@ -32,7 +32,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const CompletedBatches = ({ isAdmin = false, isWholesaler = false }) => {
 
-  const { batches, Services, medicines } = useContext(ContractContext);
+  const { batches, Services, medicines, batchreports } = useContext(ContractContext);
   let { account } = useContext(AuthContext);
 
   const [CompletedBatches, setCompletedBatches] = useState(CompletebatchData);
@@ -56,7 +56,7 @@ const CompletedBatches = ({ isAdmin = false, isWholesaler = false }) => {
 
     if (isAdmin) {
       updatedBatches = batches
-        .filter((item) => item.stage !== "Delivered" && item.InspectionStage !== "STAGE_3")
+        .filter((item) => item.stage === 5 && item.InspectionStage === 4)
         .map((item) => {
           const updatedMedicines = item.medicines.map((medicine) => {
             const matchedMedicine = medicines.find((m) => m.medicineId === medicine.medicineId);
@@ -70,15 +70,21 @@ const CompletedBatches = ({ isAdmin = false, isWholesaler = false }) => {
             }
           });
 
+          // Find the first medicine with a matching ipfs_hash
+          const firstMedicineWithIpfs = updatedMedicines.find((medicine) => medicine.ipfs_hash);
+          const Report = batchreports.find((report) => report.batchId === item.batchId && report.stage === 3);
+
           return {
             ...item,
             medicines: updatedMedicines,
+            ipfs_hash: firstMedicineWithIpfs ? firstMedicineWithIpfs.ipfs_hash : '',
+            grade: Report ? Report.batchReportResult : 0,
           };
         });
     }
     else if (isWholesaler) {
       updatedBatches = batches
-        .filter((item) => item.wholesalerId === account && item.stage !== "Delivered" && item.InspectionStage !== "STAGE_3")
+        .filter((item) => item.wholesalerId === account && item.stage === 5 && item.InspectionStage === 4)
         .map((item) => {
           const updatedMedicines = item.medicines.map((medicine) => {
             const matchedMedicine = medicines.find((m) => m.medicineId === medicine.medicineId);
@@ -92,15 +98,21 @@ const CompletedBatches = ({ isAdmin = false, isWholesaler = false }) => {
             }
           });
 
+          // Find the first medicine with a matching ipfs_hash
+          const firstMedicineWithIpfs = updatedMedicines.find((medicine) => medicine.ipfs_hash);
+          const Report = batchreports.find((report) => report.batchId === item.batchId && report.stage === 3);
+
           return {
             ...item,
             medicines: updatedMedicines,
+            ipfs_hash: firstMedicineWithIpfs ? firstMedicineWithIpfs.ipfs_hash : '',
+            grade: Report ? Report.batchReportResult : 0,
           };
         });
     }
     else {
       updatedBatches = batches
-        .filter((item) => item.manufacturerId === account && item.stage !== "Delivered" && item.InspectionStage !== "STAGE_3")
+        .filter((item) => item.manufacturerId === account && item.stage === 5 && item.InspectionStage === 4)
         .map((item) => {
           const updatedMedicines = item.medicines.map((medicine) => {
             const matchedMedicine = medicines.find((m) => m.medicineId === medicine.medicineId);
@@ -114,15 +126,18 @@ const CompletedBatches = ({ isAdmin = false, isWholesaler = false }) => {
             }
           });
 
+          // Find the first medicine with a matching ipfs_hash
+          const firstMedicineWithIpfs = updatedMedicines.find((medicine) => medicine.ipfs_hash);
+          const Report = batchreports.find((report) => report.batchId === item.batchId && report.stage === 3);
+
           return {
             ...item,
             medicines: updatedMedicines,
+            ipfs_hash: firstMedicineWithIpfs ? firstMedicineWithIpfs.ipfs_hash : '',
+            grade: Report ? Report.batchReportResult : 0,
           };
         });
     }
-
-
-
     setCompletedBatches(updatedBatches);
   };
 
@@ -245,17 +260,10 @@ const CompletedBatches = ({ isAdmin = false, isWholesaler = false }) => {
               style={{ cursor: "pointer" }}
             >
               <div className="remove-when-use">
-                <img src={batch.batchpic} alt="pic" />
+                <img src={`${CONSTANTS.IPFSURL}/${batch.ipfs_hash}`} alt="pic" />
               </div>
               <div className="details">
                 <p>Grade: {batch.grade}</p>
-                <div style={{ display: "flex" }}>
-                  {batch.materialname.map((e, materialIndex) => (
-                    <div key={materialIndex}>
-                      {materialIndex + 1}:{e}
-                    </div>
-                  ))}
-                </div>
               </div>
             </div>
           ))
@@ -269,17 +277,10 @@ const CompletedBatches = ({ isAdmin = false, isWholesaler = false }) => {
                 style={{ cursor: "pointer" }}
               >
                 <div className="remove-when-use">
-                  <img src={batch.batchpic} alt="pic" />
+                  <img src={`${CONSTANTS.IPFSURL}/${batch.ipfs_hash}`} alt="pic" />
                 </div>
                 <div className="details">
-                  <p>Grade: {batch.grade}</p>
-                  <div style={{ display: "flex" }}>
-                    {batch.materialname.map((e, materialIndex) => (
-                      <div key={materialIndex}>
-                        {materialIndex + 1}:{e}
-                      </div>
-                    ))}
-                  </div>
+                <p>Grade: {batch.grade}</p>
                 </div>
               </div>
             ))}
@@ -310,112 +311,46 @@ const CompletedBatches = ({ isAdmin = false, isWholesaler = false }) => {
         <DialogContent>
           {selectedBatch && (
             <>
-              <Card sx={{ marginBottom: "16px", width: "100%" }}>
-                <CardActionArea>
+              <div>
+                <Card sx={{ marginBottom: "16px", width: "100%" }}>
                   <CardMedia
                     component="img"
                     height="140"
-                    image={selectedBatch.batchpic}
-                    // image={`${CONSTANTS.IPFSURL}/${selectedBatch.ipfs_hash}`}
+                    // image={selectedBatch.batchpic}
+                    image={`${CONSTANTS.IPFSURL}/${selectedBatch.ipfs_hash}`}
                     alt="material"
                   />
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
-                      Grade : {selectedBatch.grade}
-                      {/* Grade : {selectedBatch.stage} */}
-                      {/* // to be integrated, fetch from batch report */}
+                    Grade: {selectedBatch.grade}
                     </Typography>
 
-                    {/* {selectedBatch.medicines.map((item, materialIndex) => (
+                    {selectedBatch.medicines.map((item, materialIndex) => (
                       <div key={item.medicineId}>
-                        {item} : {item.quantity} Kg
+                        {item.name} : {item.quantity} Kg
                       </div>
-                    ))} */}
-                    <Typography variant="body2" color="text.secondary">
-                      <div >
-                        A : 3 Kg
-                      </div>
-
-                    </Typography>
+                    ))}
 
                     <Divider sx={{ marginTop: "10px", marginBottom: "24px" }} />
                     <div>
-                      {selectedBatch &&
-                        selectedBatch.transporter.map((transporter) => (
-                          <Card key={transporter.id} sx={{ marginBottom: "16px" }}>
-                            <CardHeader
-                              title={transporter.name}
-                              subheader={transporter.address}
-                            />
-                          </Card>
-                        ))}
+                      <Card
+                        sx={{ marginBottom: "16px" }}
+                      >
+                        <CardHeader
+                          title="Transporter"
+                          subheader={selectedBatch.transporterId}
+                        />
+                      </Card>
                     </div>
                     <div>
-                      <Card sx={{ marginBottom: "16px", width: "100%" }}>
-                        <CardActionArea>
-                          <CardMedia
-                            component="img"
-                            height="140"
-                            image={selectedBatch.batchpic}
-                            // image={`${CONSTANTS.IPFSURL}/${selectedBatch.ipfs_hash}`}
-                            alt="material"
-                          />
-                          <CardContent>
-                            <Typography gutterBottom variant="h5" component="div">
-                              {/* Stage : {selectedBatch.stage} */}
-                              Stage : {selectedBatch.currentstage}
-                            </Typography>
-
-                            {/* {selectedBatch.medicines.map((item, materialIndex) => (
-                      <div key={item.medicineId}>
-                        {item} : {item.quantity} Kg
-                      </div>
-                    ))} */}
-                            <Typography variant="body2" color="text.secondary">
-                              <div >
-                                A : 3 Kg
-                              </div>
-
-                            </Typography>
-                            <Divider sx={{ marginTop: "10px", marginBottom: "24px" }} />
-                            <div>
-                              {selectedBatch &&
-                                selectedBatch.transporter.map((transporter) => (
-                                  <Card
-                                    key={transporter.id}
-                                    sx={{ marginBottom: "16px" }}
-                                  >
-                                    <CardHeader
-                                      title={transporter.name}
-                                      subheader={transporter.address}
-                                    />
-                                  </Card>
-                                ))}
-                            </div>
-                            <div>
-                              {selectedBatch &&
-                                selectedBatch.inspector.map((inspector) => (
-                                  <Card key={inspector.id} sx={{ marginBottom: "16px" }}>
-                                    <CardHeader
-                                      title={inspector.name}
-                                      subheader={inspector.address}
-                                    />
-                                  </Card>
-                                ))}
-                            </div>
-                            <div>
-                              <Card
-                                sx={{ marginBottom: "16px" }}
-                              >
-                                <CardHeader
-                                  title="Inspector"
-                                  subheader="0x511F0e5A8495d7c7709f905186A01751D8b3f7C8"
-                                // subheader={selectedBatch.inspectorId}
-                                />
-                              </Card>
-                            </div>
-                          </CardContent>
-                        </CardActionArea>
+                      <Card
+                        sx={{ marginBottom: "16px" }}
+                      >
+                        <CardHeader
+                          title="Inspector"
+                          // subheader="0x511F0e5A8495d7c7709f905186A01751D8b3f7C8"
+                          subheader={selectedBatch.inspectorId}
+                        />
                       </Card>
                     </div>
                     <div>
@@ -424,14 +359,16 @@ const CompletedBatches = ({ isAdmin = false, isWholesaler = false }) => {
                       >
                         <CardHeader
                           title="Wholesaler"
-                          subheader="0x511F0e5A8495d7c7709f905186A01751D8b3f7C8"
-                        // subheader={selectedBatch.wholesalerId}
+                          // subheader="0x511F0e5A8495d7c7709f905186A01751D8b3f7C8"
+                          subheader={selectedBatch.wholesalerId}
                         />
                       </Card>
                     </div>
                   </CardContent>
-                </CardActionArea>
-              </Card>
+
+                </Card>
+              </div>
+
               <Divider />
               <div>
                 <Timeline batch={selectedBatch} role={"manufacturer"} />

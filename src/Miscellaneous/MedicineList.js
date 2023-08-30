@@ -13,15 +13,16 @@ const MedicineList = () => {
 
   const [medicinesData, setMedicinesData] = useState(medicineData);
 
-  // useEffect(() => {
-  //   setData();
-  // }, []);
+  useEffect(() => {
+    setData();
+  }, [medicines]);
 
-  // const setData = async () => {
-  //   if (!medicines || !account) return;
+  const setData = async () => {
+    if (!medicines || !account) return;
 
-  //   setMedicinesData(medicines);
-  // };
+    setMedicinesData(medicines);
+    console.log("medicines:: ", medicines);
+  };
 
   return (
     <div>
@@ -31,7 +32,7 @@ const MedicineList = () => {
           type="text"
           name=""
           placeholder="Search something"
-          value={searchValue} // Bind the value to the searchValue state
+          value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
         />
         <button class="searchButton" href="#">
@@ -106,26 +107,17 @@ const MedicineList = () => {
         </button>
       </div>
       <div className='allcards' >
-        {/* {medicinesData.map((medicine, index) => (
-          <div className='card' key={index} style={{ cursor: "pointer", backgroundImage: `url(${CONSTANTS.IPFSURL}/${medicinesData.ipfs_hash})` }}>
+      {/* .filter((item) =>item.name.toLowerCase().includes(searchValue.toLowerCase())) */}
+        {medicinesData.map((medicine, index) => (
+          <div className='card' key={index} style={{ cursor: "pointer", backgroundImage: `url(${CONSTANTS.IPFSURL}/${medicine.ipfs_hash})` }}>
             <p className="card__title">{medicine.name}</p>
             <div className="card__content">
               <p className="card__title">{medicine.name}:{medicine.totalQuantity}</p>
               <p className="card__description">{medicine.description}</p>
             </div>
           </div>
-        ))} */}
-        {medicinesData.filter((item) =>
-          item.medname.toLowerCase().includes(searchValue.toLowerCase())).map((medicine, index) => (
-            <div className='card' key={index} style={{ cursor: "pointer", backgroundImage: `url(${medicine.medpic})` }}>
-              <p className="card__title">{medicine.medname}</p>
-              {/* <img src={medicine.medpic} height="200px" width="160px" /> */}
-              <div className="card__content">
-                <p className="card__title">{medicine.medname}:{medicine.medquantity}</p>
-                <p className="card__description">{medicine.meddesc}</p>
-              </div>
-            </div>
-          ))}
+        ))}
+
       </div>
 
     </div>
