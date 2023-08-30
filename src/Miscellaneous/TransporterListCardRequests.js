@@ -59,7 +59,7 @@ export default function TransporterListCardRequests({ data }) {
   const [PackageRawMaterials, setPackageRawMaterials] = useState([]);
   const [expanded, setExpanded] = useState(false);
   const [availability, setAvailability] = useState(
-    new Array(data.chemicals.length).fill(null)
+    new Array(data.rawMaterials.length).fill(null)
   );
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
@@ -68,7 +68,7 @@ export default function TransporterListCardRequests({ data }) {
 
   useEffect(() => {
     setData();
-  }, []);
+  }, [rawMaterials]);
 
   const setData = async () => {
     if (!rawMaterials || !account) return;
@@ -94,7 +94,7 @@ export default function TransporterListCardRequests({ data }) {
   };
 
   const handleOpenDialog = () => {
-    setSelectedTransporter(null); // Reset selected transporter
+    setSelectedTransporter(null); 
     setSelectedInspector(null);
     setOpenDialog(true);
   };
@@ -103,15 +103,16 @@ export default function TransporterListCardRequests({ data }) {
   };
 
   const handleSendPackage = async () => {
-    // const response = await Services.update_package_state(data.packageId, 2);
+    const response = await Services.update_package_state(data.packageId, 2);
 
-    // if (response.success) {
-    //   handleCloseDialog();
-    // }
-    // else{
-    //   console.log("Error" + response.message);
-    //   handleCloseDialog();
-    // }
+    if (response.success) {
+      console.log("Successfully transported")
+      handleCloseDialog();
+    }
+    else{
+      console.log("Error" + response.message);
+      handleCloseDialog();
+    }
 
     handleCloseDialog();
   };
@@ -119,13 +120,13 @@ export default function TransporterListCardRequests({ data }) {
   return (
     <Fade bottom>
       <Card sx={{ maxWidth: 363, borderRadius: "24px", borderColor: "white" }}>
-        {/* <CardHeader title={data.description} subheader={data.manufacturerId} /> */}
-        <CardHeader title={data.name} subheader={data.manufacturer_id} />
+        <CardHeader title={data.packageId} subheader={`Manufacturer: ${data.manufacturerId.slice(0,20)}...`} />
+        {/* <CardHeader title={data.name} subheader={data.manufacturer_id} /> */}
         <CardMedia
           component="img"
           height="194"
-          image="/static/images/cards/paella.jpg"
-          // image={`${CONSTANTS.IPFSURL}/${data.ipfs_hash}`}
+          // image="/static/images/cards/paella.jpg"
+          image={`${CONSTANTS.IPFSURL}/${data.ipfs_hash}`}
           alt="Manufacturer"
         />
         <CardContent>
@@ -150,8 +151,8 @@ export default function TransporterListCardRequests({ data }) {
                   marginBottom: "-8px",
                 }}
               >
-                0x511F0e5A8495d7c7709f905186A01751D8b3f7C8
-                {/* {data.inspectorId} */}
+                {/* 0x511F0e5A8495d7c7709f905186A01751D8b3f7C8 */}
+                {data.inspectorId}
               </div>
             </Typography>
           </Typography>
@@ -228,14 +229,13 @@ export default function TransporterListCardRequests({ data }) {
             <div>
               <Typography variant="body2" color="text.secondary">
                 <div className="dialog-container" style={{ marginTop: "8px" }}>
-                {/* {PackageRawMaterials.map((chemical, index) => ( */}
-                  {data.chemicals.map((chemical, index) => (
+                {PackageRawMaterials.map((chemical, index) => (
                     <Card sx={{ maxWidth: 700, marginBottom: "16px" }}>
                 
                         <CardMedia
                           component="img"
                           height="140"
-                          image={chemical.image} // {`${CONSTANTS.IPFSURL}/${chemical.ipfs_hash}`}
+                          image={`${CONSTANTS.IPFSURL}/${chemical.ipfs_hash}`} 
                           alt={chemical.name}
                         />
                         <CardContent>

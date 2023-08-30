@@ -86,7 +86,6 @@ function ResponsiveDrawer(props) {
 
   useAccount({
     onConnect: async (accounts) => {
-      console.log(accounts.address);
 
       const res = await Services.get_role(accounts.address);
       if(res.success){
@@ -104,34 +103,38 @@ function ResponsiveDrawer(props) {
 
   useEffect(() => {
     setData();
-  }, []);
+  }, [packages,account,batches]);
 
   const setData = async () => {
     if (!packages || !account || !batches) return;
 
+    console.log("packages: ",packages);
+
     const receivedRequestsPackage = packages
-      .filter((item) => item.transporterId === account && item.stage === "Created")
+      .filter((item) => item.transporterId === account && item.stage === 1)
       .map((item) => {
-        const materialId = item.rawMaterials[0]?.materialId; // Get the materialId from the first object
-        const rawMaterial = rawMaterials.find((rm) => rm.id === materialId); // Find the raw material with matching id
+        const materialId = item.rawMaterials[0].materialId; // Get the materialId from the first object
+        const rawMaterial = rawMaterials.find((rm) => rm.materialId === materialId); // Find the raw material with matching id
         const ipfsHash = rawMaterial ? rawMaterial.ipfs_hash : ""; // Get the ipfs_hash if rawMaterial exists
 
         return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the package data
       });
 
     setReceivedPackageRequestData(receivedRequestsPackage);
+    console.log(receivedRequestsPackage);
 
     const sentRequestsPackage = packages
-      .filter((item) => item.transporterId === account && item.stage === "Delivered")
+      .filter((item) => item.transporterId === account && item.stage === 2)
       .map((item) => {
         const materialId = item.rawMaterials[0]?.materialId; // Get the materialId from the first object
-        const rawMaterial = rawMaterials.find((rm) => rm.id === materialId); // Find the raw material with matching id
+        const rawMaterial = rawMaterials.find((rm) => rm.materialId === materialId); // Find the raw material with matching id
         const ipfsHash = rawMaterial ? rawMaterial.ipfs_hash : ""; // Get the ipfs_hash if rawMaterial exists
 
         return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the package data
       });
 
       setSentPackageRequestData(sentRequestsPackage);
+      console.log(sentRequestsPackage);
 
     const sentRequestsBatch = batches
       .filter((item) => item.transporterId === account && item.stage === "Packaging" && item.InspectionStage === "STAGE_3")
@@ -316,26 +319,26 @@ function ResponsiveDrawer(props) {
         <Typography paragraph>
           <TabPanel value={value} index={0}>
             <div className="card-container">
-               {/* {ReceivedPackageRequestData.map((data, index) => (
+               {ReceivedPackageRequestData.map((data, index) => (
                   <TransporterListCardRequests key={index} data={data} />
-                ))} */}
-              {transporterPage
+                ))}
+              {/* {transporterPage
                 .filter((data) => !data["send-package"])
                 .map((data, index) => (
                   <TransporterListCardRequests key={index} data={data} />
-                ))}
+                ))} */}
             </div>
           </TabPanel>
           <TabPanel value={value} index={1}>
             <div className="card-container">
-              {/* {SentPackageRequestData.map((data, index) => (
+              {SentPackageRequestData.map((data, index) => (
                   <TransporterListCardSent key={index} data={data} />
-                ))} */}
-              {transporterPage
+                ))}
+              {/* {transporterPage
                 .filter((data) => data["send-package"])
                 .map((data, index) => (
                   <TransporterListCardSent key={index} data={data} />
-                ))}
+                ))} */}
             </div>
           </TabPanel>
           <TabPanel value={value} index={2}>

@@ -49,7 +49,7 @@ export default function TransporterListCardSent({ data }) {
 
   useEffect(() => {
     setData();
-  }, []);
+  }, [rawMaterials]);
 
   const setData = async () => {
     if (!rawMaterials || !account) return;
@@ -84,13 +84,13 @@ export default function TransporterListCardSent({ data }) {
   return (
     <Fade bottom>
       <Card sx={{ maxWidth: 370, borderRadius: "24px", borderColor: "white" }}>
-        {/* <CardHeader title={data.description} subheader={data.manufacturerId} /> */}
-        <CardHeader title={data.name} subheader={data.manufacturer_id} />
+        <CardHeader title={data.packageId} subheader={`Manufacturer: ${data.manufacturerId.slice(0,20)}...`} />
+        {/* <CardHeader title={data.name} subheader={data.manufacturer_id} /> */}
         <CardMedia
           component="img"
           height="194"
-          image="/static/images/cards/paella.jpg"
-          //  image={`${CONSTANTS.IPFSURL}/${data.ipfs_hash}`}
+          // image="/static/images/cards/paella.jpg"
+           image={`${CONSTANTS.IPFSURL}/${data.ipfs_hash}`}
           alt="Manufacturer"
         />
         <CardContent>
@@ -116,8 +116,8 @@ export default function TransporterListCardSent({ data }) {
                   marginBottom: "-8px",
                 }}
               >
-                0x511F0e5A8495d7c7709f905186A01751D8b3f7C8
-                {/* {data.inspectorId} */}
+                {/* 0x511F0e5A8495d7c7709f905186A01751D8b3f7C8 */}
+                {data.inspectorId}
               </div>
             </Typography>
 
@@ -169,14 +169,13 @@ export default function TransporterListCardSent({ data }) {
             <div>
               <Typography variant="body2" color="text.secondary">
                 <div className="dialog-container" style={{ marginTop: "8px" }}>
-                  {/* {PackageRawMaterials.map((chemical, index) => ( */}
-                  {data.chemicals.map((chemical, index) => (
+                  {PackageRawMaterials.map((chemical, index) => (
                     <Card sx={{ maxWidth: 700, marginBottom: "16px" }}>
                    
                         <CardMedia
                           component="img"
                           height="140"
-                          image={chemical.image} // {`${CONSTANTS.IPFSURL}/${chemical.ipfs_hash}`}
+                          image={`${CONSTANTS.IPFSURL}/${chemical.ipfs_hash}`} 
                           alt={chemical.name}
                         />
                         <CardContent>
