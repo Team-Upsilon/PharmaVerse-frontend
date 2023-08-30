@@ -75,10 +75,10 @@ function ResponsiveDrawer(props) {
       console.log(accounts.address);
 
       const res = await Services.get_role(accounts.address);
-      if(res.success){
-        authenticate(accounts.address,res.data);
+      if (res.success) {
+        authenticate(accounts.address, res.data);
       }
-      else{
+      else {
         authenticate(accounts.address, '');
       }
     },
@@ -86,15 +86,18 @@ function ResponsiveDrawer(props) {
       deauthenticate();
     },
   });
+  useEffect(() => {
+    setData();
+  }, [packages,batches,account]);
 
   const setData = async () => {
     if (!packages || !account || !batches) return;
 
     const receivedRequestsPackage = packages
-      .filter((item) => item.inspectorId === account && item.stage === "Delivered")
+      .filter((item) => item.inspectorId === account && item.stage === 2)
       .map((item) => {
         const materialId = item.rawMaterials[0]?.materialId; // Get the materialId from the first object
-        const rawMaterial = rawMaterials.find((rm) => rm.id === materialId); // Find the raw material with matching id
+        const rawMaterial = rawMaterials.find((rm) => rm.materialId === materialId); // Find the raw material with matching id
         const ipfsHash = rawMaterial ? rawMaterial.ipfs_hash : ""; // Get the ipfs_hash if rawMaterial exists
 
         return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the package data
@@ -103,9 +106,9 @@ function ResponsiveDrawer(props) {
     setReceivedPackageRequestData(receivedRequestsPackage);
 
     const sentRequestsPackage = packages
-      .filter((item) => item.inspectorId === account && item.stage === "Inspected")
+      .filter((item) => item.inspectorId === account && item.stage === 4)
       .map((item) => {
-        const materialId = item.rawMaterials[0]?.materialId; // Get the materialId from the first object
+        const materialId = item.rawMaterials[0].materialId; // Get the materialId from the first object
         const rawMaterial = rawMaterials.find((rm) => rm.id === materialId); // Find the raw material with matching id
         const ipfsHash = rawMaterial ? rawMaterial.ipfs_hash : ""; // Get the ipfs_hash if rawMaterial exists
 
@@ -114,11 +117,14 @@ function ResponsiveDrawer(props) {
 
     setSentPackageRequestData(sentRequestsPackage);
 
+
+    // *********************
+    console.log("batches: ",batches);
     const sentRequestsBatch = batches
-      .filter((item) => item.inspectorId === account && item.InspectionStage !== "STAGE_3")
+      .filter((item) => item.inspectorId === account ) // && item.InspectionStage === 4
       .map((item) => {
-        const medicineId = item.medicines[0]?.materialId; // Get the materialId from the first object
-        const medicine = medicines.find((rm) => rm.id === medicineId); // Find the medicine with matching id
+        const medicineId = item.medicines[0].medicineId; // Get the medicineId from the first object
+        const medicine = medicines.find((rm) => rm.medicineId === medicineId); // Find the medicine with matching id
         const ipfsHash = medicine ? medicine.ipfs_hash : ""; // Get the ipfs_hash if medicine exists
 
         return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the batch data
@@ -127,25 +133,29 @@ function ResponsiveDrawer(props) {
     // setting the grade of batch as well
     const updatedSentBatchRequestData = sentRequestsBatch.map((batchData) => {
       const matchingReport = batchreports.find((report) =>
-        report.batchId === batchData.batchId && report.stage === "STAGE_3"
+        report.batchId === batchData.batchId && report.stage === 3
       );
-      const grade = matchingReport ? matchingReport.batchReportResult : null;
-      return { ...batchData, grade };
+      const grade = matchingReport ? matchingReport.batchReportResult : 0;
+      return { ...batchData, grade: grade };
     });
 
     setSentBatchRequestData(updatedSentBatchRequestData);
+    console.log("updatedSentBatchRequestData: ",updatedSentBatchRequestData);
 
     const receivedRequestsBatch = batches
-      .filter((item) => item.inspectorId === account && item.InspectionStage !== "STAGE_3")
+      .filter((item) => item.inspectorId === account )  // && item.InspectionStage !== 4
       .map((item) => {
-        const medicineId = item.medicines[0]?.materialId; // Get the materialId from the first object
-        const medicine = medicines.find((rm) => rm.id === medicineId); // Find the medicine with matching id
+        const medicineId = item.medicines[0].medicineId; // Get the materialId from the first object
+
+        const medicine = medicines.find((rm) => rm.medicineId === medicineId); // Find the medicine with matching id
+
         const ipfsHash = medicine ? medicine.ipfs_hash : ""; // Get the ipfs_hash if medicine exists
+
 
         return { ...item, ipfs_hash: ipfsHash }; // Merge ipfs_hash into the batch data
       });
     setReceivedBatchRequestData(receivedRequestsBatch);
-
+    console.log("receivedRequestsBatch: ",receivedRequestsBatch);
   }
 
   const handleChange = (event, newValue) => {
@@ -268,7 +278,7 @@ function ResponsiveDrawer(props) {
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, 
+            keepMounted: true,
           }}
           sx={{
             display: { xs: "block", sm: "none" },
