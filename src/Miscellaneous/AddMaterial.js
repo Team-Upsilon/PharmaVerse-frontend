@@ -22,24 +22,24 @@ const AddMaterial = () => {
 
 
 
-  // const handleFileChange = (event) => {
-  //   const selectedImg = event.target.files[0];
-  //   if (selectedImg) {
-  //     // setImg(URL.createObjectURL(selectedImg));
-  //     setUploadedFile(selectedImg); // Set the uploaded file
-  //   }
-  // };
-
-
   const handleFileChange = (event) => {
     const selectedImg = event.target.files[0];
     if (selectedImg) {
-      setImg(URL.createObjectURL(selectedImg));
+      // setImg(URL.createObjectURL(selectedImg));
+      setUploadedFile(selectedImg); // Set the uploaded file
     }
   };
-  const handleCancelUpload = () => {
-    setImg(null);
-  };
+
+
+  // const handleFileChange = (event) => {
+  //   const selectedImg = event.target.files[0];
+  //   if (selectedImg) {
+  //     setImg(URL.createObjectURL(selectedImg));
+  //   }
+  // };
+  // const handleCancelUpload = () => {
+  //   setImg(null);
+  // };
 
   const handleadditem = async (event) => {
     event.preventDefault();

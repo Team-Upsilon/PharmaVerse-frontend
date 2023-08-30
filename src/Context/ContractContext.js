@@ -63,15 +63,6 @@ function ContractContextProvider(props) {
         batchdeliverdetails,
     ]);
 
-<<<<<<< HEAD
-        let a = BigInt(materialId)
-        let b= BigInt(additionalQuantity)
-        const response = await InventoryContract.methods
-          .increaseQuantity(a, b)
-          .send({
-            from: account,
-          });
-=======
     useEffect(() => {
         Services.get_all_raw_materials();
         Services.get_all_packages();
@@ -91,7 +82,7 @@ function ContractContextProvider(props) {
         RealTimeMonitoringContarct,
         BatchScheduleContarct,
     ]);
->>>>>>> 9813c68bd6ec3b97aa6c4849ac92d36df24c8f7e
+
 
     useEffect(() => {
         getContract();
