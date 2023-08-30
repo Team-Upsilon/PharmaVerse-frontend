@@ -53,6 +53,7 @@ const ExpandMore = styled((props) => {
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+
 export default function SupplierListCardRequests({ data }) {
   const { rawMaterials, Services } = useContext(ContractContext);
   let { account } = useContext(AuthContext);
@@ -67,6 +68,7 @@ export default function SupplierListCardRequests({ data }) {
   const [openDialogDetalis, setOpenDialogDetalis] = useState(false);
   const [selectedTransporter, setSelectedTransporter] = useState(null);
   const [selectedInspector, setSelectedInspector] = useState(null);
+  const [allChemicalsAvailable, setAllChemicalsAvailable] = useState(false);
 
 
   useEffect(() => {
@@ -96,26 +98,28 @@ export default function SupplierListCardRequests({ data }) {
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+
   const handleCheckAvailability = () => {
     setLoading(true);
-    setTimeout(() => {
-      const updatedAvailability = data.chemicals.map((chemical) => {
-        const manufacturerName = data.name;
-        const manufacturerAvailability = availabilityData.find(
-          (item) => item.name === manufacturerName
-        );
+    setTimeout( async () => {
 
-        if (manufacturerAvailability) {
-          const availableQuantity =
-            manufacturerAvailability.chemicals.find(
-              (availabilityItem) => availabilityItem.name === chemical.name
-            )?.quantity || 0;
-          return chemical.quantity <= availableQuantity;
-        } else {
-          return false;
-        }
-      });
-      setAvailability(updatedAvailability);
+      // const availabilityResults = PackageRawMaterials.map(async (rawMaterial) => {
+      //   const response = await Services.check_availibity(
+      //     rawMaterial.materialId,
+      //     rawMaterial.quantity
+      //   );
+      //   return response.success;
+      // });
+  
+      // // Check if all raw materials are available
+      // const allMaterialsAvailable = availabilityResults.every((available) => available);
+  
+      // // Update the availability state
+      // setAvailability(availabilityResults);
+      // setAllChemicalsAvailable(allMaterialsAvailable);
+      setAvailability([true,true]);
+      setAllChemicalsAvailable(true);
+
       setLoading(false);
     }, 2000);
   };
@@ -153,8 +157,6 @@ export default function SupplierListCardRequests({ data }) {
     handleCloseDialog();
 
   };
-
-  const allChemicalsAvailable = availability.every((available) => available);
 
   return (
     <Fade bottom>
@@ -241,7 +243,7 @@ export default function SupplierListCardRequests({ data }) {
                 fullWidth
                 variant="contained"
                 endIcon={<SendIcon />}
-                // disabled={!allChemicalsAvailable}
+                disabled={!allChemicalsAvailable}
                 onClick={handleOpenDialog}
                 sx={{ borderRadius: "50px" }}
                 color="success"
@@ -341,7 +343,7 @@ export default function SupplierListCardRequests({ data }) {
                 variant="outlined"
                 endIcon={<SendIcon />}
                 onClick={handleOpenDialog}
-                //  disabled={!allChemicalsAvailable}
+                 disabled={!allChemicalsAvailable}
                 sx={{ borderRadius: "50px" }}
                 color="success"
               >

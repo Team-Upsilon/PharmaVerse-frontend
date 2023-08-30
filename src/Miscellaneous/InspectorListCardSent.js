@@ -28,6 +28,9 @@ import {
 } from "@mui/material";
 import Slide from "@mui/material/Slide";
 import { Fade } from "react-reveal";
+import { useEffect, useContext } from "react";
+import { ContractContext } from "../Context/ContractContext";
+import { AuthContext } from "../Context/AuthContext";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -36,6 +39,35 @@ export default function InspectorListCardSent({ data }) {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedTransporter, setSelectedTransporter] = useState(null);
   const [dialogType, setDialogType] = useState(""); // It can be "transporter" or "inspector"
+  const { rawMaterials, Services } = useContext(ContractContext);
+  let { account } = useContext(AuthContext);
+  const [PackageRawMaterials, setPackageRawMaterials] = useState([]);
+
+
+
+  useEffect(() => {
+    setData();
+  }, []);
+
+  const setData = async () => {
+    if (!rawMaterials || !account) return;
+
+    const updatedPackageRawMaterials = data.rawMaterials.map(item => {
+      const rawMaterial = rawMaterials.find(item1 => item1.materialId === item.materialId);
+      if (rawMaterial) {
+        return {
+          ...rawMaterial,
+          quantity: item.quantity,
+        };
+      } else {
+        return null;
+      }
+    });
+    setPackageRawMaterials(updatedPackageRawMaterials.filter(item => item !== null));
+
+  };
+
+
 
   const handleOpenDialog = (type) => {
     setSelectedTransporter(null); // Reset selected transporter
@@ -50,11 +82,13 @@ export default function InspectorListCardSent({ data }) {
   return (
     <Fade bottom>
     <Card sx={{ maxWidth: 370, borderRadius: "24px", borderColor: "white" }}>
+      {/* <CardHeader title={data.name} subheader={data.manufacturerId} /> */}
       <CardHeader title={data.name} subheader={data.manufacturer_id} />
       <CardMedia
         component="img"
         height="194"
         image="/static/images/cards/paella.jpg"
+        //  image={`${CONSTANTS.IPFSURL}/${data.ipfs_hash}`}
         alt="Manufacturer"
       />
       <CardContent>
@@ -133,13 +167,15 @@ export default function InspectorListCardSent({ data }) {
           <div>
             <Typography variant="body2" color="text.secondary">
               <div className="dialog-container" style={{ marginTop: "8px" }}>
+               {/* {PackageRawMaterials.map((chemical, index) => ( */}
+
                 {data.chemicals.map((chemical, index) => (
                   <Card sx={{ maxWidth: 700, marginBottom: "16px" }}>
            
                       <CardMedia
                         component="img"
                         height="140"
-                        image={chemical.image}
+                        image={chemical.image}  // {`${CONSTANTS.IPFSURL}/${chemical.ipfs_hash}`}
                         alt={chemical.name}
                       />
                       <CardContent>

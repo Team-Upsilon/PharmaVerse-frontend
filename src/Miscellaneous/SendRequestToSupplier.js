@@ -1,9 +1,32 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
+import {useContext} from "react";
+import {ContractContext} from "../Context/ContractContext";
+import { AuthContext } from "../Context/AuthContext";
+
 
 const SendRequestToSupplier = ({ jsonData }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [quantityInputs, setQuantityInputs] = useState({});
   const [searchValue, setSearchValue] = useState("");
+
+  const {Services} = useContext(ContractContext);
+  const {account} = useContext(AuthContext);
+  const [meds,setmeds]=useState([]);
+
+  useEffect(() => {
+    //get medicine data from blockchain
+    async function getMedicineData() {
+      try{
+        const response = await Services.get_all_medicines();
+        console.log(response);
+        setmeds(response.data);
+      }
+      catch(error){
+        console.log(error);
+      }
+    }
+    getMedicineData();
+  }, []);
 
   const handleRowSelect = (medname) => {
     if (selectedRows.includes(medname)) {
@@ -21,6 +44,8 @@ const SendRequestToSupplier = ({ jsonData }) => {
 
   const handleCreateButtonClick = () => {
     // Check if entered quantity exceeds given quantity
+    // const selectedData = meds.filter(item => selectedRows.includes(item.medname));
+
     const selectedData = jsonData.filter(item => selectedRows.includes(item.medname));
 
 
@@ -86,6 +111,7 @@ const SendRequestToSupplier = ({ jsonData }) => {
           </tr>
         </thead>
         <tbody>
+        {/* {meds.filter((item) => item.medname.toLowerCase().includes(searchValue.toLowerCase())) */}
           {jsonData.filter((item) => item.medname.toLowerCase().includes(searchValue.toLowerCase())).map(item => (
             <tr key={item.medname}>
               <td>

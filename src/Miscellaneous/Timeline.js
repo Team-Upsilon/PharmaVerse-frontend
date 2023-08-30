@@ -154,7 +154,14 @@ const grey = {
 
 
 const Timeline = ({ batch, role }) => {
+
+  const { Services, batchreports } = useContext(ContractContext);
+  let { account } = useContext(AuthContext);
+
   const [openDialog, setOpenDialog] = useState(false);
+  const [stageOneGrade, setStageOneGrade] = useState(null);
+  const [stageTwoGrade, setStageTwoGrade] = useState(null);
+  const [stageThreeGrade, setStageThreeGrade] = useState(null);
   const [stageOne, setStageOne] = useState(false);
   const [stageTwo, setStageTwo] = useState(false);
   const [stageThree, setStageThree] = useState(false);
@@ -174,36 +181,56 @@ const Timeline = ({ batch, role }) => {
   const setData = async () => {
     if (!batch || !role) return;
 
-    if (batch.stage == "Stage1") {
+    if (batch.stage === "Stage1") {
       setStageOne(true);
-    }
-    else if (batch.stage == "Stage2") {
+
+    } else if (batch.stage === "Stage2") {
       setStageOne(true);
       setStageTwo(true);
 
-    }
-    else if (batch.stage == "Packaging") {
-      setStageOne(true);
-      setStageTwo(true);
-      setStageThree(true);
+    } else if (batch.stage === "Packaging") {
+
     }
 
-    if (batch.InspectionStage == "STAGE_1") {
+    if (batch.InspectionStage === "STAGE_1") {
       setStageOneInspection(true);
-
-    }
-    else if (batch.InspectionStage == "STAGE_2") {
+      const stageOneReport = batchreports.find((report) => report.batchId === batch.batchId && report.stage === 1);
+      if (stageOneReport) {
+        setStageOneGrade(stageOneReport.batchReportResult);
+      }
+    } else if (batch.InspectionStage === "STAGE_2") {
       setStageOneInspection(true);
       setStageTwoInspection(true);
-
-    }
-    else if (batch.InspectionStage == "STAGE_3") {
+      const stageOneReport = batchreports.find((report) => report.batchId === batch.batchId && report.stage === 1);
+      const stageTwoReport = batchreports.find((report) => report.batchId === batch.batchId && report.stage === 2);
+      if (stageOneReport) {
+        setStageOneGrade(stageOneReport.batchReportResult);
+      }
+      if (stageTwoReport) {
+        setStageTwoGrade(stageTwoReport.batchReportResult);
+      }
+    } else if (batch.InspectionStage === "STAGE_3") {
       setStageOneInspection(true);
       setStageTwoInspection(true);
       setStageThreeInspection(true);
+      setStageOne(true);
+      setStageTwo(true);
+      setStageThree(true);
+      const stageOneReport = batchreports.find((report) => report.batchId === batch.batchId && report.stage === 1);
+      const stageTwoReport = batchreports.find((report) => report.batchId === batch.batchId && report.stage === 2);
+      const stageThreeReport = batchreports.find((report) => report.batchId === batch.batchId && report.stage === 3);
+      if (stageOneReport) {
+        setStageOneGrade(stageOneReport.batchReportResult);
+      }
+      if (stageTwoReport) {
+        setStageTwoGrade(stageTwoReport.batchReportResult);
+      }
+      if (stageThreeReport) {
+        setStageThreeGrade(stageThreeReport.batchReportResult);
+      }
     }
-
   };
+
 
   const Stage1DialogContent = () => {
     const [concentration, setConcentration] = useState("");
@@ -482,38 +509,95 @@ const Timeline = ({ batch, role }) => {
     setSelectedStage(null);
   };
 
-  const StageOneCompleted = () => {
-    //API call
+  const StageOneCompleted = async () => {
+    // const response = await Services.update_batch_state(batch.batchId, 1);
+
+    // if (response.success) {
+    //   console.log("Stage 1 completed");
+    // setStageOne(true);
+    // }
+    // else{
+    //   console.log("Error" + response.message);
+    // }
 
     setStageOne(true);
   };
-  const StageTwoCompleted = () => {
-    //API call
+  const StageTwoCompleted = async () => {
+    // const response = await Services.update_batch_state(batch.batchId, 2);
+
+    // if (response.success) {
+    //   console.log("Stage 2 completed");
+    // setStageTwo(true);
+    // }
+    // else{
+    //   console.log("Error" + response.message);
+    // }
 
     setStageTwo(true);
   };
-  const StageThreeCompleted = () => {
-    //API call
+  const StageThreeCompleted = async () => {
+    // const response = await Services.update_batch_state(batch.batchId, 3);
+
+    // if (response.success) {
+    //   console.log("Stage 3 completed");
+    //  setStageThree(true);
+    // }
+    // else{
+    //   console.log("Error" + response.message);
+    // }
 
     setStageThree(true);
   };
 
-  const StageOneInspectionCompleted = () => {
-    //API call
+  const StageOneInspectionCompleted = async () => {
+
+    // const response = await Services.update_batch_inspection_state(batch.batchId,1);
+
+    // if (response.success) {
+    //       setStageOneInspection(true);
+    //       setOpenDialog(false);
+    //       setSelectedStage(null);
+    // }
+    // else{
+    //   console.log("Error" + response.message);
+    //   handleCloseDialog();
+    // }
 
     setStageOneInspection(true);
     setOpenDialog(false);
     setSelectedStage(null);
+
   };
-  const StageTwoInspectionCompleted = () => {
-    //API call
+
+  const StageTwoInspectionCompleted = async () => {
+    // const response = await Services.update_batch_inspection_state(batch.batchId,2);
+
+    // if (response.success) {
+    //       setStageTwoInspection(true);
+    //       setOpenDialog(false);
+    //       setSelectedStage(null);
+    // }
+    // else{
+    //   console.log("Error" + response.message);
+    //   handleCloseDialog();
+    // }
 
     setStageTwoInspection(true);
     setOpenDialog(false);
     setSelectedStage(null);
   };
-  const StageThreeInspectionCompleted = () => {
-    //API call
+  const StageThreeInspectionCompleted = async () => {
+    // const response = await Services.update_batch_inspection_state(batch.batchId,3);
+
+    // if (response.success) {
+    //       setStageThreeInspection(true);
+    //       setOpenDialog(false);
+    //       setSelectedStage(null);
+    // }
+    // else{
+    //   console.log("Error" + response.message);
+    //   handleCloseDialog();
+    // }
 
     setOpenDialog(false);
     setSelectedStage(null);
@@ -579,12 +663,13 @@ const Timeline = ({ batch, role }) => {
               onClick={() => {
                 StageOneCompleted();
               }}
-              disabled={stageOne}
+              disabled={stageOne || role != "manufacturer"}
               endIcon={<LibraryAddCheckIcon />}
               color="primary"
               style={{ color: "white" }}
             >
-              {!stageOne && <>Complete</>}
+              {!stageOne && role == "manufacturer" && <>Complete</>}
+              {!stageOne && role != "manufacturer" && <>Yet to be completed</>}
               {stageOne && <>Completed...</>}
             </Button>
           </Stack>
@@ -602,9 +687,12 @@ const Timeline = ({ batch, role }) => {
           </h3>
           <h4 className="vertical-timeline-element-subtitle">
             Inspector ID : 0x122341241213dfgh
+            {/* Inspector ID : {batch.inspectorId} */}
+
           </h4>
           <h4 className="vertical-timeline-element-subtitle">
             Grade : x (out of 10)
+            {/* {stageOneGrade ? `${stageOneGrade} (out of 10)` : "Yet to be Inspected"} */}
           </h4>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -627,10 +715,11 @@ const Timeline = ({ batch, role }) => {
               onClick={() => {
                 handleOpenDialog("stage1");
               }}
-              disabled={stageOneInspection}
+              disabled={stageOneInspection || role != "inspector"}
               endIcon={<LibraryAddCheckIcon />}
             >
-              {!stageOneInspection && <>Do Inspection</>}
+              {!stageOneInspection && role == "inspector" && <>Do Inspection</>}
+              {!stageOneInspection && role != "inspector" && <>Yet to be Inspected</>}
               {stageOneInspection && <>Inspected...</>}
             </Button>
           </Stack>
@@ -646,6 +735,7 @@ const Timeline = ({ batch, role }) => {
           <h3 className="vertical-timeline-element-title">Stage-2</h3>
           <h4 className="vertical-timeline-element-subtitle">
             Manufacturer ID : 0x122341241213dbm
+            {/* Manufacturer ID : {batch.manufacturerId} */}
           </h4>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -666,10 +756,11 @@ const Timeline = ({ batch, role }) => {
               style={{ color: "white" }}
               sx={{ borderRadius: "50px" }}
               onClick={StageTwoCompleted}
-              disabled={stageTwo}
+              disabled={stageTwo || role != "manufacturer"}
               endIcon={<LibraryAddCheckIcon />}
             >
-              {!stageTwo && <>Complete</>}
+              {!stageTwo && role == "manufacturer" && <>Complete</>}
+              {!stageTwo && role != "manufacturer" && <>Yet to be completed</>}
               {stageTwo && <>Completed...</>}
             </Button>
           </Stack>
@@ -687,9 +778,13 @@ const Timeline = ({ batch, role }) => {
           </h3>
           <h4 className="vertical-timeline-element-subtitle">
             Inspector ID : 0x122341241213dfgh
+            {/* Inspector ID : {batch.inspectorId} */}
+
           </h4>
           <h4 className="vertical-timeline-element-subtitle">
             Grade : x (out of 10)
+            {/* {stageTwoGrade ? `${stageTwoGrade} (out of 10)` : "Yet to be Inspected"} */}
+
           </h4>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -712,11 +807,12 @@ const Timeline = ({ batch, role }) => {
               onClick={() => {
                 handleOpenDialog("stage2");
               }}
-              disabled={stageTwoInspection}
+              disabled={stageTwoInspection || role != "inspector"}
               endIcon={<LibraryAddCheckIcon />}
             >
-              {!stageTwoInspection && <>Do Inspection</>}
-              {stageTwoInspection && <>Inspected...</>}
+             {!stageTwoInspection && role == "inspector" && <>Do Inspection</>}
+              {!stageTwoInspection && role != "inspector" && <>Yet to be Inspected</>}
+              {stageOneInspection && <>Inspected...</>}
             </Button>
           </Stack>
         </VerticalTimelineElement>
@@ -733,6 +829,7 @@ const Timeline = ({ batch, role }) => {
           </h3>
           <h4 className="vertical-timeline-element-subtitle">
             Manufacturer ID : 0x122341241213dbm
+            {/* Manufacturer ID : {batch.manufacturerId} */}
           </h4>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -753,10 +850,11 @@ const Timeline = ({ batch, role }) => {
               style={{ color: "white" }}
               sx={{ borderRadius: "50px" }}
               onClick={StageThreeCompleted}
-              disabled={stageThree}
+              disabled={stageThree || role != "manufacturer"}
               endIcon={<LibraryAddCheckIcon />}
             >
-              {!stageThree && <>Complete</>}
+              {!stageThree && role == "manufacturer" && <>Complete</>}
+              {!stageThree && role != "manufacturer" && <>Yet to be completed</>}
               {stageThree && <>Completed...</>}
             </Button>
           </Stack>
@@ -774,6 +872,13 @@ const Timeline = ({ batch, role }) => {
           </h3>
           <h4 className="vertical-timeline-element-subtitle">
             Inspector ID : 0x122341241213dfgh
+            {/* Inspector ID : {batch.inspectorId} */}
+
+          </h4>
+          <h4 className="vertical-timeline-element-subtitle">
+            Grade : x (out of 10)
+            {/* {stageThreeGrade ? `${stageThreeGrade} (out of 10)` : "Yet to be Inspected"} */}
+
           </h4>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -796,10 +901,11 @@ const Timeline = ({ batch, role }) => {
               onClick={() => {
                 handleOpenDialog("packing");
               }}
-              disabled={stageThreeInspection}
+              disabled={stageThreeInspection || role != "inspector"}
               endIcon={<LibraryAddCheckIcon />}
             >
-              {!stageThreeInspection && <>Do Inspection</>}
+              {!stageThreeInspection && role == "inspector" && <>Do Inspection</>}
+              {!stageThreeInspection && role != "inspector" && <>Yet to be Inspected</>}
               {stageThreeInspection && <>Inspected...</>}
             </Button>
           </Stack>

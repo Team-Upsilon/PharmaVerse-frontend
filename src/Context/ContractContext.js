@@ -19,7 +19,7 @@ function ContractContextProvider(props) {
     const [TransporterContract, setTransporterContract] = useState("");
 
 
-    const [rawmaterials, setRawMaterials] = useState([]);
+    const [rawMaterials, setRawMaterials] = useState([]);
     const [packages, setPackages] = useState([])
     const [medicines, setMedicines] = useState([])
     const [batches, setBatches] = useState([])
@@ -42,11 +42,31 @@ function ContractContextProvider(props) {
     };
 
     useEffect(() => {
-        getContract();
-    }, []);
+        console.log(rawMaterials);
+        console.log(packages);
+        console.log(medicines);
+        console.log(batches);
+        console.log(packagereports);
+        console.log(batchreports);
+        console.log(packagedeliverdetails);
+        console.log(batchdeliverdetails);
+
+    }, [rawMaterials, packages, medicines, batches, packagereports, batchreports, packagedeliverdetails, batchdeliverdetails]);
 
     useEffect(() => {
-        // fetchNfts();
+        Services.get_all_raw_materials();
+        Services.get_all_packages();
+        Services.get_all_medicines();
+        Services.get_all_batches();
+        Services.get_package_reports();
+        Services.get_batch_reports();
+        Services.get_package_delivery_details();
+        Services.get_batch_delivery_details();
+
+    }, [AdminContract, InventoryContract, TransporterContract, SupplierContract, ManufacturerContract, InspectorContarct, RealTimeMonitoringContarct, BatchScheduleContarct]);
+
+    useEffect(() => {
+        getContract();
     }, []);
 
     const getContract = async () => {
@@ -64,21 +84,25 @@ function ContractContextProvider(props) {
                     return;
                 }
 
+                console.log("function called");
 
-                const rawMaterialCount = await InventoryContract.materialCount();
+
+                const rawMaterialCount = await InventoryContract.methods.materialCount().call();
                 const rawMaterials = [];
 
                 // Loop through the raw materials and fetch each one
                 for (let i = 1; i <= rawMaterialCount; i++) {
-                    const rawMaterial = await InventoryContract.rawMaterials(i);
+                    const rawMaterial = await InventoryContract.methods.rawMaterials(i).call();
                     rawMaterials.push({
-                        materialId: rawMaterial[0].toNumber(),
+                        materialId: rawMaterial[0],
                         name: rawMaterial[1],
                         description: rawMaterial[2],
                         ipfs_hash: rawMaterial[3],
-                        quantity: rawMaterial[4].toNumber(),
+                        quantity: rawMaterial[4],
                     });
                 }
+                console.log(rawMaterials);
+
 
                 setRawMaterials(rawMaterials);
 
@@ -98,12 +122,14 @@ function ContractContextProvider(props) {
                 }
 
                 // Call the contract's view function to get the package count
-                const packageCount = await SupplierContract.packageCount();
+                const packageCount = await SupplierContract.methods.packageCount().call();
                 const packageList = [];
 
                 // Loop through the packages and fetch each one
                 for (let i = 1; i <= packageCount; i++) {
-                    const packageInfo = await SupplierContract.rawMaterialPackages(i);
+                    const packageInfo = await SupplierContract.methods.getRawMaterialPackage(i).call();
+
+                    console.log(packageInfo);
 
                     const rawMaterialIds = packageInfo[1];
                     const rawMaterialQuantities = packageInfo[2];
@@ -112,26 +138,24 @@ function ContractContextProvider(props) {
 
                     for (let j = 0; j < rawMaterialIds.length; j++) {
                         rawMaterials.push({
-                            materialId: rawMaterialIds[j].toNumber(),
-                            quantity: rawMaterialQuantities[j].toNumber(),
+                            materialId: rawMaterialIds[j],
+                            quantity: rawMaterialQuantities[j],
                         });
                     }
 
                     packageList.push({
-                        packageId: packageInfo[0].toNumber(),
+                        packageId: packageInfo[0],
                         rawMaterials: rawMaterials,
-                        description: packageInfo[1],
-                        ipfs_hash: packageInfo[2],
-                        manufacturerId: packageInfo[3],
-                        transporterId: packageInfo[4],
-                        supplierId: packageInfo[5],
-                        inspectorId: packageInfo[6],
-                        stage: packageInfo[7],
+                        description: packageInfo[3],
+                        manufacturerId: packageInfo[4],
+                        transporterId: packageInfo[5],
+                        supplierId: packageInfo[6],
+                        inspectorId: packageInfo[7],
+                        stage: packageInfo[8],
                     });
                 }
 
                 setPackages(packageList);
-                console.log("Packages: ", packageList);
             } catch (error) {
                 console.error("Error fetching packages: ", error);
             }
@@ -146,17 +170,17 @@ function ContractContextProvider(props) {
                 }
 
                 // Call the contract's view function to get the medicine count
-                const medicineCount = await ManufacturerContract.medicineCount();
+                const medicineCount = await ManufacturerContract.methods.medicineCount().call();
                 const medicineList = [];
 
                 // Loop through the medicines and fetch each one
                 for (let i = 1; i <= medicineCount; i++) {
-                    const medicineInfo = await ManufacturerContract.medicines(i);
+                    const medicineInfo = await ManufacturerContract.methods.medicines(i).call();
                     medicineList.push({
-                        medicineId: medicineInfo[0].toNumber(),
+                        medicineId: medicineInfo[0],
                         name: medicineInfo[1],
                         description: medicineInfo[2],
-                        totalQuantity: medicineInfo[3].toNumber(),
+                        totalQuantity: medicineInfo[3],
                         ipfs_hash: medicineInfo[4],
                     });
                 }
@@ -178,13 +202,13 @@ function ContractContextProvider(props) {
                 }
 
                 // Call the contract's view function to get the total batch count
-                const batchCount = await ManufacturerContract.batchCount();
+                const batchCount = await ManufacturerContract.methods.batchCount().call();
 
                 const batchList = [];
 
                 // Loop through the batches and fetch each one
                 for (let i = 1; i <= batchCount; i++) {
-                    const batchInfo = await ManufacturerContract.batches(i);
+                    const batchInfo = await ManufacturerContract.methods.getBatches(i).call();
 
                     const medicineIds = batchInfo[1];
                     const medicineQuantities = batchInfo[2];
@@ -193,32 +217,32 @@ function ContractContextProvider(props) {
 
                     for (let j = 0; j < medicineIds.length; j++) {
                         medicines.push({
-                            materialId: medicineIds[j].toNumber(),
-                            quantity: medicineQuantities[j].toNumber(),
+                            materialId: medicineIds[j],
+                            quantity: medicineQuantities[j],
                         });
                     }
 
                     batchList.push({
                         batchId: batchInfo[0].toNumber(),
                         medicines: medicines.toNumber(),
+                        batchId: batchInfo[0],
+                        medicines: medicines,
                         manufacturerId: batchInfo[3],
                         transporterId: batchInfo[4],
                         wholesalerId: batchInfo[5],
-                        manufacturingDate: new Date(batchInfo[6].toNumber() * 1000), // Convert timestamp to JavaScript Date
-                        stage: batchInfo[7].toNumber(),
-                        score: batchInfo[8].toNumber(),
-                        idealstage1conditions: batchInfo[9].map((value) => value.toNumber()),
-                        idealstage2conditions: batchInfo[10].map((value) => value.toNumber()),
-                        idealpackagingconditions: batchInfo[11].map((value) => value.toNumber()),
+                        manufacturingDate: new Date(batchInfo[6] * 1000), // Convert timestamp to JavaScript Date
+                        stage: batchInfo[7],
+                        score: batchInfo[8],
+                        idealstage1conditions: batchInfo[9].map((value) => value),
+                        idealstage2conditions: batchInfo[10].map((value) => value),
+                        idealpackagingconditions: batchInfo[11].map((value) => value),
                         inspectorId: batchInfo[12],
-                        InspectionStage: batchInfo[13].toNumber(),
+                        InspectionStage: batchInfo[13],
                     });
                 }
 
                 setBatches(batchList);
 
-                // Now you have the batchList array containing all batches
-                console.log("Batches: ", batchList);
             } catch (error) {
                 console.error("Error fetching batches: ", error);
             }
@@ -232,8 +256,8 @@ function ContractContextProvider(props) {
                 }
 
 
-                const response = await InventoryContract.addRawMaterial(name, description, ipfs_hash, quantity, {
-                    from: account, // suppliers address
+                const response = await InventoryContract.methods.addRawMaterial(name, description, ipfs_hash, quantity).send({
+                    from: account
                 });
 
 
@@ -259,8 +283,8 @@ function ContractContextProvider(props) {
                 }
 
 
-                const response = await ManufacturerContract.createMedicine(name, description, ipfs_hash, {
-                    from: account,
+                const response = await ManufacturerContract.methods.createMedicine(name, description, ipfs_hash).send({
+                    from: account
                 });
 
 
@@ -289,9 +313,7 @@ function ContractContextProvider(props) {
                 }
 
 
-                const availability = await InventoryContract.checkAvailability(materialId, desiredQuantity, {
-                    from: account,
-                });
+                const availability = await InventoryContract.methods.checkAvailability(materialId, desiredQuantity);
 
 
                 if (availability > 0) {
@@ -315,8 +337,8 @@ function ContractContextProvider(props) {
                 }
 
 
-                const response = await InventoryContract.increaseQuantity(materialId, additionalQuantity, {
-                    from: account,
+                const response = await InventoryContract.methods.increaseQuantity(materialId, additionalQuantity).send({
+                    from: account
                 });
 
 
@@ -340,8 +362,8 @@ function ContractContextProvider(props) {
                 }
 
 
-                const response = await InventoryContract.updateRawMaterial(materialId, name, description, ipfs_hash, quantity, {
-                    from: account,
+                const response = await InventoryContract.methods.updateRawMaterial(materialId, name, description, ipfs_hash, quantity).send({
+                    from: account
                 });
 
 
@@ -366,8 +388,8 @@ function ContractContextProvider(props) {
                 }
 
 
-                const response = await SupplierContract.updatePackageStage(packageId, newStage, {
-                    from: account,
+                const response = await SupplierContract.methods.updatePackageStage(packageId, newStage).send({
+                    from: account
                 });
 
 
@@ -391,8 +413,8 @@ function ContractContextProvider(props) {
                 }
 
 
-                const response = await ManufacturerContract.updateBatchStage(batchId, newStage, {
-                    from: account,
+                const response = await ManufacturerContract.methods.updateBatchStage(batchId, newStage).send({
+                    from: account
                 });
 
 
@@ -409,6 +431,30 @@ function ContractContextProvider(props) {
                 return { success: false, message: error.message };
             }
         },
+        update_batch_inspection_state: async (batchId, newStage) => {
+            try {
+                if (!ManufacturerContract) {
+                    console.error("ManufacturerContract not initialized");
+                    return { success: false, message: "ManufacturerContract not initialized" };
+                }
+
+                const response = await ManufacturerContract.methods.updateInspectionStage(batchId, newStage).send({
+                    from: account
+                });
+
+                if (response.status) {
+                    console.log(`Batch with ID ${batchId} Inspection stage updated successfully to ${newStage}`);
+                    return { success: true, message: `Batch Inspection stage updated successfully to ${newStage}` };
+                } else {
+                    console.error("Transaction failed");
+                    return { success: false, message: "Transaction failed" };
+                }
+            }
+            catch (error) {
+                console.error("Error updating batch Inspection stage: ", error);
+                return { success: false, message: error.message };
+            }
+        },
         record_package_delivery: async (packageId) => {
             try {
 
@@ -418,8 +464,8 @@ function ContractContextProvider(props) {
                 }
 
 
-                const response = await TransporterContract.recordPackageDelivery(packageId, {
-                    from: account,
+                const response = await TransporterContract.methods.recordPackageDelivery(packageId).send({
+                    from: account
                 });
 
                 if (response.status) {
@@ -442,8 +488,8 @@ function ContractContextProvider(props) {
                 }
 
 
-                const response = await TransporterContract.recordBatchDelivery(batchId, {
-                    from: account,
+                const response = await TransporterContract.methods.recordBatchDelivery(batchId).send({
+                    from: account
                 });
 
 
@@ -473,8 +519,8 @@ function ContractContextProvider(props) {
                 const quantity = [1000];
                 const concentration = [1000];
 
-                const response = await InspectorContarct.checkquality(packageId, description, quantity, concentration, {
-                    from: account,
+                const response = await InspectorContarct.methods.checkquality(packageId, description, quantity, concentration).send({
+                    from: account
                 });
 
                 if (response.status) {
@@ -496,21 +542,21 @@ function ContractContextProvider(props) {
                     return [];
                 }
 
-                const packageCount = await SupplierContract.packageCount();
+                const packageCount = await SupplierContract.methods.packageCount().call();
 
                 let formattedPackageReports = [];
 
                 for (let index = 1; index <= packageCount; index++) {
+                    const flag = await SupplierContract.methods.rawMaterialPackages(index).call();
 
-
-                    if (SupplierContract.rawMaterialPackages(index).stage == "Inspected") {
-                        let packageReport = await InspectorContarct.packageReports(index)[0];
+                    if (flag.stage == 3) {
+                        let packageReport = await InspectorContarct.methods.packageReports(index, 0).call();
 
                         formattedPackageReports.push({
-                            packageid: packageReport[0].toNumber(),
+                            packageid: packageReport[0],
                             description: packageReport[1],
-                            grade: packageReport[2].toNumber(),
-                            timestamp: new Date(packageReport[3].toNumber() * 1000),
+                            grade: packageReport[2],
+                            timestamp: new Date(packageReport[3] * 1000),
                             inspectorId: packageReport[4],
                             isApproved: packageReport[5],
                         });
@@ -534,24 +580,24 @@ function ContractContextProvider(props) {
                     return [];
                 }
 
-                const batchCount = ManufacturerContract.batchCount();
+                const batchCount = await ManufacturerContract.methods.batchCount().call();
 
                 let formattedBatchReports = [];
 
                 for (let index = 1; index <= batchCount; index++) {
+                    let flag = await ManufacturerContract.methods.batches(index).call();
 
-                    if (ManufacturerContract.batches(index).InspectionStage != "STAGE_0") {
-                        let batchReportArray = await RealTimeMonitoringContarct.batchReports(index);
+                    if (flag.InspectionStage != 0) {
+                        let batchReportArray = await RealTimeMonitoringContarct.methods.batchReports(index).call();
 
                         batchReportArray.map((report) => (
                             formattedBatchReports.push({
-                                batchId: report[0].toNumber(),
-                                stage: report[1].toNumber(),
-                                batchReportResult: report[2].toNumber(),
+                                batchId: report[0],
+                                stage: report[1],
+                                batchReportResult: report[2],
                             })));
 
                     }
-
                 }
                 setBatchReports(formattedBatchReports)
 
@@ -569,21 +615,22 @@ function ContractContextProvider(props) {
                     return null
                 }
 
-                const packageCount = await SupplierContract.packageCount();
+                const packageCount = await SupplierContract.methods.packageCount().call();
 
                 let formattedDeliveryDetails = [];
 
                 for (let index = 1; index <= packageCount; index++) {
+                    let flag = await SupplierContract.methods.rawMaterialPackages(index).call();
 
 
-                    if (SupplierContract.rawMaterialPackages(index).stage == "Delivered") {
-                        let deliveryDetails = await TransporterContract.packageDeliveries(index);
+                    if (flag.stage == 3) {
+                        let deliveryDetails = await TransporterContract.methods.packageDeliveries(index).call();
 
                         formattedDeliveryDetails.push({
-                            packageId: deliveryDetails[0].toNumber(),
+                            packageId: deliveryDetails[0],
                             supplierId: deliveryDetails[1],
                             transporterId: deliveryDetails[2],
-                            deliveryTime: new Date(deliveryDetails[3].toNumber() * 1000),
+                            deliveryTime: new Date(deliveryDetails[3] * 1000),
                         });
                     }
 
@@ -605,20 +652,21 @@ function ContractContextProvider(props) {
                     return null
                 }
 
-                const batchCount = ManufacturerContract.batchCount();
+                const batchCount = await ManufacturerContract.methods.batchCount().call();
 
                 let formattedDeliveryDetails = [];
 
                 for (let index = 1; index <= batchCount; index++) {
+                    let flag = await ManufacturerContract.methods.batches(index).call();
 
-                    if (ManufacturerContract.batches(index).stage == "Delivered") {
-                        let deliveryDetails = await TransporterContract.batchDeliveries(index);
+                    if (flag.stage == 4) {
+                        let deliveryDetails = await TransporterContract.methods.batchDeliveries(index).call();
 
                         formattedDeliveryDetails.push({
-                            batchId: deliveryDetails[0].toNumber(),
+                            batchId: deliveryDetails[0],
                             manufacturerId: deliveryDetails[1],
                             transporterId: deliveryDetails[2],
-                            deliveryTime: new Date(deliveryDetails[3].toNumber() * 1000),
+                            deliveryTime: new Date(deliveryDetails[3] * 1000),
                         });
                     }
 
@@ -642,14 +690,13 @@ function ContractContextProvider(props) {
                 }
 
 
-                const response = await RealTimeMonitoringContarct.recordBatchReport(
+                const response = await RealTimeMonitoringContarct.methods.recordBatchReport(
                     batchId,
                     stage,
-                    stagecondition,
-                    {
-                        from: account,
-                    }
-                );
+                    stagecondition
+                ).send({
+                    from: account
+                });
 
                 if (response.status) {
                     console.log(`Batch report recorded successfully for Batch ID ${batchId}`);
@@ -674,20 +721,30 @@ function ContractContextProvider(props) {
 
                 if (key == 1) {
 
-                    await AdminContract.addSupplier(address);
+                    await AdminContract.methods.addSupplier(address).send({
+                        from: account
+                    });
 
                 }
                 else if (key == 2) {
-                    await AdminContract.addManufacturer(address);
+                    await AdminContract.methods.addManufacturer(address).send({
+                        from: account
+                    });
                 }
                 else if (key == 3) {
-                    await AdminContract.addInspector(address);
+                    await AdminContract.methods.addInspector(address).send({
+                        from: account
+                    });
                 }
                 else if (key == 4) {
-                    await AdminContract.addTransporter(address);
+                    await AdminContract.methods.addTransporter(address).send({
+                        from: account
+                    });
                 }
                 else {
-                    await AdminContract.addWholesaler(address);
+                    await AdminContract.methods.addWholesaler(address).send({
+                        from: account
+                    });
                 }
 
             } catch (error) {
@@ -696,37 +753,48 @@ function ContractContextProvider(props) {
             }
         },
 
-        deAssign_role: async (address, key) => {
+        deAssign_role: async (address) => {
             try {
-
                 if (!AdminContract) {
                     console.error("AdminContract not initialized");
                     return { success: false, message: "AdminContract not initialized" };
                 }
 
-                if (key == 1) {
+                const isSupplier = await AdminContract.methods.suppliers(address).call();
+                const isManufacturer = await AdminContract.methods.manufacturers(address).call();
+                const isInspector = await AdminContract.methods.inspectors(address).call();
+                const isTransporter = await AdminContract.methods.transporters(address).call();
+                const isWholesaler = await AdminContract.methods.wholesalers(address).call();
 
-                    await AdminContract.removeSupplier(address);
-
+                if (isSupplier) {
+                    await AdminContract.methods.removeSupplier(address).send({
+                        from: account
+                    });
+                } else if (isManufacturer) {
+                    await AdminContract.methods.removeManufacturer(address).send({
+                        from: account
+                    });
+                } else if (isInspector) {
+                    await AdminContract.methods.removeInspector(address).send({
+                        from: account
+                    });
+                } else if (isTransporter) {
+                    await AdminContract.methods.removeTransporter(address).send({
+                        from: account
+                    });
+                } else if (isWholesaler) {
+                    await AdminContract.methods.removeWholesaler(address).send({
+                        from: account
+                    });
+                } else {
+                    return { success: false, message: "No role assigned to this address" };
                 }
-                else if (key == 2) {
-                    await AdminContract.removeManufacturer(address);
-                }
-                else if (key == 3) {
-                    await AdminContract.removeInspector(address);
-                }
-                else if (key == 4) {
-                    await AdminContract.removeTransporter(address);
-                }
-                else {
-                    await AdminContract.removeWholesaler(address);
-                }
-
             } catch (error) {
                 console.error("Error in deAssigning role: ", error);
                 return { success: false, message: error.message };
             }
         },
+
         request_raw_material_package: async (_rawMaterialsIds, _rawMaterialsQuantities, _description, _transporterId, _supplierId, _inspectorId) => {
             try {
 
@@ -735,7 +803,9 @@ function ContractContextProvider(props) {
                     return { success: false, message: "SupplierContract not initialized" };
                 }
 
-                await SupplierContract.requestRawMaterialPackage(_rawMaterialsIds, _rawMaterialsQuantities, _description, account, _transporterId, _supplierId, _inspectorId);
+                await SupplierContract.methods.requestRawMaterialPackage(_rawMaterialsIds, _rawMaterialsQuantities, _description, account, _transporterId, _supplierId, _inspectorId).send({
+                    from: account
+                });
 
                 return { success: true, message: "Raw material package requested successfully" };
 
@@ -743,7 +813,8 @@ function ContractContextProvider(props) {
                 console.error("Error in requesting raw material package: ", error);
                 return { success: false, message: error.message };
             }
-        },
+        }
+    },
 
         create_batch: async (_medicineIds, _medicineQuantities, estimatedCost, productionRatePerDay, _idealstage1conditions, _idealstage2conditions, _idealpackagingconditions, _inspectorId, _transporterId, _wholesalerId) => {
             try {
@@ -753,7 +824,9 @@ function ContractContextProvider(props) {
                     return { success: false, message: "ManufacturerContract not initialized" };
                 }
 
-                await ManufacturerContract.requestRawMaterialPackage(_medicineIds, _medicineQuantities, estimatedCost, productionRatePerDay, _idealstage1conditions, _idealstage2conditions, _idealpackagingconditions, _inspectorId, _transporterId, _wholesalerId);
+                await ManufacturerContract.methods.requestRawMaterialPackage(_medicineIds, _medicineQuantities, estimatedCost, productionRatePerDay, _idealstage1conditions, _idealstage2conditions, _idealpackagingconditions, _inspectorId, _transporterId, _wholesalerId).send({
+                    from: account
+                });
 
                 return { success: true, message: "Batch Created successfully" };
 
@@ -761,26 +834,66 @@ function ContractContextProvider(props) {
                 console.error("Error in creating batch: ", error);
                 return { success: false, message: error.message };
             }
-        }
+        },
+            get_role: async (_account) => {
+                try {
+                    if (!AdminContract) {
+                        console.error("AdminContract not initialized");
+                        return { success: false, message: "AdminContract not initialized" };
+                    }
+
+                    const isSupplier = await AdminContract.methods.suppliers(_account).call();
+                    const isManufacturer = await AdminContract.methods.manufacturers(_account).call();
+                    const isInspector = await AdminContract.methods.inspectors(_account).call();
+                    const isTransporter = await AdminContract.methods.transporters(_account).call();
+                    const isWholesaler = await AdminContract.methods.wholesalers(_account).call();
+
+                    if (isSupplier) {
+                        return { success: true, data: "Supplier" };
+                    } else if (isManufacturer) {
+                        return { success: true, data: "Manufacturer" };
+                    } else if (isInspector) {
+                        return { success: true, data: "Inspector" };
+                    } else if (isTransporter) {
+                        return { success: true, data: "Transporter" };
+                    } else if (isWholesaler) {
+                        return { success: true, data: "Wholesaler" };
+                    } else {
+                        return { success: false, message: "No role assigned to this address" };
+                    }
+                } catch (error) {
+                    console.error("Error in getting role: ", error);
+                    return { success: false, message: error.message };
+                }
+            },
+
     };
 
-    const [state, setState] = useState({
-        AdminContract: null,
-    });
+const [state, setState] = useState({
+    AdminContract: null,
+});
 
-    return (
-        <ContractContext.Provider
-            value={{
-                ...state,
-                ...{
-                    updateContract,
-                    Services,
-                },
-            }}
-        >
-            {props.children}
-        </ContractContext.Provider>
-    );
+return (
+    <ContractContext.Provider
+        value={{
+            ...state,
+            ...{
+                updateContract,
+                Services,
+                rawMaterials,
+                packages,
+                medicines,
+                batches,
+                packagereports,
+                batchreports,
+                packagedeliverdetails,
+                batchdeliverdetails
+            },
+        }}
+    >
+        {props.children}
+    </ContractContext.Provider>
+);
 }
 
 export default ContractContextProvider;

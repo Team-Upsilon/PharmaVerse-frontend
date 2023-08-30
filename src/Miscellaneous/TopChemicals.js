@@ -21,6 +21,11 @@ import { Unstable_NumberInput as NumberInput } from "@mui/base/Unstable_NumberIn
 import { styled } from "@mui/system";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
+import { useContext } from "react";
+import { ContractContext } from "../Context/ContractContext";
+
+
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -162,12 +167,34 @@ const TopChemicals = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedChemical, setSelectedChemical] = useState(null);
   const [incrementValue, setIncrementValue] = useState(0);
+  const {services, rawMaterials} = useContext(ContractContext);
+  const [rawmat,setRawmat] = useState([]);
+
+    // const [xAxisData, setxaxisdata] = useState([]);
+
+  // useEffect(() => {
+  //   const fetchRawMaterials = async () => {
+  //     await services.get_all_raw_materials();
+  //     console.log(rawMaterials);
+  //     setRawmat(rawMaterials)
+  //     const processedChartData = rawMaterials.map(rawMaterial => ({
+  //       x: rawMaterial.name,
+  //       y: rawMaterial.quantity, // Use the appropriate property for y-axis data
+  //       description: rawMaterial.description,
+  //     }));
+  //     setxaxisdata(processedChartData);
+  //   };
+  //   fetchRawMaterials();
+  // }, [services, rawMaterials]);
+
 
   const xAxisData = data.xaxis.map((x, index) => ({
     x,
     quantity: data.quantity[index],
   }));
 
+    // need to check
+  // const [d, setD] = useState(rawmat);
   const [d, setD] = useState(jsonData);
   const [searchValue, setSearchValue] = useState("");
   const [enableUpdate, setEnableUpdate] = useState(false);
@@ -176,6 +203,12 @@ const TopChemicals = () => {
   }
   // Sorting the array by quantity in descending order
   xAxisData.sort((a, b) => b.quantity - a.quantity);
+
+  // const increaseQuantity = (index, increment) => {
+  //   const newData = [...d];
+  //   newData[index].quantity += increment;
+  //   setD(newData);
+  // };
 
   const increaseQuantity = (index, increment) => {
     console.log("increaseQuantity called with index:", index, "increment:", increment);
@@ -206,6 +239,7 @@ const TopChemicals = () => {
                   {item.x}:{item.quantity}
                 </p>
                 <p className="card__description">
+                  {/* {item.description} */}
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
                   do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                   Ut enim ad minim veniam, quis nostrud exercitation ullamco.
