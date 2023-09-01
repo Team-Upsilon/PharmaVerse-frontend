@@ -1,3 +1,4 @@
+import react,{ useContext, useEffect } from "react";
 import "./App.css";
 import Admin_Page from "./Component/Admin-Page";
 import Supplier from "./Component/Supplier";
@@ -14,17 +15,36 @@ import Inspector from "./Component/Inspector";
 import ContractContextProvider from './Context/ContractContext';
 import NotFound from "./Component/NotFound";
 import HomePage from "./Component/HomePage";
+import { AuthContext } from "./Context/AuthContext";
+
+
+
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
   },
 });
+
+
+
+
 function App() {
+  const {role} = useContext(AuthContext)
+  
+  useEffect(()=>{
+    if(role == ""&& window.location.pathname!="/"){
+      window.location.href="/"
+    }
+    
+    console.log("roleeeeeeee"+role)
+  },[role])
+  
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <div className="App">
         <Routes>
+          
           <Route exact path="/admin" element={<Admin_Page />} />
           <Route
             exact
@@ -66,7 +86,7 @@ function App() {
           <Route exact path="/wholesaler" element={<WholeSaler />} />
 
           {/* <Route path='/contactus' element={<><ContactUs /></>} /> */}
-          <Route path='/' element={<HomePage />} />
+          <Route path='/' element={<HomePage role={role} />} />
           <Route path='/*' element={<NotFound />} />
         </Routes>
       </div>
