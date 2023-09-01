@@ -1,17 +1,17 @@
-import React, { useState,useEffect } from 'react'
-import {useContext} from "react";
-import {ContractContext} from "../Context/ContractContext";
+import React, { useState, useEffect } from 'react'
+import { useContext } from "react";
+import { ContractContext } from "../Context/ContractContext";
 import { AuthContext } from "../Context/AuthContext";
 import CONSTANTS from '../Utils/Constants';
 
 
-const SendRequestToSupplier = ({  }) => {
+const SendRequestToSupplier = ({ }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [quantityInputs, setQuantityInputs] = useState({});
   const [searchValue, setSearchValue] = useState("");
 
-  const {Services,rawMaterials} = useContext(ContractContext);
-  const {account} = useContext(AuthContext);
+  const { Services, rawMaterials } = useContext(ContractContext);
+  const { account } = useContext(AuthContext);
 
 
   // useEffect(() => {
@@ -43,7 +43,7 @@ const SendRequestToSupplier = ({  }) => {
     setQuantityInputs({ ...quantityInputs, [name]: value });
   };
 
-  const handleCreateButtonClick = async() => {
+  const handleCreateButtonClick = async () => {
     // Check if entered quantity exceeds given quantity
     // const selectedData = meds.filter(item => selectedRows.includes(item.name));
 
@@ -67,14 +67,14 @@ const SendRequestToSupplier = ({  }) => {
     const quantities = selectedMedicineDetails.map(item => item.quantity);
 
 
-    const response = await Services.request_raw_material_package(matids,quantities,"desc hardcoded",
-    "transporterid",
-    "supplierid",
-    "inspectorid");
+    const response = await Services.request_raw_material_package(matids, quantities, "desc hardcoded",
+      "transporterid",
+      "supplierid",
+      "inspectorid");
 
-    if(response.status){
+    if (response.status) {
       alert("req sent")
-    }else{
+    } else {
       alert("req failed")
     }
 
@@ -121,15 +121,15 @@ const SendRequestToSupplier = ({  }) => {
         <thead>
           <tr>
             <th>Select</th>
-            <th>Rawmaterial Name</th>
-            <th>rawMaterial Pic</th>
-            <th>Rawmaterial Desc</th>
+            <th>Raw Material Name</th>
+            <th>Raw Material Picture</th>
+            <th>Raw Material Description</th>
 
             <th>Enter Quantity</th>
           </tr>
         </thead>
         <tbody>
-        {/* {meds.filter((item) => item.name.toLowerCase().includes(searchValue.toLowerCase())) */}
+          {/* {meds.filter((item) => item.name.toLowerCase().includes(searchValue.toLowerCase())) */}
           {rawMaterials.filter((item) => item.name.toLowerCase().includes(searchValue.toLowerCase())).map(item => (
             <tr key={item.name}>
               <td>
@@ -140,7 +140,7 @@ const SendRequestToSupplier = ({  }) => {
                 />
               </td>
               <td>{item.name}</td>
-              <td><img src={`${CONSTANTS.IPFSURL}/${item.ipfs_hash}`}  height={100} width={100} /></td>
+              <td><img src={`${CONSTANTS.IPFSURL}/${item.ipfs_hash}`} height={100} width={100} /></td>
               <td>{item.description}</td>
               <td>
                 <input

@@ -29,8 +29,8 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import clsx from "clsx";
 import { FormControl, useFormControlContext } from "@mui/base/FormControl";
-import {useContext} from "react";
-import {ContractContext} from "../Context/ContractContext";
+import { useContext } from "react";
+import { ContractContext } from "../Context/ContractContext";
 import { AuthContext } from "../Context/AuthContext";
 import CONSTANTS from "../Utils/Constants";
 
@@ -163,21 +163,21 @@ const CreateNewBatch = ({ jsonData }) => {
   const [pressureStageThree, setPressureStageThree] = useState("");
   const [densityStageThree, setDensityStageThree] = useState("");
   const [volumeStageThree, setVolumeStageThree] = useState("");
-  const [selectedData,setselectedData]=useState([])
+  const [selectedData, setselectedData] = useState([])
 
   // console.log("quantity inputs"+JSON.stringify(quantityInputs))
-  console.log("selected data"+JSON.stringify(selectedData))
+  console.log("selected data" + JSON.stringify(selectedData))
 
 
 
-  const [meds,setmeds]=useState([]);
+  const [meds, setmeds] = useState([]);
 
   let { account } = useContext(AuthContext);
-  let { Services , medicines } = useContext(ContractContext);
+  let { Services, medicines } = useContext(ContractContext);
 
 
   console.log(medicines)
-  
+
 
 
 
@@ -220,17 +220,17 @@ const CreateNewBatch = ({ jsonData }) => {
 
     // console.log("selected row "+ selectedRows)
 
-    
+
   };
 
-  const handleSendBatch = async() => {
+  const handleSendBatch = async () => {
     // Send batch to blockchain
 
-    if(!selectedTransporter || !selectedInspector || !selectedWholesaler || !concentrationStageOne || !concentrationStageTwo || !concentrationStageThree || !densityStageOne || !densityStageTwo || !densityStageThree || !volumeStageOne || !volumeStageTwo || !volumeStageThree || !pressureStageOne || !pressureStageTwo || !pressureStageThree){
+    if (!selectedTransporter || !selectedInspector || !selectedWholesaler || !concentrationStageOne || !concentrationStageTwo || !concentrationStageThree || !densityStageOne || !densityStageTwo || !densityStageThree || !volumeStageOne || !volumeStageTwo || !volumeStageThree || !pressureStageOne || !pressureStageTwo || !pressureStageThree) {
       alert("Please fill in all fields correctly.");
-      return; 
+      return;
     }
-    if(!account){
+    if (!account) {
       return
     }
 
@@ -240,9 +240,9 @@ const CreateNewBatch = ({ jsonData }) => {
 
     const medids = selectedData.map((item) => item.medicienID);
     const quantityarray = selectedData.map((item) => quantityInputs[item.name]);
-    
 
-    try{
+
+    try {
       const response = await Services.create_batch(
         medids,
         quantityarray,
@@ -251,27 +251,27 @@ const CreateNewBatch = ({ jsonData }) => {
         idealstage1conditions,
         idealstage2conditions,
         idealstage3conditions,
-        selectedInspector.id,  
+        selectedInspector.id,
         selectedTransporter.id,
-        selectedWholesaler.id,      
+        selectedWholesaler.id,
 
       );
       console.log(response);
 
-      if(response.status){
+      if (response.status) {
         alert("Batch created successfully.");
       }
-      else{
+      else {
         alert("Error creating batch.");
       }
     }
-    catch(error){
+    catch (error) {
       console.log(error);
     }
 
 
 
-    
+
 
     setOpenDialog(false);
   };
@@ -361,10 +361,10 @@ const CreateNewBatch = ({ jsonData }) => {
         <thead>
           <tr>
             <th>Select</th>
-            <th>Med Name</th>
-            <th>Med Pic</th>
-            <th>Med Desc</th>
-            <th>Med Quantity</th>
+            <th>Medecine Name</th>
+            <th>Medecine Image</th>
+            <th>Medecine Description</th>
+            <th>Medecine Quantity</th>
             <th>Enter Quantity</th>
           </tr>
         </thead>
@@ -383,7 +383,7 @@ const CreateNewBatch = ({ jsonData }) => {
                   />
                 </td>
                 <td>{item.name}</td>
-                <td><img src={`${CONSTANTS.IPFSURL}/${item.ipfs_hash}`}  height={100} width={100} /></td>
+                <td><img src={`${CONSTANTS.IPFSURL}/${item.ipfs_hash}`} height={100} width={100} /></td>
                 <td>{item.description}</td>
                 <td>{item.totalQuantity}</td>
                 <td>
