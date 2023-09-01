@@ -27,6 +27,7 @@ import {
   Button,
   CardActionArea,
   CircularProgress,
+  Container,
   Dialog,
   DialogActions,
   DialogContent,
@@ -199,123 +200,161 @@ export default function InspectorBatchCardRequests({ data }) {
     <Fade bottom>
       <>
         {data && data.map((batch, index) => (
-          <Card
-            sx={{ maxWidth: 363, borderRadius: "24px", borderColor: "white" }}
-          >
-            <CardHeader title={batch.batchId} subheader={data.manufacturerId && `Manufacturer: ${data.manufacturerId.slice(0, 20)}...`} />
-            <CardMedia
-              component="img"
-              height="194"
-              // image={batch.batchpic}
-              image={`${CONSTANTS.IPFSURL}/${batch.ipfs_hash}`}
-              alt="Batch"
-            />
-            <CardContent>
-              <Typography variant="body2" color="text.secondary">
-                {/* Current Stage : {batch.currentstage} */}
-                Current Stage : {batch.stage}
-              </Typography>
-            </CardContent>
-            <CardActions>
-              <Stack spacing={0.2}>
-                <Grid item xs={12} sm={6}>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    endIcon={<AirplayRoundedIcon />}
-                    onClick={() => handleOpenDialog(batch)}
-                    sx={{
-                      borderRadius: "50px",
-                      width: "345px",
-                      marginBottom: "10px",
-                    }}
-                    color="success"
-                  >
-                    Do Inspection
-                  </Button>
-                </Grid>
-              </Stack>
-            </CardActions>
-            <Dialog
-              TransitionComponent={Transition}
-              fullScreen
-              open={openDialog}
-              onClose={handleCloseDialog}
-            >
-              <AppBar sx={{ position: "relative" }}>
-                <Toolbar>
-                  <IconButton
-                    edge="start"
-                    color="inherit"
-                    onClick={handleCloseDialog}
-                    aria-label="close"
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                  <Typography
-                    sx={{ ml: 2, flex: 1 }}
-                    variant="h6"
-                    component="div"
-                  >
-                    Inspection Details
+          <div key={index}>
+            {
+              data.length > 0 ? (<Card
+                sx={{ maxWidth: 363, borderRadius: "24px", borderColor: "white" }}
+              >
+                <CardHeader title={batch.batchId} subheader={data.manufacturerId && `Manufacturer: ${data.manufacturerId.slice(0, 20)}...`} />
+                <CardMedia
+                  component="img"
+                  height="194"
+                  // image={batch.batchpic}
+                  image={`${CONSTANTS.IPFSURL}/${batch.ipfs_hash}`}
+                  alt="Batch"
+                />
+                <CardContent>
+                  <Typography variant="body2" color="text.secondary">
+                    {/* Current Stage : {batch.currentstage} */}
+                    Current Stage : {batch.stage}
                   </Typography>
-                </Toolbar>
-              </AppBar>
-
-              <DialogContent>
-                {selectedBatch && (
-                  <Card sx={{ marginBottom: "16px", width: "100%" }}>
-
-                    <CardMedia
-                      component="img"
-                      height="140"
-                      // image={selectedBatch.batchpic}
-                      image={`${CONSTANTS.IPFSURL}/${batch.ipfs_hash}`}
-                      alt="material"
-                    />
-                    <CardContent>
-                      <Typography gutterBottom variant="h5" component="div">
-                        {/* Stage : {selectedBatch.currentstage} */}
-                        Stage : {batch.stage}
+                </CardContent>
+                <CardActions>
+                  <Stack spacing={0.2}>
+                    <Grid item xs={12} sm={6}>
+                      <Button
+                        fullWidth
+                        variant="contained"
+                        endIcon={<AirplayRoundedIcon />}
+                        onClick={() => handleOpenDialog(batch)}
+                        sx={{
+                          borderRadius: "50px",
+                          width: "345px",
+                          marginBottom: "10px",
+                        }}
+                        color="success"
+                      >
+                        Do Inspection
+                      </Button>
+                    </Grid>
+                  </Stack>
+                </CardActions>
+                <Dialog
+                  TransitionComponent={Transition}
+                  fullScreen
+                  open={openDialog}
+                  onClose={handleCloseDialog}
+                >
+                  <AppBar sx={{ position: "relative" }}>
+                    <Toolbar>
+                      <IconButton
+                        edge="start"
+                        color="inherit"
+                        onClick={handleCloseDialog}
+                        aria-label="close"
+                      >
+                        <CloseIcon />
+                      </IconButton>
+                      <Typography
+                        sx={{ ml: 2, flex: 1 }}
+                        variant="h6"
+                        component="div"
+                      >
+                        Inspection Details
                       </Typography>
+                    </Toolbar>
+                  </AppBar>
 
-                      <Divider sx={{ marginTop: "10px", marginBottom: "24px" }} />
+                  <DialogContent>
+                    {selectedBatch && (
+                      <Card sx={{ marginBottom: "16px", width: "100%" }}>
 
-                      <div>
+                        <CardMedia
+                          component="img"
+                          height="140"
+                          // image={selectedBatch.batchpic}
+                          image={`${CONSTANTS.IPFSURL}/${batch.ipfs_hash}`}
+                          alt="material"
+                        />
+                        <CardContent>
+                          <Typography gutterBottom variant="h5" component="div">
+                            {/* Stage : {selectedBatch.currentstage} */}
+                            Stage : {batch.stage}
+                          </Typography>
 
-                        <Card
-                          sx={{ marginBottom: "16px" }}
-                        >
-                          <CardHeader
-                            title="Inspector"
-                            // subheader="0x511F0e5A8495d7c7709f905186A01751D8b3f7C8"
-                            subheader={batch.inspectorId}
-                          />
-                        </Card>
-                      </div>
-                      <div>
-                        <Card
-                          sx={{ marginBottom: "16px" }}
-                        >
-                          <CardHeader
-                            title="Wholesaler"
-                            // subheader="0x511F0e5A8495d7c7709f905186A01751D8b3f7C8"
-                            subheader={batch.wholesalerId}
-                          />
-                        </Card>
+                          <Divider sx={{ marginTop: "10px", marginBottom: "24px" }} />
 
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-                <Divider />
-                <div>
-                  <Timeline batch={batch} role={"inspector"} />
-                </div>
-                <Divider />
-              </DialogContent>
-            </Dialog>
-          </Card>
+                          <div>
+
+                            <Card
+                              sx={{ marginBottom: "16px" }}
+                            >
+                              <CardHeader
+                                title="Inspector"
+                                // subheader="0x511F0e5A8495d7c7709f905186A01751D8b3f7C8"
+                                subheader={batch.inspectorId}
+                              />
+                            </Card>
+                          </div>
+                          <div>
+                            <Card
+                              sx={{ marginBottom: "16px" }}
+                            >
+                              <CardHeader
+                                title="Wholesaler"
+                                // subheader="0x511F0e5A8495d7c7709f905186A01751D8b3f7C8"
+                                subheader={batch.wholesalerId}
+                              />
+                            </Card>
+
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+                    <Divider />
+                    <div>
+                      <Timeline batch={batch} role={"inspector"} />
+                    </div>
+                    <Divider />
+                  </DialogContent>
+                </Dialog>
+              </Card>) : (
+                <Container maxWidth="md" className="not-found-container">
+                  <div className="logo-container"></div>
+                  <div style={{ borderRadius: "24px" }}>
+                    <Typography
+                      variant="h2"
+                      className="not-found-title"
+                      color="white"
+                      sx={{ fontWeight: 700 }}
+                    ></Typography>
+                    <Typography
+                      variant="h4"
+                      className="not-found-subtitle"
+                      color="white"
+                      sx={{ marginBottom: "8px", fontWeight: 700 }}
+                    >
+                      Oops! No Batch Requests Found
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      className="not-found-message"
+                      color="white"
+                      sx={{
+                        marginBottom: "24px",
+                        fontWeight: 700,
+                        paddingBottom: "12px",
+                      }}
+                    >
+                      The requested batch you are looking for might have been removed or is
+                      temporarily unavailable.
+                    </Typography>
+                  </div>
+                </Container>
+
+              )
+            }
+          </div>
         ))}
       </>
     </Fade>

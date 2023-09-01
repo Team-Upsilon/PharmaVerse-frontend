@@ -6,12 +6,9 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import { Drawer,  Stack } from "@mui/material";
+import { Drawer, Stack } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import MenuIcon from "@mui/icons-material/Menu";
-import dropbox from "../homeimg/images/icons/clients/dropbox.svg";
-import atom from "../homeimg/images/icons/clients/atom.svg";
-import github from "../homeimg/images/icons/clients/github.svg";
 import Box from "@mui/material/Box";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import Button from "@mui/material/Button";
@@ -40,8 +37,8 @@ const HomePage = () => {
   const isMobile = useMediaQuery("(max-width: 906px)");
   const [activeTab, setActiveTab] = useState("overview");
   const [activeService, setActiveService] = useState("web");
-  const {Services} = useContext(ContractContext);
-  const navigate= useNavigate();
+  const { Services } = useContext(ContractContext);
+  const navigate = useNavigate();
   const { authenticate, deauthenticate, account, role } = useContext(AuthContext);
 
   useAccount({
@@ -49,16 +46,16 @@ const HomePage = () => {
       console.log(accounts.address);
 
       const res = await Services.get_role(accounts.address);
-      if(res.success){
-        console.log("res.data issssss:"+res.data)
-        authenticate(accounts.address,res.data);
+      if (res.success) {
+        console.log("res.data issssss:" + res.data)
+        authenticate(accounts.address, res.data);
       }
-      else{
+      else {
         authenticate(accounts.address, '');
       }
     },
     onDisconnect: () => {
-     
+
       console.log("disconnected")
       deauthenticate();
     },
@@ -116,7 +113,7 @@ const HomePage = () => {
   ];
 
   return (
-    
+
     <div style={{ margin: "0" }}>
 
       <section class="hero">
@@ -154,7 +151,7 @@ const HomePage = () => {
                     </a>
                   </li>
                   <li class="btn1">
-                  <ConnectButton />
+                    <ConnectButton />
                   </li>
                 </ul>
               )}
@@ -203,12 +200,12 @@ const HomePage = () => {
                 sx={{ justifyContent: "center", alignItems: "center" }}
                 direction={"row"}
               >
-                {role==""?<>{navigate("/")}</>:<button
+                {role == "" ? <>{navigate("/")}</> : <button
                   className="btn0"
                   type="button"
                   style={{ width: "12rem" }}
-                  onClick={()=>{
-                    switch(role){
+                  onClick={() => {
+                    switch (role) {
                       case "Supplier":
                         navigate("/supplier")
                         break;
@@ -238,8 +235,8 @@ const HomePage = () => {
         </div>
       </section>
 
-      
-   
+
+
       <Drawer
         anchor="left"
         open={isMobileMenuOpen}
@@ -286,7 +283,7 @@ const HomePage = () => {
                   style={{
                     textDecoration: "none",
                     color: "white",
-                    
+
                   }}
                 >
                   Contact Us
@@ -295,11 +292,9 @@ const HomePage = () => {
             </ListItem>
 
             <ListItem sx={{ textAlign: "center", justifyContent: "center" }}>
-              <li class="btn">
-                <a href="#" style={{ textDecoration: "none", color: "white" }}>
-                  Login/Signup
-                </a>
-              </li>
+              <div class="btn1">
+                <ConnectButton />
+              </div>
             </ListItem>
           </List>
         </div>
@@ -309,7 +304,7 @@ const HomePage = () => {
         <p>© 2023 Upsilon - All Rights Reserved</p>{" "}
       </div>
     </div>
-   
+
   );
 };
 export default HomePage;
