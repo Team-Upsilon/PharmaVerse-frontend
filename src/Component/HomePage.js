@@ -27,12 +27,45 @@ import AboutImg2 from "../Images/aboutimg2.jpg";
 import AboutImg1 from "../Images/aboutimg.jpg";
 import { AnimatePresence, motion } from "framer-motion";
 import { Fade } from "react-reveal";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
+import { useContext } from "react";
+import { AuthContext } from "../Context/AuthContext";
+import { ContractContext } from "../Context/ContractContext";
+import { useNavigate } from "react-router-dom";
+
 
 const HomePage = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 906px)");
   const [activeTab, setActiveTab] = useState("overview");
   const [activeService, setActiveService] = useState("web");
+  const {Services} = useContext(ContractContext);
+  const navigate= useNavigate();
+  const { authenticate, deauthenticate, account, role } = useContext(AuthContext);
+
+  useAccount({
+    onConnect: async (accounts) => {
+      console.log(accounts.address);
+
+      const res = await Services.get_role(accounts.address);
+      if(res.success){
+        console.log("res.data issssss:"+res.data)
+        authenticate(accounts.address,res.data);
+      }
+      else{
+        authenticate(accounts.address, '');
+      }
+    },
+    onDisconnect: () => {
+     
+      console.log("disconnected")
+      deauthenticate();
+    },
+  });
+
+
+
   const handleServiceClick = (serviceId) => {
     setActiveService(serviceId);
   };
@@ -121,12 +154,7 @@ const HomePage = () => {
                     </a>
                   </li>
                   <li class="btn1">
-                    <a
-                      href="#"
-                      style={{ textDecoration: "none", color: "white" }}
-                    >
-                      Login/Signup
-                    </a>
+                  <ConnectButton />
                   </li>
                 </ul>
               )}
@@ -175,13 +203,35 @@ const HomePage = () => {
                 sx={{ justifyContent: "center", alignItems: "center" }}
                 direction={"row"}
               >
-                <button
+                {role==""?<>{navigate("/")}</>:<button
                   className="btn0"
                   type="button"
                   style={{ width: "12rem" }}
+                  onClick={()=>{
+                    switch(role){
+                      case "Supplier":
+                        navigate("/supplier")
+                        break;
+                      case "Transporter":
+                        navigate("/transporter");
+                        break;
+                      case "Inspector":
+                        navigate("/inspector");
+                        break;
+                      case "Admin":
+                        navigate("/admin");
+                        break;
+                      case "Manufacturer":
+                        navigate("/manufacturer");
+                        break;
+                      default:
+                        navigate("/");
+                        break;
+                    }
+                  }}
                 >
-                  More About Us ▼
-                </button>
+                  Go To Dashboard
+                </button>}
               </Stack>
             </div>
           </div>

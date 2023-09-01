@@ -1090,6 +1090,7 @@ function ContractContextProvider(props) {
                     console.error("AdminContract not initialized");
                     return { success: false, message: "AdminContract not initialized" };
                 }
+                console.log("Account: ", _account)
 
                 const isSupplier = await AdminContract.methods.suppliers(_account).call();
                 const isManufacturer = await AdminContract.methods.manufacturers(_account).call();
@@ -1098,16 +1099,22 @@ function ContractContextProvider(props) {
                 const isWholesaler = await AdminContract.methods.wholesalers(_account).call();
 
                 if (isSupplier) {
+                    console.log("hiiiiiiiiii from supplier")
                     return { success: true, data: "Supplier" };
                 } else if (isManufacturer) {
+                    console.log("hiiiiiiiiii from manu")
                     return { success: true, data: "Manufacturer" };
                 } else if (isInspector) {
+                    console.log("hiiiiiiiiii from inspe")
                     return { success: true, data: "Inspector" };
                 } else if (isTransporter) {
+                     console.log("hiiiiiiiiii from transpo")
                     return { success: true, data: "Transporter" };
                 } else if (isWholesaler) {
+                    console.log("hiiiiiiiiii from wholeseller")
                     return { success: true, data: "Wholesaler" };
                 } else {
+                    console.log("hiiiiiiiiii from else")
                     return { success: false, message: "No role assigned to this address" };
                 }
             } catch (error) {

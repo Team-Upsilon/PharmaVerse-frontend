@@ -82,6 +82,7 @@ function ResponsiveDrawer(props) {
       }
     },
     onDisconnect: () => {
+      
       deauthenticate();
     },
   });
