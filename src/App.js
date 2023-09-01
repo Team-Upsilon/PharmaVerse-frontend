@@ -19,7 +19,11 @@ const darkTheme = createTheme({
     mode: "dark",
   },
 });
+import AuthContextProvider from "./Context/AuthContext";
+
 function App() {
+  const {role} = AuthContextProvider();
+  console.log("roleeeeeeeeeeeeeeeee"+role);
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />

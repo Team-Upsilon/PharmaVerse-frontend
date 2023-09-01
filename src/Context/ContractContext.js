@@ -5,7 +5,7 @@ import { AuthContext } from "./AuthContext";
 import GetContract from "../Utils/GetContract";
 import { ethers } from "ethers";
 import { Buffer } from 'buffer';
-var Tx = require('@ethereumjs/tx').Transaction;
+
 
 const web3 = new Web3(window.web3 && window.web3.currentProvider);
 
